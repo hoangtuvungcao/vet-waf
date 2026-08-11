@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en" data-lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Frang rules — Vet-WAF</title>
+<meta name="description" data-i18n="meta.description" content="Reference for every Vet-WAF Frang directive: request and connection floods, slowloris, malformed HTTP, and scanner ejection, all enforced per client IP.">
+<meta name="theme-color" content="#0b1020">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; script-src 'self' 'unsafe-inline'; base-uri 'self'; form-action 'none'; frame-ancestors 'none'; upgrade-insecure-requests">
+<link rel="canonical" href="https://hoangtuvungcao.github.io/vet-waf/frang.html">
+<link rel="icon" href="assets/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="nav" id="nav">
+  <div class="container nav__inner">
+    <a class="brand" href="index.html" aria-label="Vet-WAF home">
+      <img src="assets/mark.svg" alt="" width="34" height="34" class="brand__mark">
+      <span class="brand__name">Vet<span class="brand__accent">-WAF</span></span>
+    </a>
+    <nav class="nav__links" id="navLinks" aria-label="Primary">
+      <a href="index.html" data-i18n="nav.home">Home</a>
+      <a href="quickstart.html" data-i18n="doc.quickstart">Quick start</a>
+      <a href="kernel-patching.html" data-i18n="doc.kernel">Kernel patching</a>
+      <a href="frang.html" data-i18n="doc.frang">Frang rules</a>
+      <a href="configuration.html" data-i18n="doc.config">Configuration</a>
+      <a href="troubleshooting.html" data-i18n="doc.trouble">Troubleshooting</a>
+      <div class="lang" role="group" aria-label="Language">
+        <button class="lang__btn" data-lang-set="en" aria-pressed="true">EN</button>
+        <span class="lang__sep" aria-hidden="true">·</span>
+        <button class="lang__btn" data-lang-set="vi" aria-pressed="false">VI</button>
+      </div>
+    </nav>
+    <button class="nav__toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<div class="doc-shell">
+  <aside class="doc-side">
+    <h4 data-i18n="doc.onthispage">On this page</h4>
+    <nav>
+      <a href="quickstart.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        <span data-i18n="doc.quickstart">Quick start</span></a>
+      <a href="kernel-patching.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 2v2M15 2v2M9 20v2M15 20v2M2 9h2M2 15h2M20 9h2M20 15h2"/></svg>
+        <span data-i18n="doc.kernel">Kernel patching</span></a>
+      <a class="active" href="frang.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <span data-i18n="doc.frang">Frang rules</span></a>
+      <a href="configuration.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6h.09A1.65 1.65 0 0 0 10 3.09V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9v.09a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        <span data-i18n="doc.config">Configuration</span></a>
+      <a href="troubleshooting.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3M12 17h.01"/></svg>
+        <span data-i18n="doc.trouble">Troubleshooting</span></a>
+    </nav>
+  </aside>
+
+  <main class="doc-main">
+    <div class="doc-eyebrow" data-i18n="fr.eyebrow">Anti-DDoS</div>
+    <h1 data-i18n="fr.h1">Frang rules</h1>
+    <p class="doc-lead" data-i18n="fr.lead">Frang is the rule engine that turns Vet-WAF into a WAF. Every limit is per client IP, and every one of them is off by default until you set it.</p>
+
+    <section class="doc-sec" id="how">
+      <h2 data-i18n="fr.how.h">How Frang works</h2>
+      <p data-i18n-html="fr.how.p1">Frang is Vet-WAF’s per-client enforcement engine. Every limit below is counted <b>per client IP</b>, not globally, so a single attacker cannot consume the budget that belongs to your real users.</p>
+      <p data-i18n-html="fr.how.p2">Limits live in a <code>frang_limits</code> block. Place it at the top level for global defaults, or inside a <code>vhost</code> to override them for one site. A limit left at its default of <code>0</code> is <b>disabled</b> — nothing is enforced until you set a number.</p>
+      <div class="code">
+        <div class="code__bar">
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+          <span class="code__title">vet_waf.conf</span>
+          <button class="code__copy" data-copy data-i18n="code.copy">Copy</button>
+        </div>
+<pre><code>frang_limits {          # global defaults
+    request_rate 100;
+}
+
+vhost api.example.com {
+    frang_limits {      # stricter, for this vhost only
+        request_rate 20;
+        http_methods get post;
+    }
+    proxy_pass primary;
+}</code></pre>
+      </div>
+      <div class="callout callout--tip">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+        <p data-i18n-html="fr.how.tip">The single most important directive is <code>ip_block</code>. Without it a flooder is merely throttled request by request; with it the offending IP is banned outright on its first violation. That is the difference between a rate limit and an actual mitigation.</p>
+      </div>
+    </section>
+
+    <section class="doc-sec" id="flood">
+      <h2 data-i18n="fr.fl.h">Request and connection floods</h2>
+      <p data-i18n-html="fr.fl.p1">A volumetric L7 attack either sends too many requests or opens too many connections. Rates are measured per second; a <i>burst</i> is the ceiling within a single 1/8-second sub-interval, which catches short spikes that a per-second average would smooth over.</p>
+      <table class="doc-table">
+        <thead><tr><th data-i18n="fr.fl.t.h1">Directive</th><th data-i18n="fr.fl.t.h2">Default</th><th data-i18n="fr.fl.t.h3">What it stops</th></tr></thead>
+        <tbody>
+          <tr><td data-i18n-html="fr.fl.t.r1a"><code>ip_block</code></td><td data-i18n-html="fr.fl.t.r1b">off</td><td data-i18n-html="fr.fl.t.r1c">Bans the IP for N seconds when any limit here is tripped</td></tr>
+          <tr><td data-i18n-html="fr.fl.t.r2a"><code>request_rate</code></td><td data-i18n-html="fr.fl.t.r2b">0</td><td data-i18n-html="fr.fl.t.r2c">Sustained requests/second per client</td></tr>
+          <tr><td data-i18n-html="fr.fl.t.r3a"><code>request_burst</code></td><td data-i18n-html="fr.fl.t.r3b">0</td><td data-i18n-html="fr.fl.t.r3c">Short request spikes inside one second</td></tr>
+          <tr><td data-i18n-html="fr.fl.t.r4a"><code>tcp_connection_rate</code></td><td data-i18n-html="fr.fl.t.r4b">0</td><td data-i18n-html="fr.fl.t.r4c">How fast new TCP connections may be opened</td></tr>
+          <tr><td data-i18n-html="fr.fl.t.r5a"><code>tcp_connection_burst</code></td><td data-i18n-html="fr.fl.t.r5b">0</td><td data-i18n-html="fr.fl.t.r5c">Sudden bursts of new connections</td></tr>
+          <tr><td data-i18n-html="fr.fl.t.r6a"><code>concurrent_tcp_connections</code></td><td data-i18n-html="fr.fl.t.r6b">1000</td><td data-i18n-html="fr.fl.t.r6c">Socket exhaustion — too many sockets held open at once</td></tr>
+          <tr><td data-i18n-html="fr.fl.t.r7a"><code>tls_connection_rate</code></td><td data-i18n-html="fr.fl.t.r7b">0</td><td data-i18n-html="fr.fl.t.r7c">Handshake floods, which cost the server far more CPU than the client</td></tr>
+          <tr><td data-i18n-html="fr.fl.t.r8a"><code>tls_connection_burst</code></td><td data-i18n-html="fr.fl.t.r8b">0</td><td data-i18n-html="fr.fl.t.r8c">Bursts of TLS handshakes</td></tr>
+          <tr><td data-i18n-html="fr.fl.t.r9a"><code>tls_incomplete_connection_rate</code></td><td data-i18n-html="fr.fl.t.r9b">0</td><td data-i18n-html="fr.fl.t.r9c">Handshakes deliberately started and never finished</td></tr>
+        </tbody>
+      </table>
+      <div class="callout callout--warn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4M12 17h.01"/></svg>
+        <p data-i18n-html="fr.fl.warn">Tune these to your real traffic before deploying. A normal browser loading one page with its assets produces a burst of a few dozen requests and then goes quiet — but users behind a large corporate NAT all share one IP, so set <code>ip_block</code> low or omit it in that case.</p>
+      </div>
+    </section>
+
+    <section class="doc-sec" id="slow">
+      <h2 data-i18n="fr.sl.h">Slowloris and slow-drip attacks</h2>
+      <p data-i18n-html="fr.sl.p1">Slowloris keeps thousands of connections alive by trickling a request a few bytes at a time. It exhausts your connection table without ever generating the volume a rate limit would notice, so it needs its own defences.</p>
+      <ul><li data-i18n-html="fr.sl.l1"><code>client_header_timeout</code> / <code>client_body_timeout</code> — the whole request head or body must <b>arrive</b> within N seconds, however slowly it is sent.</li><li data-i18n-html="fr.sl.l2"><code>http_header_chunk_cnt</code> / <code>http_body_chunk_cnt</code> — the head or body may not be split across more than N network chunks. This catches the byte-at-a-time drip directly, even if it stays inside the timeout.</li></ul>
+      <div class="code">
+        <div class="code__bar">
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+          <span class="code__title">vet_waf.conf</span>
+          <button class="code__copy" data-copy data-i18n="code.copy">Copy</button>
+        </div>
+<pre><code>frang_limits {
+    client_header_timeout   10;
+    client_body_timeout     30;
+    http_header_chunk_cnt   10;
+    http_body_chunk_cnt    256;
+}</code></pre>
+      </div>
+      <div class="callout callout--tip">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+        <p data-i18n-html="fr.sl.tip">Raise the two body values if you accept large uploads over slow mobile links. Leave the two header values tight — no legitimate client needs more than a second or two to send its request headers.</p>
+      </div>
+    </section>
+
+    <section class="doc-sec" id="malformed">
+      <h2 data-i18n="fr.mf.h">Malformed and oversized requests</h2>
+      <p data-i18n-html="fr.mf.p1">These bound every structural part of a request. Oversized-header attacks and HTTP/2 HPACK bombs both die here, and the same caps protect the parser itself from pathological input.</p>
+      <table class="doc-table">
+        <thead><tr><th data-i18n="fr.mf.t.h1">Directive</th><th data-i18n="fr.mf.t.h2">Default</th><th data-i18n="fr.mf.t.h3">Purpose</th></tr></thead>
+        <tbody>
+          <tr><td data-i18n-html="fr.mf.t.r1a"><code>http_header_cnt</code></td><td data-i18n-html="fr.mf.t.r1b">50</td><td data-i18n-html="fr.mf.t.r1c">Maximum number of header fields</td></tr>
+          <tr><td data-i18n-html="fr.mf.t.r2a"><code>http_hdr_len</code></td><td data-i18n-html="fr.mf.t.r2b">0</td><td data-i18n-html="fr.mf.t.r2c">Maximum length of any single header, in bytes</td></tr>
+          <tr><td data-i18n-html="fr.mf.t.r3a"><code>http_uri_len</code></td><td data-i18n-html="fr.mf.t.r3b">0</td><td data-i18n-html="fr.mf.t.r3c">Maximum request-URI length</td></tr>
+          <tr><td data-i18n-html="fr.mf.t.r4a"><code>http_body_len</code></td><td data-i18n-html="fr.mf.t.r4b">1073741824</td><td data-i18n-html="fr.mf.t.r4c">Maximum request body. Every byte is memory an attacker can make you hold</td></tr>
+          <tr><td data-i18n-html="fr.mf.t.r5a"><code>http_strict_host_checking</code></td><td data-i18n-html="fr.mf.t.r5b">true</td><td data-i18n-html="fr.mf.t.r5c">Rejects an absent, duplicated, or contradictory Host header — closes cache poisoning, host confusion, and request smuggling</td></tr>
+          <tr><td data-i18n-html="fr.mf.t.r6a"><code>http_methods</code></td><td data-i18n-html="fr.mf.t.r6b">all</td><td data-i18n-html="fr.mf.t.r6c">Allow-list of methods, e.g. <code>get head post</code></td></tr>
+          <tr><td data-i18n-html="fr.mf.t.r7a"><code>http_method_override_allowed</code></td><td data-i18n-html="fr.mf.t.r7b">false</td><td data-i18n-html="fr.mf.t.r7c">Keeps <code>X-HTTP-Method-Override</code> from smuggling a DELETE past a filter that only sees a POST</td></tr>
+          <tr><td data-i18n-html="fr.mf.t.r8a"><code>http_trailer_split_allowed</code></td><td data-i18n-html="fr.mf.t.r8b">false</td><td data-i18n-html="fr.mf.t.r8c">Rejects trailers split across continuation frames — a smuggling vector with no legitimate use</td></tr>
+          <tr><td data-i18n-html="fr.mf.t.r9a"><code>http_ct_required</code> / <code>http_ct_vals</code></td><td data-i18n-html="fr.mf.t.r9b">false</td><td data-i18n-html="fr.mf.t.r9c">Require a Content-Type, optionally from an allow-list</td></tr>
+        </tbody>
+      </table>
+      <p data-i18n-html="fr.mf.p2">One further hardening step lives at the top level, <b>outside</b> the <code>frang_limits</code> block: <code>http_uri_brange</code> restricts which byte values may appear in a URI at all, rejecting anything else before parsing. It blocks entire injection families at the door but will break sites that use non-ASCII URLs, so test it first.</p>
+    </section>
+
+    <section class="doc-sec" id="scanners">
+      <h2 data-i18n="fr.sc.h">Ejecting scanners and brute force</h2>
+      <p data-i18n-html="fr.sc.p1">A client that racks up error responses is enumerating your site rather than browsing it. <code>http_resp_code_block</code> watches the responses <i>you</i> send and ejects the client once it collects too many. In practice this is the single most effective rule against automated scanners and credential brute-forcing.</p>
+      <div class="code">
+        <div class="code__bar">
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+          <span class="code__title">vet_waf.conf</span>
+          <button class="code__copy" data-copy data-i18n="code.copy">Copy</button>
+        </div>
+<pre><code># Syntax: http_resp_code_block &lt;code&gt;... &lt;limit&gt; &lt;seconds&gt;;
+#   the last two numbers are the limit and the time frame;
+#   everything before them is the list of HTTP codes to count.
+
+frang_limits {
+    ip_block 600;
+    http_resp_code_block 400 403 404 405 413 429 500 25 15;
+}</code></pre>
+      </div>
+      <p data-i18n-html="fr.sc.p2">Read that as: <i>if a client collects 25 responses carrying any of those codes within 15 seconds, treat it as an attack.</i> Combined with <code>ip_block 600</code> above it, the scanner is banned for ten minutes instead of being allowed to keep probing.</p>
+      <div class="callout callout--warn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4M12 17h.01"/></svg>
+        <p data-i18n-html="fr.sc.warn">Count 404 with care on a site that legitimately serves missing images or favicons — a single broken page template can trip 25 of them for an innocent visitor. Verify against your own access logs before enabling it in production.</p>
+      </div>
+    </section>
+
+    <section class="doc-sec" id="verify">
+      <h2 data-i18n="fr.vf.h">Verifying that a rule fired</h2>
+      <p data-i18n-html="fr.vf.p1">Frang logs every block with the reason and the client address, and the counters are exposed through procfs. Watch both while you test.</p>
+      <div class="code">
+        <div class="code__bar">
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+          <span class="code__title">bash</span>
+          <button class="code__copy" data-copy data-i18n="code.copy">Copy</button>
+        </div>
+<pre><code># Live kernel log: every Frang decision, with the reason
+sudo dmesg -w | grep -i frang
+
+# Aggregate counters
+cat /proc/vet_waf/perfstat
+
+# Trip request_rate on purpose from another host
+for i in $(seq 1 500); do curl -s -o /dev/null \
+    -H 'Host: example.com' http://TARGET/ &amp; done; wait</code></pre>
+      </div>
+      <div class="callout callout--tip">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+        <p data-i18n-html="fr.vf.tip">Test from a second machine, never from the host itself. With <code>block_action attack drop</code> the reply is dropped silently, so a tripped limit looks exactly like a network timeout on the client side — that silence is the intended behaviour, not a fault.</p>
+      </div>
+    </section>
+
+
+
+    <nav class="doc-nav">
+      <a href="configuration.html">
+        <span data-i18n="doc.next">Next</span>
+        <b data-i18n="doc.config">Configuration</b>
+      </a>
+      <a href="troubleshooting.html">
+        <span data-i18n="doc.related">Related</span>
+        <b data-i18n="doc.trouble">Troubleshooting</b>
+      </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <p class="footer__legal" data-i18n-html="footer.legal">
+      Vet-WAF is free software under <b>GPLv2</b> — engine, tooling and this site — derived from Tempesta FW. &copy; 2026 Vet-WAF.
+    </p>
+  </div>
+</footer>
+
+<script>
+window.VETWAF_I18N = {
+  "en": {
+    "code.copy": "Copy",
+    "doc.next": "Next",
+    "doc.related": "Related",
+    "fr.eyebrow": "Anti-DDoS",
+    "fr.fl.h": "Request and connection floods",
+    "fr.fl.p1": "A volumetric L7 attack either sends too many requests or opens too many connections. Rates are measured per second; a <i>burst</i> is the ceiling within a single 1/8-second sub-interval, which catches short spikes that a per-second average would smooth over.",
+    "fr.fl.t.h1": "Directive",
+    "fr.fl.t.h2": "Default",
+    "fr.fl.t.h3": "What it stops",
+    "fr.fl.t.r1a": "<code>ip_block</code>",
+    "fr.fl.t.r1b": "off",
+    "fr.fl.t.r1c": "Bans the IP for N seconds when any limit here is tripped",
+    "fr.fl.t.r2a": "<code>request_rate</code>",
+    "fr.fl.t.r2b": "0",
+    "fr.fl.t.r2c": "Sustained requests/second per client",
+    "fr.fl.t.r3a": "<code>request_burst</code>",
+    "fr.fl.t.r3b": "0",
+    "fr.fl.t.r3c": "Short request spikes inside one second",
+    "fr.fl.t.r4a": "<code>tcp_connection_rate</code>",
+    "fr.fl.t.r4b": "0",
+    "fr.fl.t.r4c": "How fast new TCP connections may be opened",
+    "fr.fl.t.r5a": "<code>tcp_connection_burst</code>",
+    "fr.fl.t.r5b": "0",
+    "fr.fl.t.r5c": "Sudden bursts of new connections",
+    "fr.fl.t.r6a": "<code>concurrent_tcp_connections</code>",
+    "fr.fl.t.r6b": "1000",
+    "fr.fl.t.r6c": "Socket exhaustion — too many sockets held open at once",
+    "fr.fl.t.r7a": "<code>tls_connection_rate</code>",
+    "fr.fl.t.r7b": "0",
+    "fr.fl.t.r7c": "Handshake floods, which cost the server far more CPU than the client",
+    "fr.fl.t.r8a": "<code>tls_connection_burst</code>",
+    "fr.fl.t.r8b": "0",
+    "fr.fl.t.r8c": "Bursts of TLS handshakes",
+    "fr.fl.t.r9a": "<code>tls_incomplete_connection_rate</code>",
+    "fr.fl.t.r9b": "0",
+    "fr.fl.t.r9c": "Handshakes deliberately started and never finished",
+    "fr.fl.warn": "Tune these to your real traffic before deploying. A normal browser loading one page with its assets produces a burst of a few dozen requests and then goes quiet — but users behind a large corporate NAT all share one IP, so set <code>ip_block</code> low or omit it in that case.",
+    "fr.h1": "Frang rules",
+    "fr.how.h": "How Frang works",
+    "fr.how.p1": "Frang is Vet-WAF’s per-client enforcement engine. Every limit below is counted <b>per client IP</b>, not globally, so a single attacker cannot consume the budget that belongs to your real users.",
+    "fr.how.p2": "Limits live in a <code>frang_limits</code> block. Place it at the top level for global defaults, or inside a <code>vhost</code> to override them for one site. A limit left at its default of <code>0</code> is <b>disabled</b> — nothing is enforced until you set a number.",
+    "fr.how.tip": "The single most important directive is <code>ip_block</code>. Without it a flooder is merely throttled request by request; with it the offending IP is banned outright on its first violation. That is the difference between a rate limit and an actual mitigation.",
+    "fr.lead": "Frang is the rule engine that turns Vet-WAF into a WAF. Every limit is per client IP, and every one of them is off by default until you set it.",
+    "fr.mf.h": "Malformed and oversized requests",
+    "fr.mf.p1": "These bound every structural part of a request. Oversized-header attacks and HTTP/2 HPACK bombs both die here, and the same caps protect the parser itself from pathological input.",
+    "fr.mf.p2": "One further hardening step lives at the top level, <b>outside</b> the <code>frang_limits</code> block: <code>http_uri_brange</code> restricts which byte values may appear in a URI at all, rejecting anything else before parsing. It blocks entire injection families at the door but will break sites that use non-ASCII URLs, so test it first.",
+    "fr.mf.t.h1": "Directive",
+    "fr.mf.t.h2": "Default",
+    "fr.mf.t.h3": "Purpose",
+    "fr.mf.t.r1a": "<code>http_header_cnt</code>",
+    "fr.mf.t.r1b": "50",
+    "fr.mf.t.r1c": "Maximum number of header fields",
+    "fr.mf.t.r2a": "<code>http_hdr_len</code>",
+    "fr.mf.t.r2b": "0",
+    "fr.mf.t.r2c": "Maximum length of any single header, in bytes",
+    "fr.mf.t.r3a": "<code>http_uri_len</code>",
+    "fr.mf.t.r3b": "0",
+    "fr.mf.t.r3c": "Maximum request-URI length",
+    "fr.mf.t.r4a": "<code>http_body_len</code>",
+    "fr.mf.t.r4b": "1073741824",
+    "fr.mf.t.r4c": "Maximum request body. Every byte is memory an attacker can make you hold",
+    "fr.mf.t.r5a": "<code>http_strict_host_checking</code>",
+    "fr.mf.t.r5b": "true",
+    "fr.mf.t.r5c": "Rejects an absent, duplicated, or contradictory Host header — closes cache poisoning, host confusion, and request smuggling",
+    "fr.mf.t.r6a": "<code>http_methods</code>",
+    "fr.mf.t.r6b": "all",
+    "fr.mf.t.r6c": "Allow-list of methods, e.g. <code>get head post</code>",
+    "fr.mf.t.r7a": "<code>http_method_override_allowed</code>",
+    "fr.mf.t.r7b": "false",
+    "fr.mf.t.r7c": "Keeps <code>X-HTTP-Method-Override</code> from smuggling a DELETE past a filter that only sees a POST",
+    "fr.mf.t.r8a": "<code>http_trailer_split_allowed</code>",
+    "fr.mf.t.r8b": "false",
+    "fr.mf.t.r8c": "Rejects trailers split across continuation frames — a smuggling vector with no legitimate use",
+    "fr.mf.t.r9a": "<code>http_ct_required</code> / <code>http_ct_vals</code>",
+    "fr.mf.t.r9b": "false",
+    "fr.mf.t.r9c": "Require a Content-Type, optionally from an allow-list",
+    "fr.sc.h": "Ejecting scanners and brute force",
+    "fr.sc.p1": "A client that racks up error responses is enumerating your site rather than browsing it. <code>http_resp_code_block</code> watches the responses <i>you</i> send and ejects the client once it collects too many. In practice this is the single most effective rule against automated scanners and credential brute-forcing.",
+    "fr.sc.p2": "Read that as: <i>if a client collects 25 responses carrying any of those codes within 15 seconds, treat it as an attack.</i> Combined with <code>ip_block 600</code> above it, the scanner is banned for ten minutes instead of being allowed to keep probing.",
+    "fr.sc.warn": "Count 404 with care on a site that legitimately serves missing images or favicons — a single broken page template can trip 25 of them for an innocent visitor. Verify against your own access logs before enabling it in production.",
+    "fr.sl.h": "Slowloris and slow-drip attacks",
+    "fr.sl.l1": "<code>client_header_timeout</code> / <code>client_body_timeout</code> — the whole request head or body must <b>arrive</b> within N seconds, however slowly it is sent.",
+    "fr.sl.l2": "<code>http_header_chunk_cnt</code> / <code>http_body_chunk_cnt</code> — the head or body may not be split across more than N network chunks. This catches the byte-at-a-time drip directly, even if it stays inside the timeout.",
+    "fr.sl.p1": "Slowloris keeps thousands of connections alive by trickling a request a few bytes at a time. It exhausts your connection table without ever generating the volume a rate limit would notice, so it needs its own defences.",
+    "fr.sl.tip": "Raise the two body values if you accept large uploads over slow mobile links. Leave the two header values tight — no legitimate client needs more than a second or two to send its request headers.",
+    "fr.vf.h": "Verifying that a rule fired",
+    "fr.vf.p1": "Frang logs every block with the reason and the client address, and the counters are exposed through procfs. Watch both while you test.",
+    "fr.vf.tip": "Test from a second machine, never from the host itself. With <code>block_action attack drop</code> the reply is dropped silently, so a tripped limit looks exactly like a network timeout on the client side — that silence is the intended behaviour, not a fault.",
+    "meta.description": "Reference for every Vet-WAF Frang directive: request and connection floods, slowloris, malformed HTTP, and scanner ejection, all enforced per client IP."
+  },
+  "vi": {
+    "code.copy": "Chép",
+    "doc.next": "Tiếp theo",
+    "doc.related": "Liên quan",
+    "fr.eyebrow": "Chống DDoS",
+    "fr.fl.h": "Lũ request và lũ kết nối",
+    "fr.fl.p1": "Một cuộc tấn công L7 dạng volumetric sẽ gửi quá nhiều request hoặc mở quá nhiều kết nối. Tốc độ được đo theo giây; <i>burst</i> là mức trần trong một khoảng 1/8 giây, giúp bắt được các đợt dồn ngắn mà giá trị trung bình theo giây sẽ làm mượt đi.",
+    "fr.fl.t.h1": "Chỉ thị",
+    "fr.fl.t.h2": "Mặc định",
+    "fr.fl.t.h3": "Ngăn được gì",
+    "fr.fl.t.r1a": "<code>ip_block</code>",
+    "fr.fl.t.r1b": "tắt",
+    "fr.fl.t.r1c": "Cấm IP trong N giây khi vi phạm bất kỳ giới hạn nào ở đây",
+    "fr.fl.t.r2a": "<code>request_rate</code>",
+    "fr.fl.t.r2b": "0",
+    "fr.fl.t.r2c": "Số request/giây duy trì của mỗi client",
+    "fr.fl.t.r3a": "<code>request_burst</code>",
+    "fr.fl.t.r3b": "0",
+    "fr.fl.t.r3c": "Đợt request dồn ngắn trong vòng một giây",
+    "fr.fl.t.r4a": "<code>tcp_connection_rate</code>",
+    "fr.fl.t.r4b": "0",
+    "fr.fl.t.r4c": "Tốc độ mở kết nối TCP mới",
+    "fr.fl.t.r5a": "<code>tcp_connection_burst</code>",
+    "fr.fl.t.r5b": "0",
+    "fr.fl.t.r5c": "Các đợt mở kết nối dồn dập",
+    "fr.fl.t.r6a": "<code>concurrent_tcp_connections</code>",
+    "fr.fl.t.r6b": "1000",
+    "fr.fl.t.r6c": "Cạn socket — giữ mở quá nhiều socket cùng lúc",
+    "fr.fl.t.r7a": "<code>tls_connection_rate</code>",
+    "fr.fl.t.r7b": "0",
+    "fr.fl.t.r7c": "Lũ bắt tay TLS, tốn CPU của server nhiều hơn của client rất nhiều",
+    "fr.fl.t.r8a": "<code>tls_connection_burst</code>",
+    "fr.fl.t.r8b": "0",
+    "fr.fl.t.r8c": "Các đợt bắt tay TLS dồn dập",
+    "fr.fl.t.r9a": "<code>tls_incomplete_connection_rate</code>",
+    "fr.fl.t.r9b": "0",
+    "fr.fl.t.r9c": "Bắt tay được cố ý mở ra rồi không bao giờ hoàn tất",
+    "fr.fl.warn": "Hãy tinh chỉnh theo lưu lượng thật trước khi triển khai. Một trình duyệt bình thường khi tải một trang kèm tài nguyên sẽ tạo ra đợt dồn vài chục request rồi im lặng — nhưng người dùng phía sau một NAT doanh nghiệp lớn dùng chung một IP, nên trong trường hợp đó hãy đặt <code>ip_block</code> thấp hoặc bỏ hẳn.",
+    "fr.h1": "Luật Frang",
+    "fr.how.h": "Frang hoạt động thế nào",
+    "fr.how.p1": "Frang là engine thực thi giới hạn theo từng client của Vet-WAF. Mọi giới hạn dưới đây được tính <b>theo từng IP</b> chứ không phải toàn cục, nên một kẻ tấn công không thể chiếm hết hạn mức của người dùng thật.",
+    "fr.how.p2": "Các giới hạn nằm trong khối <code>frang_limits</code>. Đặt ở mức cao nhất để làm mặc định toàn cục, hoặc đặt trong một <code>vhost</code> để ghi đè cho riêng site đó. Giới hạn để nguyên giá trị mặc định <code>0</code> nghĩa là <b>tắt</b> — không có gì được thực thi cho tới khi bạn đặt một con số.",
+    "fr.how.tip": "Chỉ thị quan trọng nhất là <code>ip_block</code>. Không có nó, kẻ tấn công chỉ bị chặn từng request một; có nó, IP vi phạm bị cấm hẳn ngay lần vi phạm đầu tiên. Đó là khác biệt giữa một giới hạn tốc độ và một biện pháp giảm thiểu thật sự.",
+    "fr.lead": "Frang là engine luật biến Vet-WAF thành một WAF. Mọi giới hạn đều tính theo từng IP, và mặc định tất cả đều tắt cho tới khi bạn đặt giá trị.",
+    "fr.mf.h": "Request méo dạng và quá khổ",
+    "fr.mf.p1": "Nhóm này giới hạn mọi thành phần cấu trúc của một request. Tấn công header quá khổ và HPACK bomb của HTTP/2 đều bị chặn ở đây, đồng thời các mức trần này cũng bảo vệ chính bộ phân tích khỏi dữ liệu bất thường.",
+    "fr.mf.p2": "Một bước gia cố nữa nằm ở mức cao nhất, <b>ngoài</b> khối <code>frang_limits</code>: <code>http_uri_brange</code> giới hạn những giá trị byte được phép xuất hiện trong URI, loại bỏ mọi thứ khác trước khi phân tích. Nó chặn cả họ lỗ hổng injection ngay từ cửa nhưng sẽ làm hỏng các site dùng URL không phải ASCII, nên hãy kiểm thử trước.",
+    "fr.mf.t.h1": "Chỉ thị",
+    "fr.mf.t.h2": "Mặc định",
+    "fr.mf.t.h3": "Mục đích",
+    "fr.mf.t.r1a": "<code>http_header_cnt</code>",
+    "fr.mf.t.r1b": "50",
+    "fr.mf.t.r1c": "Số lượng header tối đa",
+    "fr.mf.t.r2a": "<code>http_hdr_len</code>",
+    "fr.mf.t.r2b": "0",
+    "fr.mf.t.r2c": "Độ dài tối đa của một header, tính theo byte",
+    "fr.mf.t.r3a": "<code>http_uri_len</code>",
+    "fr.mf.t.r3b": "0",
+    "fr.mf.t.r3c": "Độ dài tối đa của URI trong request",
+    "fr.mf.t.r4a": "<code>http_body_len</code>",
+    "fr.mf.t.r4b": "1073741824",
+    "fr.mf.t.r4c": "Kích thước thân request tối đa. Mỗi byte là bộ nhớ kẻ tấn công buộc bạn phải giữ",
+    "fr.mf.t.r5a": "<code>http_strict_host_checking</code>",
+    "fr.mf.t.r5b": "true",
+    "fr.mf.t.r5c": "Chặn header Host thiếu, trùng lặp hoặc mâu thuẫn — khoá lại cache poisoning, host confusion và request smuggling",
+    "fr.mf.t.r6a": "<code>http_methods</code>",
+    "fr.mf.t.r6b": "tất cả",
+    "fr.mf.t.r6c": "Danh sách phương thức được phép, ví dụ <code>get head post</code>",
+    "fr.mf.t.r7a": "<code>http_method_override_allowed</code>",
+    "fr.mf.t.r7b": "false",
+    "fr.mf.t.r7c": "Không cho <code>X-HTTP-Method-Override</code> lén đưa DELETE qua bộ lọc chỉ thấy POST",
+    "fr.mf.t.r8a": "<code>http_trailer_split_allowed</code>",
+    "fr.mf.t.r8b": "false",
+    "fr.mf.t.r8c": "Chặn trailer bị chia qua nhiều continuation frame — một hướng smuggling không có mục đích hợp lệ nào",
+    "fr.mf.t.r9a": "<code>http_ct_required</code> / <code>http_ct_vals</code>",
+    "fr.mf.t.r9b": "false",
+    "fr.mf.t.r9c": "Bắt buộc có Content-Type, có thể kèm danh sách cho phép",
+    "fr.sc.h": "Đẩy lui máy quét và dò mật khẩu",
+    "fr.sc.p1": "Một client liên tục nhận về mã lỗi là đang dò quét site của bạn chứ không phải đang xem. <code>http_resp_code_block</code> theo dõi các phản hồi mà <i>bạn</i> gửi ra và loại client đó khi nó thu về quá nhiều lỗi. Trong thực tế đây là luật hiệu quả nhất chống máy quét tự động và dò mật khẩu.",
+    "fr.sc.p2": "Hiểu là: <i>nếu một client nhận 25 phản hồi mang bất kỳ mã nào trong danh sách trong vòng 15 giây thì coi đó là tấn công.</i> Kết hợp với <code>ip_block 600</code> phía trên, máy quét sẽ bị cấm mười phút thay vì được tiếp tục dò.",
+    "fr.sc.warn": "Hãy cân nhắc khi tính mã 404 trên site vốn dĩ có ảnh hoặc favicon thiếu — chỉ một mẫu trang bị lỗi cũng có thể tạo ra 25 lần cho một khách hoàn toàn vô tội. Hãy đối chiếu log truy cập của bạn trước khi bật ở môi trường thật.",
+    "fr.sl.h": "Slowloris và tấn công nhỏ giọt",
+    "fr.sl.l1": "<code>client_header_timeout</code> / <code>client_body_timeout</code> — toàn bộ phần đầu hoặc phần thân của request phải <b>đến đủ</b> trong N giây, dù được gửi chậm cỡ nào.",
+    "fr.sl.l2": "<code>http_header_chunk_cnt</code> / <code>http_body_chunk_cnt</code> — phần đầu hoặc phần thân không được chia ra quá N chunk mạng. Điều này bắt trực tiếp kiểu nhỏ giọt từng byte, ngay cả khi vẫn nằm trong thời gian chờ.",
+    "fr.sl.p1": "Slowloris giữ hàng nghìn kết nối sống bằng cách nhỏ giọt request từng vài byte. Nó làm cạn bảng kết nối mà không tạo ra lưu lượng đủ lớn để giới hạn tốc độ nhận ra, nên cần biện pháp phòng vệ riêng.",
+    "fr.sl.tip": "Hãy nâng hai giá trị dành cho phần thân nếu bạn nhận tệp tải lên lớn qua đường mạng di động chậm. Giữ hai giá trị dành cho phần đầu ở mức chặt — không client hợp lệ nào cần hơn một, hai giây để gửi header.",
+    "fr.vf.h": "Kiểm chứng một luật đã kích hoạt",
+    "fr.vf.p1": "Frang ghi log mọi lần chặn kèm lý do và địa chỉ client, còn các bộ đếm được xuất qua procfs. Hãy theo dõi cả hai khi kiểm thử.",
+    "fr.vf.tip": "Hãy kiểm thử từ một máy khác, đừng làm ngay trên chính máy chủ. Với <code>block_action attack drop</code>, phản hồi bị âm thầm loại bỏ, nên phía client một giới hạn bị kích hoạt sẽ trông y như timeout mạng — sự im lặng đó là hành vi có chủ đích, không phải lỗi.",
+    "meta.description": "Tra cứu toàn bộ chỉ thị Frang của Vet-WAF: lũ request và lũ kết nối, slowloris, HTTP méo dạng và loại bỏ máy quét, tất cả áp dụng theo từng IP."
+  }
+};
+</script>
+<script src="site.js"></script>
+</body>
+</html>

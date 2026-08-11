@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en" data-lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quick start — Vet-WAF</title>
+<meta name="description" data-i18n="meta.description" content="Install Vet-WAF from source on a patched Linux 6.12.12 kernel, configure your first reverse proxy, and verify it is passing live traffic.">
+<meta name="theme-color" content="#0b1020">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; script-src 'self' 'unsafe-inline'; base-uri 'self'; form-action 'none'; frame-ancestors 'none'; upgrade-insecure-requests">
+<link rel="canonical" href="https://hoangtuvungcao.github.io/vet-waf/quickstart.html">
+<link rel="icon" href="assets/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="nav" id="nav">
+  <div class="container nav__inner">
+    <a class="brand" href="index.html" aria-label="Vet-WAF home">
+      <img src="assets/mark.svg" alt="" width="34" height="34" class="brand__mark">
+      <span class="brand__name">Vet<span class="brand__accent">-WAF</span></span>
+    </a>
+    <nav class="nav__links" id="navLinks" aria-label="Primary">
+      <a href="index.html" data-i18n="nav.home">Home</a>
+      <a href="quickstart.html" data-i18n="doc.quickstart">Quick start</a>
+      <a href="kernel-patching.html" data-i18n="doc.kernel">Kernel patching</a>
+      <a href="frang.html" data-i18n="doc.frang">Frang rules</a>
+      <a href="configuration.html" data-i18n="doc.config">Configuration</a>
+      <a href="troubleshooting.html" data-i18n="doc.trouble">Troubleshooting</a>
+      <div class="lang" role="group" aria-label="Language">
+        <button class="lang__btn" data-lang-set="en" aria-pressed="true">EN</button>
+        <span class="lang__sep" aria-hidden="true">·</span>
+        <button class="lang__btn" data-lang-set="vi" aria-pressed="false">VI</button>
+      </div>
+    </nav>
+    <button class="nav__toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<div class="doc-shell">
+  <aside class="doc-side">
+    <h4 data-i18n="doc.onthispage">On this page</h4>
+    <nav>
+      <a class="active" href="quickstart.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        <span data-i18n="doc.quickstart">Quick start</span></a>
+      <a href="kernel-patching.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 2v2M15 2v2M9 20v2M15 20v2M2 9h2M2 15h2M20 9h2M20 15h2"/></svg>
+        <span data-i18n="doc.kernel">Kernel patching</span></a>
+      <a href="frang.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <span data-i18n="doc.frang">Frang rules</span></a>
+      <a href="configuration.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6h.09A1.65 1.65 0 0 0 10 3.09V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9v.09a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        <span data-i18n="doc.config">Configuration</span></a>
+      <a href="troubleshooting.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3M12 17h.01"/></svg>
+        <span data-i18n="doc.trouble">Troubleshooting</span></a>
+    </nav>
+  </aside>
+
+  <main class="doc-main">
+    <div class="doc-eyebrow" data-i18n="qs.eyebrow">Installation</div>
+    <h1 data-i18n="qs.h1">Quick start</h1>
+    <p class="doc-lead" data-i18n="qs.lead">Get Vet-WAF built, configured, and passing live traffic. Vet-WAF runs inside the Linux TCP/IP stack, so it needs a patched kernel — plan for one reboot.</p>
+
+    <section class="doc-sec" id="requirements">
+      <h2 data-i18n="qs.req.h">1. Requirements</h2>
+      <p data-i18n="qs.req.p">Before you begin, confirm the host meets all of the following. Vet-WAF is a kernel module: a mismatch here fails the build rather than degrading gracefully.</p>
+      <table class="doc-table">
+        <thead><tr><th data-i18n="qs.req.t1">Requirement</th><th data-i18n="qs.req.t2">Details</th></tr></thead>
+        <tbody>
+          <tr><td data-i18n="qs.req.r1a">Kernel</td><td data-i18n="qs.req.r1b">Linux 6.12.12 with the Vet-WAF patch applied (see Kernel patching)</td></tr>
+          <tr><td data-i18n="qs.req.r2a">Architecture</td><td data-i18n="qs.req.r2b">x86-64 with AVX2. Vet-WAF uses AVX2 for string and hash routines</td></tr>
+          <tr><td data-i18n="qs.req.r3a">Privileges</td><td data-i18n="qs.req.r3b">root, to load kernel modules and bind privileged ports</td></tr>
+          <tr><td data-i18n="qs.req.r4a">Build tools</td><td data-i18n="qs.req.r4b">gcc, make, and the matching kernel headers/source tree</td></tr>
+          <tr><td data-i18n="qs.req.r5a">Memory</td><td data-i18n="qs.req.r5b">2 GB minimum; more if you enable the in-RAM cache</td></tr>
+        </tbody>
+      </table>
+      <div class="callout callout--tip">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+        <p data-i18n="qs.req.tip">Verify AVX2 support before building: <code>grep -o avx2 /proc/cpuinfo | head -1</code>. No output means this CPU cannot run Vet-WAF.</p>
+      </div>
+    </section>
+
+    <section class="doc-sec" id="build">
+      <h2 data-i18n="qs.build.h">2. Build from source</h2>
+      <p data-i18n="qs.build.p">Clone the repository and build the kernel modules and user-space tools. The build links against the running kernel's headers, so patch and boot the kernel first.</p>
+      <div class="code">
+        <div class="code__bar">
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+          <span class="code__title">bash</span>
+          <button class="code__copy" data-copy data-i18n="code.copy">Copy</button>
+        </div>
+<pre><code>git clone https://github.com/hoangtuvungcao/vet-waf.git
+cd vet-waf
+
+# Build every module: fw, tls, db, lib, regex
+make
+
+# Optional: run the in-kernel unit tests
+make test</code></pre>
+      </div>
+    </section>
+
+    <section class="doc-sec" id="configure">
+      <h2 data-i18n="qs.cfg.h">3. Configure</h2>
+      <p data-i18n="qs.cfg.p">Vet-WAF reads <code>etc/vet_waf.conf</code> from the source tree by default, overridable with the <code>TFW_CFG_PATH</code> environment variable. The shipped template is secure by default: the only line you must change is the backend.</p>
+      <div class="code">
+        <div class="code__bar">
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+          <span class="code__title">vet_waf.conf</span>
+          <button class="code__copy" data-copy data-i18n="code.copy">Copy</button>
+        </div>
+<pre><code>listen 80;
+
+block_action attack drop;
+block_action error  reply;
+
+frang_limits {
+    ip_block 600;
+    request_rate               100;
+    request_burst               30;
+    tcp_connection_rate         50;
+    concurrent_tcp_connections 100;
+    client_header_timeout       10;
+    http_strict_host_checking true;
+}
+
+srv_group primary {
+    server 127.0.0.1:8080;   # &lt;-- your application
+}
+
+vhost default {
+    proxy_pass primary;
+}
+
+http_chain { -&gt; default; }</code></pre>
+      </div>
+      <div class="callout callout--tip">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+        <p data-i18n="qs.cfg.tip">Every limit above is enforced <b>per client IP</b>, not globally, so one attacker cannot consume the budget belonging to real users. See <a class="link" href="frang.html">Frang rules</a> for the full set.</p>
+      </div>
+    </section>
+
+    <section class="doc-sec" id="start">
+      <h2 data-i18n="qs.start.h">4. Start Vet-WAF</h2>
+      <p data-i18n="qs.start.p">The control script loads the modules in dependency order and pushes your configuration into the kernel.</p>
+      <div class="code">
+        <div class="code__bar">
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+          <span class="code__title">bash</span>
+          <button class="code__copy" data-copy data-i18n="code.copy">Copy</button>
+        </div>
+<pre><code># Load modules and start
+sudo ./scripts/vet_waf.sh --start
+
+# Apply config changes without dropping connections
+sudo ./scripts/vet_waf.sh --reload
+
+# Stop and unload
+sudo ./scripts/vet_waf.sh --stop</code></pre>
+      </div>
+    </section>
+
+    <section class="doc-sec" id="verify">
+      <h2 data-i18n="qs.ver.h">5. Verify it is working</h2>
+      <p data-i18n="qs.ver.p">Three independent checks: the module state, the traffic counters, and a real request.</p>
+      <div class="code">
+        <div class="code__bar">
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+          <span class="code__title">bash</span>
+          <button class="code__copy" data-copy data-i18n="code.copy">Copy</button>
+        </div>
+<pre><code># 1. Is the engine running?
+sudo sysctl net.vet_waf.state       # expects: start
+
+# 2. Live counters (requests, responses, cache, errors)
+cat /proc/vet_waf/perfstat
+
+# 3. Does a real request get proxied?
+curl -I -H 'Host: example.com' http://127.0.0.1/</code></pre>
+      </div>
+      <div class="callout callout--warn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4M12 17h.01"/></svg>
+        <p data-i18n="qs.ver.warn">Always send a <code>Host</code> header when testing. The default configuration enables <code>http_strict_host_checking</code>, so a request without a valid host is rejected by design — that is the WAF working, not a failure.</p>
+      </div>
+    </section>
+
+    <nav class="doc-nav">
+      <a href="kernel-patching.html">
+        <span data-i18n="doc.next">Next</span>
+        <b data-i18n="doc.kernel">Kernel patching</b>
+      </a>
+      <a href="frang.html">
+        <span data-i18n="doc.related">Related</span>
+        <b data-i18n="doc.frang">Frang rules</b>
+      </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <p class="footer__legal" data-i18n-html="footer.legal">
+      Vet-WAF is free software under <b>GPLv2</b> — engine, tooling and this site — derived from Tempesta FW. &copy; 2026 Vet-WAF.
+    </p>
+  </div>
+</footer>
+
+<script>
+window.VETWAF_I18N = {
+  en: {
+    'doc.next': 'Next', 'doc.related': 'Related',
+    'code.copy': 'Copy',
+    'qs.eyebrow': 'Installation',
+    'qs.h1': 'Quick start',
+    'qs.lead': 'Get Vet-WAF built, configured, and passing live traffic. Vet-WAF runs inside the Linux TCP/IP stack, so it needs a patched kernel — plan for one reboot.',
+    'qs.req.h': '1. Requirements',
+    'qs.req.p': 'Before you begin, confirm the host meets all of the following. Vet-WAF is a kernel module: a mismatch here fails the build rather than degrading gracefully.',
+    'qs.req.t1': 'Requirement', 'qs.req.t2': 'Details',
+    'qs.req.r1a': 'Kernel', 'qs.req.r1b': 'Linux 6.12.12 with the Vet-WAF patch applied (see Kernel patching)',
+    'qs.req.r2a': 'Architecture', 'qs.req.r2b': 'x86-64 with AVX2. Vet-WAF uses AVX2 for string and hash routines',
+    'qs.req.r3a': 'Privileges', 'qs.req.r3b': 'root, to load kernel modules and bind privileged ports',
+    'qs.req.r4a': 'Build tools', 'qs.req.r4b': 'gcc, make, and the matching kernel headers/source tree',
+    'qs.req.r5a': 'Memory', 'qs.req.r5b': '2 GB minimum; more if you enable the in-RAM cache',
+    'qs.req.tip': 'Verify AVX2 support before building: <code>grep -o avx2 /proc/cpuinfo | head -1</code>. No output means this CPU cannot run Vet-WAF.',
+    'qs.build.h': '2. Build from source',
+    'qs.build.p': "Clone the repository and build the kernel modules and user-space tools. The build links against the running kernel's headers, so patch and boot the kernel first.",
+    'qs.cfg.h': '3. Configure',
+    'qs.cfg.p': 'Vet-WAF reads <code>etc/vet_waf.conf</code> from the source tree by default, overridable with the <code>TFW_CFG_PATH</code> environment variable. The shipped template is secure by default: the only line you must change is the backend.',
+    'qs.cfg.tip': 'Every limit above is enforced <b>per client IP</b>, not globally, so one attacker cannot consume the budget belonging to real users. See <a class="link" href="frang.html">Frang rules</a> for the full set.',
+    'qs.start.h': '4. Start Vet-WAF',
+    'qs.start.p': 'The control script loads the modules in dependency order and pushes your configuration into the kernel.',
+    'qs.ver.h': '5. Verify it is working',
+    'qs.ver.p': 'Three independent checks: the module state, the traffic counters, and a real request.',
+    'qs.ver.warn': 'Always send a <code>Host</code> header when testing. The default configuration enables <code>http_strict_host_checking</code>, so a request without a valid host is rejected by design — that is the WAF working, not a failure.',
+    'meta.description': 'Install Vet-WAF from source on a patched Linux 6.12.12 kernel, configure your first reverse proxy, and verify it is passing live traffic.'
+  },
+  vi: {
+    'doc.next': 'Tiếp theo', 'doc.related': 'Liên quan',
+    'code.copy': 'Chép',
+    'qs.eyebrow': 'Cài đặt',
+    'qs.h1': 'Bắt đầu nhanh',
+    'qs.lead': 'Biên dịch, cấu hình và đưa Vet-WAF vào xử lý lưu lượng thật. Vet-WAF chạy bên trong ngăn xếp TCP/IP của Linux nên cần một nhân đã được vá — hãy dự trù một lần khởi động lại.',
+    'qs.req.h': '1. Yêu cầu hệ thống',
+    'qs.req.p': 'Trước khi bắt đầu, hãy chắc chắn máy chủ đáp ứng đủ các điều kiện sau. Vet-WAF là một module nhân: nếu không khớp, quá trình biên dịch sẽ thất bại chứ không tự suy giảm.',
+    'qs.req.t1': 'Yêu cầu', 'qs.req.t2': 'Chi tiết',
+    'qs.req.r1a': 'Nhân Linux', 'qs.req.r1b': 'Linux 6.12.12 đã áp dụng bản vá Vet-WAF (xem mục Vá nhân Linux)',
+    'qs.req.r2a': 'Kiến trúc', 'qs.req.r2b': 'x86-64 có AVX2. Vet-WAF dùng AVX2 cho các hàm xử lý chuỗi và băm',
+    'qs.req.r3a': 'Quyền hạn', 'qs.req.r3b': 'root, để nạp module nhân và mở cổng đặc quyền',
+    'qs.req.r4a': 'Công cụ biên dịch', 'qs.req.r4b': 'gcc, make và bộ header/mã nguồn nhân tương ứng',
+    'qs.req.r5a': 'Bộ nhớ', 'qs.req.r5b': 'Tối thiểu 2 GB; cần nhiều hơn nếu bật bộ đệm trên RAM',
+    'qs.req.tip': 'Kiểm tra AVX2 trước khi biên dịch: <code>grep -o avx2 /proc/cpuinfo | head -1</code>. Không có kết quả nghĩa là CPU này không chạy được Vet-WAF.',
+    'qs.build.h': '2. Biên dịch từ mã nguồn',
+    'qs.build.p': 'Tải mã nguồn và biên dịch các module nhân cùng công cụ người dùng. Quá trình biên dịch liên kết với header của nhân đang chạy, nên hãy vá và khởi động nhân trước.',
+    'qs.cfg.h': '3. Cấu hình',
+    'qs.cfg.p': 'Mặc định Vet-WAF đọc <code>etc/vet_waf.conf</code> trong cây mã nguồn, có thể đổi bằng biến môi trường <code>TFW_CFG_PATH</code>. Mẫu cấu hình đi kèm đã an toàn sẵn: dòng duy nhất bạn buộc phải sửa là backend.',
+    'qs.cfg.tip': 'Mọi giới hạn ở trên được áp dụng <b>theo từng IP</b> chứ không phải toàn cục, nên một kẻ tấn công không thể chiếm hết hạn mức của người dùng thật. Xem <a class="link" href="frang.html">Luật Frang</a> để biết đầy đủ.',
+    'qs.start.h': '4. Khởi động Vet-WAF',
+    'qs.start.p': 'Script điều khiển sẽ nạp các module theo đúng thứ tự phụ thuộc và đẩy cấu hình của bạn vào nhân.',
+    'qs.ver.h': '5. Kiểm tra hoạt động',
+    'qs.ver.p': 'Ba phép kiểm tra độc lập: trạng thái module, bộ đếm lưu lượng, và một request thật.',
+    'qs.ver.warn': 'Luôn gửi kèm header <code>Host</code> khi kiểm tra. Cấu hình mặc định bật <code>http_strict_host_checking</code>, nên request không có host hợp lệ sẽ bị chặn — đó là WAF đang hoạt động đúng, không phải lỗi.',
+    'meta.description': 'Cài đặt Vet-WAF từ mã nguồn trên nhân Linux 6.12.12 đã vá, cấu hình reverse proxy đầu tiên và kiểm tra lưu lượng thật.'
+  }
+};
+</script>
+<script src="site.js"></script>
+</body>
+</html>

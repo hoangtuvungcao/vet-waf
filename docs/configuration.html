@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en" data-lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Configuration — Vet-WAF</title>
+<meta name="description" data-i18n="meta.description" content="Vet-WAF configuration reference: syntax, listeners and TLS, backends and failover, virtual hosts and routing chains, cache, and how to reload safely.">
+<meta name="theme-color" content="#0b1020">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; script-src 'self' 'unsafe-inline'; base-uri 'self'; form-action 'none'; frame-ancestors 'none'; upgrade-insecure-requests">
+<link rel="canonical" href="https://hoangtuvungcao.github.io/vet-waf/configuration.html">
+<link rel="icon" href="assets/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="nav" id="nav">
+  <div class="container nav__inner">
+    <a class="brand" href="index.html" aria-label="Vet-WAF home">
+      <img src="assets/mark.svg" alt="" width="34" height="34" class="brand__mark">
+      <span class="brand__name">Vet<span class="brand__accent">-WAF</span></span>
+    </a>
+    <nav class="nav__links" id="navLinks" aria-label="Primary">
+      <a href="index.html" data-i18n="nav.home">Home</a>
+      <a href="quickstart.html" data-i18n="doc.quickstart">Quick start</a>
+      <a href="kernel-patching.html" data-i18n="doc.kernel">Kernel patching</a>
+      <a href="frang.html" data-i18n="doc.frang">Frang rules</a>
+      <a href="configuration.html" data-i18n="doc.config">Configuration</a>
+      <a href="troubleshooting.html" data-i18n="doc.trouble">Troubleshooting</a>
+      <div class="lang" role="group" aria-label="Language">
+        <button class="lang__btn" data-lang-set="en" aria-pressed="true">EN</button>
+        <span class="lang__sep" aria-hidden="true">·</span>
+        <button class="lang__btn" data-lang-set="vi" aria-pressed="false">VI</button>
+      </div>
+    </nav>
+    <button class="nav__toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<div class="doc-shell">
+  <aside class="doc-side">
+    <h4 data-i18n="doc.onthispage">On this page</h4>
+    <nav>
+      <a href="quickstart.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        <span data-i18n="doc.quickstart">Quick start</span></a>
+      <a href="kernel-patching.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 2v2M15 2v2M9 20v2M15 20v2M2 9h2M2 15h2M20 9h2M20 15h2"/></svg>
+        <span data-i18n="doc.kernel">Kernel patching</span></a>
+      <a href="frang.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <span data-i18n="doc.frang">Frang rules</span></a>
+      <a class="active" href="configuration.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6h.09A1.65 1.65 0 0 0 10 3.09V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9v.09a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        <span data-i18n="doc.config">Configuration</span></a>
+      <a href="troubleshooting.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3M12 17h.01"/></svg>
+        <span data-i18n="doc.trouble">Troubleshooting</span></a>
+    </nav>
+  </aside>
+
+  <main class="doc-main">
+    <div class="doc-eyebrow" data-i18n="cf.eyebrow">Reference</div>
+    <h1 data-i18n="cf.h1">Configuration</h1>
+    <p class="doc-lead" data-i18n="cf.lead">Everything Vet-WAF does is driven by one file. This page covers its syntax and every block you are likely to need, in the order they appear.</p>
+
+    <section class="doc-sec" id="syntax">
+      <h2 data-i18n="cf.sx.h">File and syntax</h2>
+      <p data-i18n-html="cf.sx.p1">Vet-WAF reads <code>etc/vet_waf.conf</code> from the source tree by default; override the path with the <code>TFW_CFG_PATH</code> environment variable. A packaged install normally keeps it at <code>/etc/vet_waf/vet_waf.conf</code>.</p>
+      <ul><li data-i18n-html="cf.sx.l1">One directive per line, always terminated by a semicolon <code>;</code>.</li><li data-i18n-html="cf.sx.l2"><code>#</code> starts a comment and runs to the end of the line.</li><li data-i18n-html="cf.sx.l3">Braces <code>{ }</code> group directives into a section, such as <code>frang_limits</code> or <code>srv_group</code>.</li><li data-i18n-html="cf.sx.l4">Sizes are in bytes and durations in seconds unless a directive says otherwise.</li><li data-i18n-html="cf.sx.l5"><code>#!include /path/to/file.conf</code> splices in another file — useful for large bot-blocking rule sets.</li></ul>
+      <div class="callout callout--warn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4M12 17h.01"/></svg>
+        <p data-i18n-html="cf.sx.warn">Order matters in two places: a <code>health_check</code> block must be defined <b>before</b> the <code>srv_group</code> that names it, and rules in <code>http_chain</code> are evaluated top to bottom with the first match winning — so a catch-all placed early makes everything after it unreachable.</p>
+      </div>
+    </section>
+
+    <section class="doc-sec" id="listen">
+      <h2 data-i18n="cf.ls.h">Listeners and TLS</h2>
+      <p data-i18n-html="cf.ls.p1">Vet-WAF terminates TLS inside the kernel, so HTTPS is the fast path rather than a slow one. Prefer it in production.</p>
+      <div class="code">
+        <div class="code__bar">
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+          <span class="code__title">vet_waf.conf</span>
+          <button class="code__copy" data-copy data-i18n="code.copy">Copy</button>
+        </div>
+<pre><code>listen 80;
+listen 443 proto=h2,https;
+
+# A global certificate applies to the implicit default vhost only.
+tls_certificate     /etc/vet_waf/tls/server.crt;
+tls_certificate_key /etc/vet_waf/tls/server.key;</code></pre>
+      </div>
+      <div class="callout callout--danger">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4M12 17h.01"/></svg>
+        <p data-i18n-html="cf.ls.danger">A global <code>tls_certificate</code> and an explicitly named <code>vhost</code> are mutually exclusive — Vet-WAF rejects the config at startup. A named vhost serves its own certificate over SNI, so move both <code>tls_certificate</code> lines <b>inside</b> the <code>vhost</code> block whenever you name one.</p>
+      </div>
+    </section>
+
+    <section class="doc-sec" id="backend">
+      <h2 data-i18n="cf.bk.h">Backends and failover</h2>
+      <p data-i18n-html="cf.bk.p1">A <code>srv_group</code> is a pool of origin servers. List more than one <code>server</code> line and Vet-WAF load-balances across them, taking any that stops responding out of rotation automatically.</p>
+      <div class="code">
+        <div class="code__bar">
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+          <span class="code__title">vet_waf.conf</span>
+          <button class="code__copy" data-copy data-i18n="code.copy">Copy</button>
+        </div>
+<pre><code>health_check origin_hc {
+    request     "GET / HTTP/1.1\r\nHost: localhost\r\n\r\n";
+    request_url "/";
+    resp_code   200;
+    timeout     5;
+}
+
+srv_group primary {
+    server 85.117.239.3:80 conns_n=64;
+    server 10.0.0.9:80     conns_n=32;   # standby origin
+
+    sched ratio static;
+    server_queue_size      1000;
+    server_forward_timeout   60;
+    server_forward_retries    5;
+    server_connect_retries   10;
+    health origin_hc;
+}</code></pre>
+      </div>
+      <table class="doc-table">
+        <thead><tr><th data-i18n="cf.bk.t.h1">Directive</th><th data-i18n="cf.bk.t.h2">Meaning</th></tr></thead>
+        <tbody>
+          <tr><td data-i18n-html="cf.bk.t.r1a"><code>conns_n=</code></td><td data-i18n-html="cf.bk.t.r1b">Pooled persistent connections to that origin. Pooling matters under attack: Vet-WAF absorbs the connection churn so the origin sees a small, steady set of long-lived connections.</td></tr>
+          <tr><td data-i18n-html="cf.bk.t.r2a"><code>sched</code></td><td data-i18n-html="cf.bk.t.r2b"><code>ratio static</code> is weighted round-robin. Use <code>hash</code> instead when a given client must keep landing on the same origin.</td></tr>
+          <tr><td data-i18n-html="cf.bk.t.r3a"><code>server_queue_size</code></td><td data-i18n-html="cf.bk.t.r3b">How many requests may queue before Vet-WAF sheds load. A bounded queue is what stops a slow origin from becoming an out-of-memory event on the proxy.</td></tr>
+          <tr><td data-i18n-html="cf.bk.t.r4a"><code>health</code></td><td data-i18n-html="cf.bk.t.r4b">Actively polls the origin and pulls it out of rotation the moment it answers incorrectly, instead of waiting for user requests to fail.</td></tr>
+        </tbody>
+      </table>
+      <div class="callout callout--danger">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4M12 17h.01"/></svg>
+        <p data-i18n-html="cf.bk.danger">The name given to <code>health</code> is not validated when the config is parsed. If it matches no <code>health_check</code> block, Vet-WAF hits a <code>BUG_ON</code> and <b>panics the kernel</b> at startup. Keep the two names identical, and keep the <code>health_check</code> block above the <code>srv_group</code>.</p>
+      </div>
+    </section>
+
+    <section class="doc-sec" id="routing">
+      <h2 data-i18n="cf.rt.h">Virtual hosts and routing</h2>
+      <p data-i18n-html="cf.rt.p1">A <code>vhost</code> says <i>how</i> to serve a site; <code>http_chain</code> says <i>which</i> requests go to it. The chain is evaluated top to bottom and the first match wins.</p>
+      <div class="code">
+        <div class="code__bar">
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+          <span class="code__title">vet_waf.conf</span>
+          <button class="code__copy" data-copy data-i18n="code.copy">Copy</button>
+        </div>
+<pre><code>vhost firewall.hidev.dev {
+    proxy_pass primary;
+
+    # Preserve the public hostname for the origin application.
+    req_hdr_set Host firewall.hidev.dev;
+
+    # Tell the app the original request was HTTPS, so it builds
+    # correct absolute URLs when Vet-WAF terminates TLS.
+    req_hdr_set X-Forwarded-Proto https;
+
+    # Never leak backend software versions — fingerprinting is
+    # step one of targeting a known CVE.
+    resp_hdr_set Server "Vet-WAF";
+}
+
+http_chain {
+    #!include /etc/vet_waf/ua_block_rules.conf
+
+    host == "firewall.hidev.dev" -&gt; firewall.hidev.dev;
+    host == "*.hidev.dev"        -&gt; firewall.hidev.dev;
+
+    # Anything addressed to a hostname we do not serve is hostile
+    # or misdirected — typically a scanner hitting the bare IP.
+    -&gt; block;
+}</code></pre>
+      </div>
+      <p data-i18n-html="cf.rt.p2">A chain rule matches on one of six fields, with <code>==</code> or <code>!=</code> and an optional <code>*</code> wildcard at either end of the value:</p>
+      <table class="doc-table">
+        <thead><tr><th data-i18n="cf.rt.t.h1">Field</th><th data-i18n="cf.rt.t.h2">Matches</th></tr></thead>
+        <tbody>
+          <tr><td data-i18n-html="cf.rt.t.r1a"><code>host</code></td><td data-i18n-html="cf.rt.t.r1b">The request Host header or <code>:authority</code></td></tr>
+          <tr><td data-i18n-html="cf.rt.t.r2a"><code>uri</code></td><td data-i18n-html="cf.rt.t.r2b">The request path and query</td></tr>
+          <tr><td data-i18n-html="cf.rt.t.r3a"><code>hdr</code></td><td data-i18n-html="cf.rt.t.r3b">An arbitrary header, e.g. <code>hdr "Referer" == "*evil.com"</code></td></tr>
+          <tr><td data-i18n-html="cf.rt.t.r4a"><code>method</code></td><td data-i18n-html="cf.rt.t.r4b">The HTTP method</td></tr>
+          <tr><td data-i18n-html="cf.rt.t.r5a"><code>cookie</code></td><td data-i18n-html="cf.rt.t.r5b">A named cookie value</td></tr>
+          <tr><td data-i18n-html="cf.rt.t.r6a"><code>mark</code></td><td data-i18n-html="cf.rt.t.r6b">The netfilter mark on the packet</td></tr>
+        </tbody>
+      </table>
+      <div class="callout callout--tip">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+        <p data-i18n-html="cf.rt.tip">End the chain with <code>-&gt; block;</code> rather than a catch-all vhost. Requests arriving for a hostname you do not serve are almost always scanners probing your bare IP, and answering them tells the attacker there is something here worth attacking.</p>
+      </div>
+    </section>
+
+    <section class="doc-sec" id="cache">
+      <h2 data-i18n="cf.ca.h">Cache and block actions</h2>
+      <p data-i18n-html="cf.ca.p1">The cache is also a DDoS defence: a cache hit is served from kernel RAM and never reaches your application, which is what lets one edge node absorb a large flood.</p>
+      <div class="code">
+        <div class="code__bar">
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+          <span class="code__title">vet_waf.conf</span>
+          <button class="code__copy" data-copy data-i18n="code.copy">Copy</button>
+        </div>
+<pre><code>cache 2;                # 2 = sharded cache; 0 disables
+cache_fulfill * *;      # cache every cacheable response
+cache_methods GET HEAD;
+cache_ttl 3600;
+
+keepalive_timeout 30;   # reclaim idle slots fast under attack
+
+block_action attack drop;
+block_action error  reply;</code></pre>
+      </div>
+      <p data-i18n-html="cf.ca.p2"><code>block_action attack drop</code> sends no reply packet at all. That costs the attacker a full timeout, costs you nothing, and denies them the feedback they need to tune their tooling. <code>block_action error reply</code> keeps answering ordinary client mistakes politely, so real but buggy clients can still see what went wrong.</p>
+    </section>
+
+    <section class="doc-sec" id="reload">
+      <h2 data-i18n="cf.rl.h">Applying changes</h2>
+      <p data-i18n-html="cf.rl.p1">A reload pushes the new configuration into the running kernel without dropping established connections. If the new config is rejected, the previous one stays in force — the proxy does not go down because of a typo.</p>
+      <div class="code">
+        <div class="code__bar">
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+          <span class="code__title">bash</span>
+          <button class="code__copy" data-copy data-i18n="code.copy">Copy</button>
+        </div>
+<pre><code>sudo ./scripts/vet_waf.sh --reload      # from the source tree
+sudo systemctl reload vet-waf          # packaged install
+
+# The parser reports the offending directive and line here:
+sudo dmesg | tail -30</code></pre>
+      </div>
+      <div class="callout callout--tip">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+        <p data-i18n-html="cf.rl.tip">There is no offline syntax checker. Reload on a staging node first and read <code>dmesg</code> — the parser names the exact directive it could not accept.</p>
+      </div>
+    </section>
+
+
+
+    <nav class="doc-nav">
+      <a href="troubleshooting.html">
+        <span data-i18n="doc.next">Next</span>
+        <b data-i18n="doc.trouble">Troubleshooting</b>
+      </a>
+      <a href="frang.html">
+        <span data-i18n="doc.related">Related</span>
+        <b data-i18n="doc.frang">Frang rules</b>
+      </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <p class="footer__legal" data-i18n-html="footer.legal">
+      Vet-WAF is free software under <b>GPLv2</b> — engine, tooling and this site — derived from Tempesta FW. &copy; 2026 Vet-WAF.
+    </p>
+  </div>
+</footer>
+
+<script>
+window.VETWAF_I18N = {
+  "en": {
+    "cf.bk.danger": "The name given to <code>health</code> is not validated when the config is parsed. If it matches no <code>health_check</code> block, Vet-WAF hits a <code>BUG_ON</code> and <b>panics the kernel</b> at startup. Keep the two names identical, and keep the <code>health_check</code> block above the <code>srv_group</code>.",
+    "cf.bk.h": "Backends and failover",
+    "cf.bk.p1": "A <code>srv_group</code> is a pool of origin servers. List more than one <code>server</code> line and Vet-WAF load-balances across them, taking any that stops responding out of rotation automatically.",
+    "cf.bk.t.h1": "Directive",
+    "cf.bk.t.h2": "Meaning",
+    "cf.bk.t.r1a": "<code>conns_n=</code>",
+    "cf.bk.t.r1b": "Pooled persistent connections to that origin. Pooling matters under attack: Vet-WAF absorbs the connection churn so the origin sees a small, steady set of long-lived connections.",
+    "cf.bk.t.r2a": "<code>sched</code>",
+    "cf.bk.t.r2b": "<code>ratio static</code> is weighted round-robin. Use <code>hash</code> instead when a given client must keep landing on the same origin.",
+    "cf.bk.t.r3a": "<code>server_queue_size</code>",
+    "cf.bk.t.r3b": "How many requests may queue before Vet-WAF sheds load. A bounded queue is what stops a slow origin from becoming an out-of-memory event on the proxy.",
+    "cf.bk.t.r4a": "<code>health</code>",
+    "cf.bk.t.r4b": "Actively polls the origin and pulls it out of rotation the moment it answers incorrectly, instead of waiting for user requests to fail.",
+    "cf.ca.h": "Cache and block actions",
+    "cf.ca.p1": "The cache is also a DDoS defence: a cache hit is served from kernel RAM and never reaches your application, which is what lets one edge node absorb a large flood.",
+    "cf.ca.p2": "<code>block_action attack drop</code> sends no reply packet at all. That costs the attacker a full timeout, costs you nothing, and denies them the feedback they need to tune their tooling. <code>block_action error reply</code> keeps answering ordinary client mistakes politely, so real but buggy clients can still see what went wrong.",
+    "cf.eyebrow": "Reference",
+    "cf.h1": "Configuration",
+    "cf.lead": "Everything Vet-WAF does is driven by one file. This page covers its syntax and every block you are likely to need, in the order they appear.",
+    "cf.ls.danger": "A global <code>tls_certificate</code> and an explicitly named <code>vhost</code> are mutually exclusive — Vet-WAF rejects the config at startup. A named vhost serves its own certificate over SNI, so move both <code>tls_certificate</code> lines <b>inside</b> the <code>vhost</code> block whenever you name one.",
+    "cf.ls.h": "Listeners and TLS",
+    "cf.ls.p1": "Vet-WAF terminates TLS inside the kernel, so HTTPS is the fast path rather than a slow one. Prefer it in production.",
+    "cf.rl.h": "Applying changes",
+    "cf.rl.p1": "A reload pushes the new configuration into the running kernel without dropping established connections. If the new config is rejected, the previous one stays in force — the proxy does not go down because of a typo.",
+    "cf.rl.tip": "There is no offline syntax checker. Reload on a staging node first and read <code>dmesg</code> — the parser names the exact directive it could not accept.",
+    "cf.rt.h": "Virtual hosts and routing",
+    "cf.rt.p1": "A <code>vhost</code> says <i>how</i> to serve a site; <code>http_chain</code> says <i>which</i> requests go to it. The chain is evaluated top to bottom and the first match wins.",
+    "cf.rt.p2": "A chain rule matches on one of six fields, with <code>==</code> or <code>!=</code> and an optional <code>*</code> wildcard at either end of the value:",
+    "cf.rt.t.h1": "Field",
+    "cf.rt.t.h2": "Matches",
+    "cf.rt.t.r1a": "<code>host</code>",
+    "cf.rt.t.r1b": "The request Host header or <code>:authority</code>",
+    "cf.rt.t.r2a": "<code>uri</code>",
+    "cf.rt.t.r2b": "The request path and query",
+    "cf.rt.t.r3a": "<code>hdr</code>",
+    "cf.rt.t.r3b": "An arbitrary header, e.g. <code>hdr \"Referer\" == \"*evil.com\"</code>",
+    "cf.rt.t.r4a": "<code>method</code>",
+    "cf.rt.t.r4b": "The HTTP method",
+    "cf.rt.t.r5a": "<code>cookie</code>",
+    "cf.rt.t.r5b": "A named cookie value",
+    "cf.rt.t.r6a": "<code>mark</code>",
+    "cf.rt.t.r6b": "The netfilter mark on the packet",
+    "cf.rt.tip": "End the chain with <code>-&gt; block;</code> rather than a catch-all vhost. Requests arriving for a hostname you do not serve are almost always scanners probing your bare IP, and answering them tells the attacker there is something here worth attacking.",
+    "cf.sx.h": "File and syntax",
+    "cf.sx.l1": "One directive per line, always terminated by a semicolon <code>;</code>.",
+    "cf.sx.l2": "<code>#</code> starts a comment and runs to the end of the line.",
+    "cf.sx.l3": "Braces <code>{ }</code> group directives into a section, such as <code>frang_limits</code> or <code>srv_group</code>.",
+    "cf.sx.l4": "Sizes are in bytes and durations in seconds unless a directive says otherwise.",
+    "cf.sx.l5": "<code>#!include /path/to/file.conf</code> splices in another file — useful for large bot-blocking rule sets.",
+    "cf.sx.p1": "Vet-WAF reads <code>etc/vet_waf.conf</code> from the source tree by default; override the path with the <code>TFW_CFG_PATH</code> environment variable. A packaged install normally keeps it at <code>/etc/vet_waf/vet_waf.conf</code>.",
+    "cf.sx.warn": "Order matters in two places: a <code>health_check</code> block must be defined <b>before</b> the <code>srv_group</code> that names it, and rules in <code>http_chain</code> are evaluated top to bottom with the first match winning — so a catch-all placed early makes everything after it unreachable.",
+    "code.copy": "Copy",
+    "doc.next": "Next",
+    "doc.related": "Related",
+    "meta.description": "Vet-WAF configuration reference: syntax, listeners and TLS, backends and failover, virtual hosts and routing chains, cache, and how to reload safely."
+  },
+  "vi": {
+    "cf.bk.danger": "Tên đưa cho <code>health</code> không được kiểm tra khi phân tích cấu hình. Nếu nó không khớp khối <code>health_check</code> nào, Vet-WAF sẽ gặp <code>BUG_ON</code> và <b>gây panic nhân</b> ngay khi khởi động. Hãy giữ hai tên giống nhau và đặt khối <code>health_check</code> phía trên <code>srv_group</code>.",
+    "cf.bk.h": "Backend và dự phòng",
+    "cf.bk.p1": "Một <code>srv_group</code> là nhóm các server gốc. Hãy liệt kê nhiều dòng <code>server</code> và Vet-WAF sẽ cân bằng tải giữa chúng, tự động loại khỏi vòng luân phiên bất kỳ server nào ngừng phản hồi.",
+    "cf.bk.t.h1": "Chỉ thị",
+    "cf.bk.t.h2": "Ý nghĩa",
+    "cf.bk.t.r1a": "<code>conns_n=</code>",
+    "cf.bk.t.r1b": "Số kết nối bền được gộp tới origin đó. Việc gộp rất quan trọng khi bị tấn công: Vet-WAF hấp thụ sự biến động kết nối để origin chỉ thấy một tập kết nối nhỏ, ổn định và lâu dài.",
+    "cf.bk.t.r2a": "<code>sched</code>",
+    "cf.bk.t.r2b": "<code>ratio static</code> là luân phiên theo trọng số. Dùng <code>hash</code> khi một client cần luôn được đưa tới cùng một origin.",
+    "cf.bk.t.r3a": "<code>server_queue_size</code>",
+    "cf.bk.t.r3b": "Số request được phép xếp hàng trước khi Vet-WAF bắt đầu loại bỏ tải. Hàng đợi có giới hạn là thứ ngăn một origin chậm biến thành sự cố cạn bộ nhớ trên proxy.",
+    "cf.bk.t.r4a": "<code>health</code>",
+    "cf.bk.t.r4b": "Chủ động thăm dò origin và loại nó khỏi vòng luân phiên ngay khi nó trả lời sai, thay vì đợi request của người dùng thất bại.",
+    "cf.ca.h": "Bộ đệm và hành động chặn",
+    "cf.ca.p1": "Bộ đệm cũng là một biện pháp chống DDoS: một lần trúng cache được phục vụ từ RAM trong nhân và không bao giờ chạm tới ứng dụng của bạn, đó chính là điều giúp một node biên hấp thụ được một trận lũ lớn.",
+    "cf.ca.p2": "<code>block_action attack drop</code> hoàn toàn không gửi gói phản hồi nào. Điều đó bắt kẻ tấn công phải chờ hết thời gian chờ, không tốn gì của bạn, và không cho họ phản hồi cần thiết để tinh chỉnh công cụ. Trong khi đó <code>block_action error reply</code> vẫn lịch sự trả lời các lỗi thông thường của client, để những client thật nhưng có lỗi vẫn biết chuyện gì đã xảy ra.",
+    "cf.eyebrow": "Tra cứu",
+    "cf.h1": "Cấu hình",
+    "cf.lead": "Mọi hoạt động của Vet-WAF đều do một tệp cấu hình điều khiển. Trang này trình bày cú pháp và từng khối bạn có thể cần, theo đúng thứ tự chúng xuất hiện.",
+    "cf.ls.danger": "Chứng chỉ <code>tls_certificate</code> ở mức toàn cục và một <code>vhost</code> được đặt tên tường minh là loại trừ nhau — Vet-WAF sẽ từ chối cấu hình ngay khi khởi động. Vhost có tên tự phục vụ chứng chỉ riêng qua SNI, nên hãy chuyển cả hai dòng <code>tls_certificate</code> vào <b>trong</b> khối <code>vhost</code> khi bạn đặt tên cho nó.",
+    "cf.ls.h": "Cổng lắng nghe và TLS",
+    "cf.ls.p1": "Vet-WAF kết thúc TLS ngay trong nhân, nên HTTPS là đường nhanh chứ không phải đường chậm. Hãy ưu tiên dùng nó ở môi trường thật.",
+    "cf.rl.h": "Áp dụng thay đổi",
+    "cf.rl.p1": "Lệnh reload đẩy cấu hình mới vào nhân đang chạy mà không làm rớt các kết nối đang mở. Nếu cấu hình mới bị từ chối, cấu hình cũ vẫn tiếp tục có hiệu lực — proxy sẽ không sập chỉ vì một lỗi gõ nhầm.",
+    "cf.rl.tip": "Không có công cụ kiểm tra cú pháp ngoại tuyến. Hãy reload trên một node thử nghiệm trước và đọc <code>dmesg</code> — bộ phân tích sẽ nêu đích danh chỉ thị mà nó không chấp nhận được.",
+    "cf.rt.h": "Virtual host và định tuyến",
+    "cf.rt.p1": "Khối <code>vhost</code> mô tả <i>cách</i> phục vụ một site; <code>http_chain</code> quyết định <i>những request nào</i> sẽ được đưa tới đó. Chuỗi luật được xét từ trên xuống và luật khớp đầu tiên thắng.",
+    "cf.rt.p2": "Một luật trong chuỗi so khớp trên một trong sáu trường, dùng <code>==</code> hoặc <code>!=</code>, và có thể đặt ký tự đại diện <code>*</code> ở đầu hoặc cuối giá trị:",
+    "cf.rt.t.h1": "Trường",
+    "cf.rt.t.h2": "So khớp với",
+    "cf.rt.t.r1a": "<code>host</code>",
+    "cf.rt.t.r1b": "Header Host của request hoặc <code>:authority</code>",
+    "cf.rt.t.r2a": "<code>uri</code>",
+    "cf.rt.t.r2b": "Đường dẫn và query của request",
+    "cf.rt.t.r3a": "<code>hdr</code>",
+    "cf.rt.t.r3b": "Một header bất kỳ, ví dụ <code>hdr \"Referer\" == \"*evil.com\"</code>",
+    "cf.rt.t.r4a": "<code>method</code>",
+    "cf.rt.t.r4b": "Phương thức HTTP",
+    "cf.rt.t.r5a": "<code>cookie</code>",
+    "cf.rt.t.r5b": "Giá trị của một cookie theo tên",
+    "cf.rt.t.r6a": "<code>mark</code>",
+    "cf.rt.t.r6b": "Nhãn netfilter gắn trên gói tin",
+    "cf.rt.tip": "Hãy kết thúc chuỗi bằng <code>-&gt; block;</code> thay vì một vhost bắt-tất-cả. Request gửi tới một hostname bạn không phục vụ gần như luôn là máy quét đang dò IP trần của bạn, và việc trả lời chúng cho kẻ tấn công biết ở đây có thứ đáng để tấn công.",
+    "cf.sx.h": "Tệp cấu hình và cú pháp",
+    "cf.sx.l1": "Mỗi dòng một chỉ thị, luôn kết thúc bằng dấu chấm phẩy <code>;</code>.",
+    "cf.sx.l2": "<code>#</code> bắt đầu một chú thích, có hiệu lực đến hết dòng.",
+    "cf.sx.l3": "Cặp ngoặc nhọn <code>{ }</code> nhóm các chỉ thị thành một khối, ví dụ <code>frang_limits</code> hay <code>srv_group</code>.",
+    "cf.sx.l4": "Kích thước tính theo byte và thời lượng tính theo giây, trừ khi chỉ thị nói khác.",
+    "cf.sx.l5": "<code>#!include /path/to/file.conf</code> chèn thêm một tệp khác — hữu ích cho các bộ luật chặn bot lớn.",
+    "cf.sx.p1": "Mặc định Vet-WAF đọc <code>etc/vet_waf.conf</code> trong cây mã nguồn; có thể đổi đường dẫn bằng biến môi trường <code>TFW_CFG_PATH</code>. Bản cài đặt đóng gói thường đặt tệp này ở <code>/etc/vet_waf/vet_waf.conf</code>.",
+    "cf.sx.warn": "Thứ tự quan trọng ở hai chỗ: khối <code>health_check</code> phải được định nghĩa <b>trước</b> khối <code>srv_group</code> gọi tên nó, và các luật trong <code>http_chain</code> được xét từ trên xuống, luật khớp đầu tiên thắng — nên một luật bắt-tất-cả đặt quá sớm sẽ khiến mọi luật sau đó không bao giờ được xét.",
+    "code.copy": "Chép",
+    "doc.next": "Tiếp theo",
+    "doc.related": "Liên quan",
+    "meta.description": "Tra cứu cấu hình Vet-WAF: cú pháp, cổng lắng nghe và TLS, backend và dự phòng, virtual host và chuỗi định tuyến, bộ đệm, và cách reload an toàn."
+  }
+};
+</script>
+<script src="site.js"></script>
+</body>
+</html>

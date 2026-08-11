@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en" data-lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Troubleshooting — Vet-WAF</title>
+<meta name="description" data-i18n="meta.description" content="Diagnose Vet-WAF: modules that will not load, rejected configurations, legitimate traffic being blocked, backend 502/504 errors, and performance tuning.">
+<meta name="theme-color" content="#0b1020">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; script-src 'self' 'unsafe-inline'; base-uri 'self'; form-action 'none'; frame-ancestors 'none'; upgrade-insecure-requests">
+<link rel="canonical" href="https://hoangtuvungcao.github.io/vet-waf/troubleshooting.html">
+<link rel="icon" href="assets/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="nav" id="nav">
+  <div class="container nav__inner">
+    <a class="brand" href="index.html" aria-label="Vet-WAF home">
+      <img src="assets/mark.svg" alt="" width="34" height="34" class="brand__mark">
+      <span class="brand__name">Vet<span class="brand__accent">-WAF</span></span>
+    </a>
+    <nav class="nav__links" id="navLinks" aria-label="Primary">
+      <a href="index.html" data-i18n="nav.home">Home</a>
+      <a href="quickstart.html" data-i18n="doc.quickstart">Quick start</a>
+      <a href="kernel-patching.html" data-i18n="doc.kernel">Kernel patching</a>
+      <a href="frang.html" data-i18n="doc.frang">Frang rules</a>
+      <a href="configuration.html" data-i18n="doc.config">Configuration</a>
+      <a href="troubleshooting.html" data-i18n="doc.trouble">Troubleshooting</a>
+      <div class="lang" role="group" aria-label="Language">
+        <button class="lang__btn" data-lang-set="en" aria-pressed="true">EN</button>
+        <span class="lang__sep" aria-hidden="true">·</span>
+        <button class="lang__btn" data-lang-set="vi" aria-pressed="false">VI</button>
+      </div>
+    </nav>
+    <button class="nav__toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<div class="doc-shell">
+  <aside class="doc-side">
+    <h4 data-i18n="doc.onthispage">On this page</h4>
+    <nav>
+      <a href="quickstart.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        <span data-i18n="doc.quickstart">Quick start</span></a>
+      <a href="kernel-patching.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 2v2M15 2v2M9 20v2M15 20v2M2 9h2M2 15h2M20 9h2M20 15h2"/></svg>
+        <span data-i18n="doc.kernel">Kernel patching</span></a>
+      <a href="frang.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <span data-i18n="doc.frang">Frang rules</span></a>
+      <a href="configuration.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6h.09A1.65 1.65 0 0 0 10 3.09V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9v.09a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        <span data-i18n="doc.config">Configuration</span></a>
+      <a class="active" href="troubleshooting.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3M12 17h.01"/></svg>
+        <span data-i18n="doc.trouble">Troubleshooting</span></a>
+    </nav>
+  </aside>
+
+  <main class="doc-main">
+    <div class="doc-eyebrow" data-i18n="ts.eyebrow">Operations</div>
+    <h1 data-i18n="ts.h1">Troubleshooting</h1>
+    <p class="doc-lead" data-i18n="ts.lead">Vet-WAF runs in kernel space, so the answer is almost always in dmesg. This page maps each common symptom to its cause.</p>
+
+    <section class="doc-sec" id="first">
+      <h2 data-i18n="ts.fs.h">Start here</h2>
+      <p data-i18n-html="ts.fs.p1">Vet-WAF runs in kernel space, so its diagnostics are in the kernel log rather than an application log file. These four commands answer most questions before you change anything.</p>
+      <div class="code">
+        <div class="code__bar">
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+          <span class="code__title">bash</span>
+          <button class="code__copy" data-copy data-i18n="code.copy">Copy</button>
+        </div>
+<pre><code>uname -r                          # must be the patched 6.12.12
+lsmod | grep -E 'tempesta|vet'    # are the modules loaded?
+sudo sysctl net.vet_waf.state     # expects: start
+sudo dmesg | tail -50             # the actual error, always</code></pre>
+      </div>
+      <div class="callout callout--tip">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+        <p data-i18n-html="ts.fs.tip">Read <code>dmesg</code> first, every time. The configuration parser names the exact directive it could not accept, and Frang logs every block with its reason and the client address. Guessing from the client side wastes far more time.</p>
+      </div>
+    </section>
+
+    <section class="doc-sec" id="nostart">
+      <h2 data-i18n="ts.ns.h">It will not start</h2>
+      <table class="doc-table">
+        <thead><tr><th data-i18n="ts.ns.t.h1">Symptom</th><th data-i18n="ts.ns.t.h2">Cause and fix</th></tr></thead>
+        <tbody>
+          <tr><td data-i18n-html="ts.ns.t.r1a"><code>insmod</code> fails with <i>invalid module format</i></td><td data-i18n-html="ts.ns.t.r1b">The modules were built against a different kernel than the one running. Confirm <code>uname -r</code> is 6.12.12, then <code>make clean &amp;&amp; make</code>.</td></tr>
+          <tr><td data-i18n-html="ts.ns.t.r2a"><i>Unknown symbol</i> in <code>dmesg</code></td><td data-i18n-html="ts.ns.t.r2b">The running kernel is unpatched or only partially patched. Reapply <code>linux-6.12.12.patch</code> to a clean tree and rebuild — a half-applied patch loads and then misbehaves.</td></tr>
+          <tr><td data-i18n-html="ts.ns.t.r3a">Illegal instruction on load</td><td data-i18n-html="ts.ns.t.r3b">The CPU lacks AVX2, which Vet-WAF requires for its string and hash routines. Check with <code>grep -o avx2 /proc/cpuinfo | head -1</code>.</td></tr>
+          <tr><td data-i18n-html="ts.ns.t.r4a">Stops immediately, config error in <code>dmesg</code></td><td data-i18n-html="ts.ns.t.r4b">The parser rejected a directive and names it. The usual culprits are a missing semicolon and a global <code>tls_certificate</code> alongside a named <code>vhost</code>, which are mutually exclusive.</td></tr>
+          <tr><td data-i18n-html="ts.ns.t.r5a">Kernel panic at startup</td><td data-i18n-html="ts.ns.t.r5b">Almost always a <code>health</code> name in a <code>srv_group</code> that matches no <code>health_check</code> block. The name is not validated at parse time. Make the two names identical and define the block first.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="doc-sec" id="blocked">
+      <h2 data-i18n="ts.bl.h">Real users are being blocked</h2>
+      <p data-i18n-html="ts.bl.p1">A secure-by-default configuration will reject some real traffic until it is tuned to your site. Work through these in order — the first two explain most reports.</p>
+      <ul><li data-i18n-html="ts.bl.l1"><b>Requests fail without a Host header.</b> <code>http_strict_host_checking</code> is on by default and rejects an absent, duplicated, or contradictory Host. That is the WAF working. Send <code>-H 'Host: yoursite'</code> when testing with curl.</li><li data-i18n-html="ts.bl.l2"><b>PUT, DELETE or OPTIONS return an error.</b> <code>http_methods</code> is an allow-list. Add the methods your API genuinely uses, and no more.</li><li data-i18n-html="ts.bl.l3"><b>Uploads fail above a certain size.</b> Raise <code>http_body_len</code> to your largest legitimate upload — but only that far, since every byte is memory an attacker can make you hold.</li><li data-i18n-html="ts.bl.l4"><b>A whole office goes offline at once.</b> They share one public IP behind NAT, so they share one Frang budget. Raise <code>request_rate</code> and <code>concurrent_tcp_connections</code>, and lower or remove <code>ip_block</code>.</li><li data-i18n-html="ts.bl.l5"><b>Visitors are banned after browsing normally.</b> <code>http_resp_code_block</code> counts 404s. One broken page template that requests missing assets can trip the limit for an innocent visitor.</li></ul>
+      <div class="callout callout--warn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4M12 17h.01"/></svg>
+        <p data-i18n-html="ts.bl.warn">With <code>block_action attack drop</code> the reply is dropped silently, so a blocked client sees a network timeout rather than an error page. Do not diagnose from the client side — <code>dmesg | grep -i frang</code> names the rule and the IP.</p>
+      </div>
+    </section>
+
+    <section class="doc-sec" id="backend">
+      <h2 data-i18n="ts.bk.h">Backend errors</h2>
+      <table class="doc-table">
+        <thead><tr><th data-i18n="ts.bk.t.h1">Status</th><th data-i18n="ts.bk.t.h2">Meaning</th><th data-i18n="ts.bk.t.h3">What to check</th></tr></thead>
+        <tbody>
+          <tr><td data-i18n-html="ts.bk.t.r1a"><b>502</b></td><td data-i18n-html="ts.bk.t.r1b">Vet-WAF cannot reach the origin at all</td><td data-i18n-html="ts.bk.t.r1c">Test the origin directly from the edge node: <code>curl -v http://ORIGIN:80/</code>. Then check the firewall between them.</td></tr>
+          <tr><td data-i18n-html="ts.bk.t.r2a"><b>504</b></td><td data-i18n-html="ts.bk.t.r2b">The origin accepted the connection but answered too slowly</td><td data-i18n-html="ts.bk.t.r2c">Raise <code>server_forward_timeout</code>, or fix the slow origin. Under load, also raise <code>server_queue_size</code>.</td></tr>
+          <tr><td data-i18n-html="ts.bk.t.r3a"><b>503</b></td><td data-i18n-html="ts.bk.t.r3b">No healthy server left in the group</td><td data-i18n-html="ts.bk.t.r3c">Health checking has ejected every origin. Confirm the <code>health_check</code> block expects a response the origin actually returns — a wrong <code>resp_code</code> ejects a healthy server.</td></tr>
+          <tr><td data-i18n-html="ts.bk.t.r4a"><b>Wrong site served</b></td><td data-i18n-html="ts.bk.t.r4b">The routing chain matched the wrong rule</td><td data-i18n-html="ts.bk.t.r4c"><code>http_chain</code> is first-match-wins. A catch-all placed early makes every rule below it unreachable — move it last.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="doc-sec" id="perf">
+      <h2 data-i18n="ts.pf.h">Performance and monitoring</h2>
+      <p data-i18n-html="ts.pf.p1"><code>/proc/vet_waf/perfstat</code> is the live counter set: requests, responses, cache hits and misses, and errors. Watch it while you generate load rather than sampling it once.</p>
+      <div class="code">
+        <div class="code__bar">
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+          <span class="code__title">bash</span>
+          <button class="code__copy" data-copy data-i18n="code.copy">Copy</button>
+        </div>
+<pre><code>watch -n1 cat /proc/vet_waf/perfstat
+
+# Frang decisions as they happen
+sudo dmesg -w | grep -i frang</code></pre>
+      </div>
+      <ul><li data-i18n-html="ts.pf.l1"><b>A low cache hit ratio</b> means the origin is absorbing traffic that Vet-WAF could have served from RAM. Enable <code>cache 2;</code> with <code>cache_fulfill * *;</code> — on an edge node this is the difference between surviving a flood and forwarding it.</li><li data-i18n-html="ts.pf.l2"><b>Connections pile up under attack</b> — lower <code>keepalive_timeout</code> so idle slots are reclaimed quickly and stay available for real users.</li><li data-i18n-html="ts.pf.l3"><b>The origin is overwhelmed while Vet-WAF is idle</b> — raise <code>conns_n=</code> on the <code>server</code> line so connection churn is absorbed at the edge instead of being passed through.</li></ul>
+    </section>
+
+    <section class="doc-sec" id="help">
+      <h2 data-i18n="ts.hp.h">Still stuck</h2>
+      <p data-i18n-html="ts.hp.p1">Open an issue on <a class="link" href="https://github.com/hoangtuvungcao/vet-waf">GitHub</a> or email <a class="link" href="mailto:trong20843@gmail.com">trong20843@gmail.com</a>. Include the output of <code>uname -r</code>, the relevant part of your configuration, and the last 50 lines of <code>dmesg</code> — that last one usually contains the answer already.</p>
+    </section>
+
+
+
+    <nav class="doc-nav">
+      <a href="index.html">
+        <span data-i18n="doc.next">Next</span>
+        <b data-i18n="nav.home">Home</b>
+      </a>
+      <a href="configuration.html">
+        <span data-i18n="doc.related">Related</span>
+        <b data-i18n="doc.config">Configuration</b>
+      </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <p class="footer__legal" data-i18n-html="footer.legal">
+      Vet-WAF is free software under <b>GPLv2</b> — engine, tooling and this site — derived from Tempesta FW. &copy; 2026 Vet-WAF.
+    </p>
+  </div>
+</footer>
+
+<script>
+window.VETWAF_I18N = {
+  "en": {
+    "code.copy": "Copy",
+    "doc.next": "Next",
+    "doc.related": "Related",
+    "meta.description": "Diagnose Vet-WAF: modules that will not load, rejected configurations, legitimate traffic being blocked, backend 502/504 errors, and performance tuning.",
+    "ts.bk.h": "Backend errors",
+    "ts.bk.t.h1": "Status",
+    "ts.bk.t.h2": "Meaning",
+    "ts.bk.t.h3": "What to check",
+    "ts.bk.t.r1a": "<b>502</b>",
+    "ts.bk.t.r1b": "Vet-WAF cannot reach the origin at all",
+    "ts.bk.t.r1c": "Test the origin directly from the edge node: <code>curl -v http://ORIGIN:80/</code>. Then check the firewall between them.",
+    "ts.bk.t.r2a": "<b>504</b>",
+    "ts.bk.t.r2b": "The origin accepted the connection but answered too slowly",
+    "ts.bk.t.r2c": "Raise <code>server_forward_timeout</code>, or fix the slow origin. Under load, also raise <code>server_queue_size</code>.",
+    "ts.bk.t.r3a": "<b>503</b>",
+    "ts.bk.t.r3b": "No healthy server left in the group",
+    "ts.bk.t.r3c": "Health checking has ejected every origin. Confirm the <code>health_check</code> block expects a response the origin actually returns — a wrong <code>resp_code</code> ejects a healthy server.",
+    "ts.bk.t.r4a": "<b>Wrong site served</b>",
+    "ts.bk.t.r4b": "The routing chain matched the wrong rule",
+    "ts.bk.t.r4c": "<code>http_chain</code> is first-match-wins. A catch-all placed early makes every rule below it unreachable — move it last.",
+    "ts.bl.h": "Real users are being blocked",
+    "ts.bl.l1": "<b>Requests fail without a Host header.</b> <code>http_strict_host_checking</code> is on by default and rejects an absent, duplicated, or contradictory Host. That is the WAF working. Send <code>-H 'Host: yoursite'</code> when testing with curl.",
+    "ts.bl.l2": "<b>PUT, DELETE or OPTIONS return an error.</b> <code>http_methods</code> is an allow-list. Add the methods your API genuinely uses, and no more.",
+    "ts.bl.l3": "<b>Uploads fail above a certain size.</b> Raise <code>http_body_len</code> to your largest legitimate upload — but only that far, since every byte is memory an attacker can make you hold.",
+    "ts.bl.l4": "<b>A whole office goes offline at once.</b> They share one public IP behind NAT, so they share one Frang budget. Raise <code>request_rate</code> and <code>concurrent_tcp_connections</code>, and lower or remove <code>ip_block</code>.",
+    "ts.bl.l5": "<b>Visitors are banned after browsing normally.</b> <code>http_resp_code_block</code> counts 404s. One broken page template that requests missing assets can trip the limit for an innocent visitor.",
+    "ts.bl.p1": "A secure-by-default configuration will reject some real traffic until it is tuned to your site. Work through these in order — the first two explain most reports.",
+    "ts.bl.warn": "With <code>block_action attack drop</code> the reply is dropped silently, so a blocked client sees a network timeout rather than an error page. Do not diagnose from the client side — <code>dmesg | grep -i frang</code> names the rule and the IP.",
+    "ts.eyebrow": "Operations",
+    "ts.fs.h": "Start here",
+    "ts.fs.p1": "Vet-WAF runs in kernel space, so its diagnostics are in the kernel log rather than an application log file. These four commands answer most questions before you change anything.",
+    "ts.fs.tip": "Read <code>dmesg</code> first, every time. The configuration parser names the exact directive it could not accept, and Frang logs every block with its reason and the client address. Guessing from the client side wastes far more time.",
+    "ts.h1": "Troubleshooting",
+    "ts.hp.h": "Still stuck",
+    "ts.hp.p1": "Open an issue on <a class=\"link\" href=\"https://github.com/hoangtuvungcao/vet-waf\">GitHub</a> or email <a class=\"link\" href=\"mailto:trong20843@gmail.com\">trong20843@gmail.com</a>. Include the output of <code>uname -r</code>, the relevant part of your configuration, and the last 50 lines of <code>dmesg</code> — that last one usually contains the answer already.",
+    "ts.lead": "Vet-WAF runs in kernel space, so the answer is almost always in dmesg. This page maps each common symptom to its cause.",
+    "ts.ns.h": "It will not start",
+    "ts.ns.t.h1": "Symptom",
+    "ts.ns.t.h2": "Cause and fix",
+    "ts.ns.t.r1a": "<code>insmod</code> fails with <i>invalid module format</i>",
+    "ts.ns.t.r1b": "The modules were built against a different kernel than the one running. Confirm <code>uname -r</code> is 6.12.12, then <code>make clean &amp;&amp; make</code>.",
+    "ts.ns.t.r2a": "<i>Unknown symbol</i> in <code>dmesg</code>",
+    "ts.ns.t.r2b": "The running kernel is unpatched or only partially patched. Reapply <code>linux-6.12.12.patch</code> to a clean tree and rebuild — a half-applied patch loads and then misbehaves.",
+    "ts.ns.t.r3a": "Illegal instruction on load",
+    "ts.ns.t.r3b": "The CPU lacks AVX2, which Vet-WAF requires for its string and hash routines. Check with <code>grep -o avx2 /proc/cpuinfo | head -1</code>.",
+    "ts.ns.t.r4a": "Stops immediately, config error in <code>dmesg</code>",
+    "ts.ns.t.r4b": "The parser rejected a directive and names it. The usual culprits are a missing semicolon and a global <code>tls_certificate</code> alongside a named <code>vhost</code>, which are mutually exclusive.",
+    "ts.ns.t.r5a": "Kernel panic at startup",
+    "ts.ns.t.r5b": "Almost always a <code>health</code> name in a <code>srv_group</code> that matches no <code>health_check</code> block. The name is not validated at parse time. Make the two names identical and define the block first.",
+    "ts.pf.h": "Performance and monitoring",
+    "ts.pf.l1": "<b>A low cache hit ratio</b> means the origin is absorbing traffic that Vet-WAF could have served from RAM. Enable <code>cache 2;</code> with <code>cache_fulfill * *;</code> — on an edge node this is the difference between surviving a flood and forwarding it.",
+    "ts.pf.l2": "<b>Connections pile up under attack</b> — lower <code>keepalive_timeout</code> so idle slots are reclaimed quickly and stay available for real users.",
+    "ts.pf.l3": "<b>The origin is overwhelmed while Vet-WAF is idle</b> — raise <code>conns_n=</code> on the <code>server</code> line so connection churn is absorbed at the edge instead of being passed through.",
+    "ts.pf.p1": "<code>/proc/vet_waf/perfstat</code> is the live counter set: requests, responses, cache hits and misses, and errors. Watch it while you generate load rather than sampling it once."
+  },
+  "vi": {
+    "code.copy": "Chép",
+    "doc.next": "Tiếp theo",
+    "doc.related": "Liên quan",
+    "meta.description": "Chẩn đoán Vet-WAF: module không nạp được, cấu hình bị từ chối, lưu lượng hợp lệ bị chặn, lỗi 502/504 từ backend, và tinh chỉnh hiệu năng.",
+    "ts.bk.h": "Lỗi phía backend",
+    "ts.bk.t.h1": "Mã lỗi",
+    "ts.bk.t.h2": "Ý nghĩa",
+    "ts.bk.t.h3": "Cần kiểm tra gì",
+    "ts.bk.t.r1a": "<b>502</b>",
+    "ts.bk.t.r1b": "Vet-WAF hoàn toàn không kết nối được tới origin",
+    "ts.bk.t.r1c": "Hãy thử gọi thẳng origin từ node biên: <code>curl -v http://ORIGIN:80/</code>. Sau đó kiểm tra tường lửa giữa hai máy.",
+    "ts.bk.t.r2a": "<b>504</b>",
+    "ts.bk.t.r2b": "Origin đã nhận kết nối nhưng trả lời quá chậm",
+    "ts.bk.t.r2c": "Hãy nâng <code>server_forward_timeout</code>, hoặc xử lý origin chậm. Khi tải cao, cũng nên nâng <code>server_queue_size</code>.",
+    "ts.bk.t.r3a": "<b>503</b>",
+    "ts.bk.t.r3b": "Không còn server khoẻ mạnh nào trong nhóm",
+    "ts.bk.t.r3c": "Cơ chế kiểm tra sức khoẻ đã loại hết origin. Hãy chắc chắn khối <code>health_check</code> mong đợi đúng phản hồi mà origin thực sự trả về — <code>resp_code</code> sai sẽ loại cả server đang khoẻ.",
+    "ts.bk.t.r4a": "<b>Phục vụ sai site</b>",
+    "ts.bk.t.r4b": "Chuỗi định tuyến đã khớp nhầm luật",
+    "ts.bk.t.r4c": "<code>http_chain</code> lấy luật khớp đầu tiên. Một luật bắt-tất-cả đặt sớm sẽ khiến mọi luật bên dưới không bao giờ được xét — hãy chuyển nó xuống cuối.",
+    "ts.bl.h": "Người dùng thật bị chặn",
+    "ts.bl.l1": "<b>Request thất bại khi không có header Host.</b> <code>http_strict_host_checking</code> bật sẵn và loại bỏ Host thiếu, trùng lặp hoặc mâu thuẫn. Đó là WAF đang hoạt động đúng. Khi thử bằng curl hãy thêm <code>-H 'Host: yoursite'</code>.",
+    "ts.bl.l2": "<b>PUT, DELETE hoặc OPTIONS trả về lỗi.</b> <code>http_methods</code> là danh sách cho phép. Hãy bổ sung đúng những phương thức API của bạn thực sự dùng, không thêm gì khác.",
+    "ts.bl.l3": "<b>Tải tệp lên thất bại khi vượt một kích thước nào đó.</b> Hãy nâng <code>http_body_len</code> lên bằng tệp hợp lệ lớn nhất của bạn — nhưng chỉ tới mức đó, vì mỗi byte là bộ nhớ kẻ tấn công có thể buộc bạn phải giữ.",
+    "ts.bl.l4": "<b>Cả một văn phòng mất kết nối cùng lúc.</b> Họ dùng chung một IP công cộng sau NAT nên cũng dùng chung một hạn mức Frang. Hãy nâng <code>request_rate</code> và <code>concurrent_tcp_connections</code>, đồng thời giảm hoặc bỏ <code>ip_block</code>.",
+    "ts.bl.l5": "<b>Khách bị cấm sau khi duyệt web bình thường.</b> <code>http_resp_code_block</code> có tính cả mã 404. Chỉ một mẫu trang bị lỗi liên tục gọi tài nguyên không tồn tại cũng đủ khiến một khách vô tội chạm giới hạn.",
+    "ts.bl.p1": "Cấu hình an toàn theo mặc định sẽ chặn một phần lưu lượng thật cho tới khi được tinh chỉnh cho site của bạn. Hãy xem lần lượt các mục sau — hai mục đầu giải thích phần lớn các báo cáo.",
+    "ts.bl.warn": "Với <code>block_action attack drop</code>, phản hồi bị âm thầm loại bỏ, nên client bị chặn chỉ thấy timeout mạng chứ không thấy trang lỗi. Đừng chẩn đoán từ phía client — <code>dmesg | grep -i frang</code> sẽ nêu rõ luật nào và IP nào.",
+    "ts.eyebrow": "Vận hành",
+    "ts.fs.h": "Bắt đầu từ đây",
+    "ts.fs.p1": "Vet-WAF chạy trong không gian nhân nên thông tin chẩn đoán nằm ở log của nhân chứ không phải một tệp log ứng dụng. Bốn lệnh sau trả lời phần lớn câu hỏi trước khi bạn cần sửa gì.",
+    "ts.fs.tip": "Hãy luôn đọc <code>dmesg</code> trước tiên. Bộ phân tích cấu hình nêu đích danh chỉ thị mà nó không chấp nhận được, còn Frang ghi log mọi lần chặn kèm lý do và địa chỉ client. Đoán mò từ phía client sẽ tốn thời gian hơn nhiều.",
+    "ts.h1": "Xử lý sự cố",
+    "ts.hp.h": "Vẫn chưa giải quyết được",
+    "ts.hp.p1": "Hãy mở issue trên <a class=\"link\" href=\"https://github.com/hoangtuvungcao/vet-waf\">GitHub</a> hoặc gửi email tới <a class=\"link\" href=\"mailto:trong20843@gmail.com\">trong20843@gmail.com</a>. Vui lòng kèm theo kết quả của <code>uname -r</code>, phần cấu hình liên quan, và 50 dòng cuối của <code>dmesg</code> — thứ cuối cùng này thường đã chứa sẵn câu trả lời.",
+    "ts.lead": "Vet-WAF chạy trong không gian nhân, nên câu trả lời gần như luôn nằm trong dmesg. Trang này ánh xạ từng triệu chứng thường gặp tới nguyên nhân của nó.",
+    "ts.ns.h": "Không khởi động được",
+    "ts.ns.t.h1": "Triệu chứng",
+    "ts.ns.t.h2": "Nguyên nhân và cách khắc phục",
+    "ts.ns.t.r1a": "<code>insmod</code> báo lỗi <i>invalid module format</i>",
+    "ts.ns.t.r1b": "Module được biên dịch cho một nhân khác với nhân đang chạy. Hãy kiểm tra <code>uname -r</code> đúng là 6.12.12, rồi chạy <code>make clean &amp;&amp; make</code>.",
+    "ts.ns.t.r2a": "Báo <i>Unknown symbol</i> trong <code>dmesg</code>",
+    "ts.ns.t.r2b": "Nhân đang chạy chưa được vá hoặc chỉ vá một phần. Hãy áp dụng lại <code>linux-6.12.12.patch</code> trên cây mã sạch và biên dịch lại — bản vá dở dang vẫn nạp được nhưng sẽ chạy sai.",
+    "ts.ns.t.r3a": "Lỗi <i>illegal instruction</i> khi nạp module",
+    "ts.ns.t.r3b": "CPU không có AVX2 — thứ mà Vet-WAF cần cho các hàm xử lý chuỗi và băm. Kiểm tra bằng <code>grep -o avx2 /proc/cpuinfo | head -1</code>.",
+    "ts.ns.t.r4a": "Dừng ngay lập tức, <code>dmesg</code> báo lỗi cấu hình",
+    "ts.ns.t.r4b": "Bộ phân tích đã từ chối một chỉ thị và nêu tên nó. Thủ phạm thường gặp là thiếu dấu chấm phẩy, hoặc khai báo <code>tls_certificate</code> toàn cục cùng lúc với một <code>vhost</code> có tên — hai thứ này loại trừ nhau.",
+    "ts.ns.t.r5a": "Nhân panic khi khởi động",
+    "ts.ns.t.r5b": "Gần như luôn là do tên trong <code>health</code> của một <code>srv_group</code> không khớp khối <code>health_check</code> nào. Tên này không được kiểm tra khi phân tích. Hãy để hai tên giống hệt nhau và định nghĩa khối đó trước.",
+    "ts.pf.h": "Hiệu năng và giám sát",
+    "ts.pf.l1": "<b>Tỷ lệ trúng cache thấp</b> nghĩa là origin đang gánh lưu lượng mà lẽ ra Vet-WAF phục vụ được từ RAM. Hãy bật <code>cache 2;</code> kèm <code>cache_fulfill * *;</code> — với một node biên, đây là khác biệt giữa việc chịu được trận lũ và việc chuyển tiếp nó.",
+    "ts.pf.l2": "<b>Kết nối dồn ứ khi bị tấn công</b> — hãy giảm <code>keepalive_timeout</code> để các slot nhàn rỗi được thu hồi nhanh và luôn sẵn cho người dùng thật.",
+    "ts.pf.l3": "<b>Origin quá tải trong khi Vet-WAF vẫn nhàn</b> — hãy nâng <code>conns_n=</code> trên dòng <code>server</code> để sự biến động kết nối được hấp thụ ở biên thay vì bị đẩy thẳng qua.",
+    "ts.pf.p1": "<code>/proc/vet_waf/perfstat</code> là tập bộ đếm trực tiếp: request, response, số lần trúng và trượt cache, và lỗi. Hãy theo dõi liên tục trong lúc tạo tải thay vì chỉ xem một lần."
+  }
+};
+</script>
+<script src="site.js"></script>
+</body>
+</html>

@@ -48,6 +48,7 @@
       <a href="#performance" data-i18n="nav.performance">Performance</a>
       <a href="#deploy" data-i18n="nav.deploy">Deploy</a>
       <a href="#quickstart" data-i18n="nav.quickstart">Quick start</a>
+      <a href="quickstart.html" data-i18n="nav.docs">Docs</a>
       <a href="#support" data-i18n="nav.support">Support</a>
       <div class="lang" role="group" aria-label="Language">
         <button class="lang__btn" data-lang-set="en" aria-pressed="true">EN</button>
@@ -271,6 +272,53 @@ sudo sysctl net.vet_waf.state
   </div>
 </section>
 
+<!-- DOCUMENTATION -->
+<section class="section" id="docs">
+  <div class="container">
+    <div class="section__head">
+      <h2 class="section__title" data-i18n="docs.title">Documentation</h2>
+      <p class="section__sub" data-i18n="docs.sub">Five guides, in the order you will need them — from a first build to tuning a live edge node under attack.</p>
+    </div>
+    <div class="grid grid--3">
+      <a class="card tilt" href="quickstart.html">
+        <div class="card__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="url(#gd1)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><defs><linearGradient id="gd1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#a78bfa"/><stop offset="1" stop-color="#38bdf8"/></linearGradient></defs><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        </div>
+        <h3 data-i18n="docs.d1t">Quick start</h3>
+        <p data-i18n="docs.d1s">Build, configure, and verify Vet-WAF is passing live traffic.</p>
+      </a>
+      <a class="card tilt" href="kernel-patching.html">
+        <div class="card__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="url(#gd2)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><defs><linearGradient id="gd2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#a78bfa"/><stop offset="1" stop-color="#38bdf8"/></linearGradient></defs><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 2v2M15 2v2M9 20v2M15 20v2M2 9h2M2 15h2M20 9h2M20 15h2"/></svg>
+        </div>
+        <h3 data-i18n="docs.d2t">Kernel patching</h3>
+        <p data-i18n="docs.d2s">Patch, build, and boot Linux 6.12.12 — with a safe recovery path.</p>
+      </a>
+      <a class="card tilt" href="frang.html">
+        <div class="card__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="url(#gd3)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><defs><linearGradient id="gd3" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#a78bfa"/><stop offset="1" stop-color="#38bdf8"/></linearGradient></defs><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <h3 data-i18n="docs.d3t">Frang rules</h3>
+        <p data-i18n="docs.d3s">Every anti-DDoS directive: floods, slowloris, malformed HTTP, scanners.</p>
+      </a>
+      <a class="card tilt" href="configuration.html">
+        <div class="card__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="url(#gd4)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><defs><linearGradient id="gd4" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#a78bfa"/><stop offset="1" stop-color="#38bdf8"/></linearGradient></defs><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6h.09A1.65 1.65 0 0 0 10 3.09V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9v.09a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        </div>
+        <h3 data-i18n="docs.d4t">Configuration</h3>
+        <p data-i18n="docs.d4s">Full reference: listeners, TLS, backends, failover, routing, cache.</p>
+      </a>
+      <a class="card tilt" href="troubleshooting.html">
+        <div class="card__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="url(#gd5)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><defs><linearGradient id="gd5" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#a78bfa"/><stop offset="1" stop-color="#38bdf8"/></linearGradient></defs><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3M12 17h.01"/></svg>
+        </div>
+        <h3 data-i18n="docs.d5t">Troubleshooting</h3>
+        <p data-i18n="docs.d5s">Map each symptom to its cause — and read dmesg first.</p>
+      </a>
+    </div>
+  </div>
+</section>
+
 <!-- DEPLOY GUIDE -->
 <section class="section section--alt" id="deploy">
   <div class="container">
@@ -414,7 +462,7 @@ http_chain    { -> default; }
       <a href="https://github.com/hoangtuvungcao/vet-waf/wiki" target="_blank" rel="noopener" data-i18n="nav.wiki">Wiki</a>
     </nav>
     <p class="footer__legal" data-i18n-html="footer.legal">
-      Vet-WAF is free software licensed under <b>GPLv2</b> — engine, tooling, and this website — derived from Tempesta FW. © 2026 Vet-WAF.
+      Vet-WAF is free software licensed under <b>GPLv2</b> — engine, tooling, and this website — derived from Tempesta FW. &copy; 2026 Vet-WAF.
     </p>
   </div>
 </footer>

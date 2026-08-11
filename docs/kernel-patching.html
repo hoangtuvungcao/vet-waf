@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en" data-lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kernel patching — Vet-WAF</title>
+<meta name="description" data-i18n="meta.description" content="Apply the Vet-WAF patch to Linux 6.12.12, configure and build the kernel, and recover safely if it does not boot.">
+<meta name="theme-color" content="#0b1020">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; script-src 'self' 'unsafe-inline'; base-uri 'self'; form-action 'none'; frame-ancestors 'none'; upgrade-insecure-requests">
+<link rel="canonical" href="https://hoangtuvungcao.github.io/vet-waf/kernel-patching.html">
+<link rel="icon" href="assets/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="nav" id="nav">
+  <div class="container nav__inner">
+    <a class="brand" href="index.html" aria-label="Vet-WAF home">
+      <img src="assets/mark.svg" alt="" width="34" height="34" class="brand__mark">
+      <span class="brand__name">Vet<span class="brand__accent">-WAF</span></span>
+    </a>
+    <nav class="nav__links" id="navLinks" aria-label="Primary">
+      <a href="index.html" data-i18n="nav.home">Home</a>
+      <a href="quickstart.html" data-i18n="doc.quickstart">Quick start</a>
+      <a href="kernel-patching.html" data-i18n="doc.kernel">Kernel patching</a>
+      <a href="frang.html" data-i18n="doc.frang">Frang rules</a>
+      <a href="configuration.html" data-i18n="doc.config">Configuration</a>
+      <a href="troubleshooting.html" data-i18n="doc.trouble">Troubleshooting</a>
+      <div class="lang" role="group" aria-label="Language">
+        <button class="lang__btn" data-lang-set="en" aria-pressed="true">EN</button>
+        <span class="lang__sep" aria-hidden="true">·</span>
+        <button class="lang__btn" data-lang-set="vi" aria-pressed="false">VI</button>
+      </div>
+    </nav>
+    <button class="nav__toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<div class="doc-shell">
+  <aside class="doc-side">
+    <h4 data-i18n="doc.onthispage">On this page</h4>
+    <nav>
+      <a href="quickstart.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        <span data-i18n="doc.quickstart">Quick start</span></a>
+      <a class="active" href="kernel-patching.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 2v2M15 2v2M9 20v2M15 20v2M2 9h2M2 15h2M20 9h2M20 15h2"/></svg>
+        <span data-i18n="doc.kernel">Kernel patching</span></a>
+      <a href="frang.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <span data-i18n="doc.frang">Frang rules</span></a>
+      <a href="configuration.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6h.09A1.65 1.65 0 0 0 10 3.09V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9v.09a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        <span data-i18n="doc.config">Configuration</span></a>
+      <a href="troubleshooting.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3M12 17h.01"/></svg>
+        <span data-i18n="doc.trouble">Troubleshooting</span></a>
+    </nav>
+  </aside>
+
+  <main class="doc-main">
+    <div class="doc-eyebrow" data-i18n="kp.eyebrow">Kernel</div>
+    <h1 data-i18n="kp.h1">Kernel patching</h1>
+    <p class="doc-lead" data-i18n="kp.lead">Vet-WAF lives in the TCP/IP stack, so it needs kernel hooks the stock tree does not export. This is a one-time patch, build, and reboot.</p>
+
+    <section class="doc-sec" id="why">
+      <h2 data-i18n="kp.why.h">Why a patched kernel</h2>
+      <p data-i18n-html="kp.why.p1">Vet-WAF is not a user-space proxy. It runs inside the Linux TCP/IP stack, which lets it answer a request without ever copying data to user space or scheduling a process. That is where the throughput comes from — and it is why the stock kernel is not enough.</p>
+      <p data-i18n-html="kp.why.p2">The patch exports hooks the stock kernel keeps private: socket-level callbacks for zero-copy reads, TLS handshake interception, and the ability to send a response straight from the softirq that received the packet.</p>
+      <div class="callout callout--warn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4M12 17h.01"/></svg>
+        <p data-i18n-html="kp.why.warn">Patching replaces the kernel your machine boots. Always keep the previous kernel entry in your bootloader so you can recover if the new one fails to boot.</p>
+      </div>
+    </section>
+
+    <section class="doc-sec" id="apply">
+      <h2 data-i18n="kp.ap.h">Apply the patch</h2>
+      <p data-i18n-html="kp.ap.p1">Vet-WAF targets <b>Linux 6.12.12</b> exactly. The patch is <code>linux-6.12.12.patch</code> in the repository root. Other point releases may apply with offsets, but only 6.12.12 is tested.</p>
+      <div class="code">
+        <div class="code__bar">
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+          <span class="code__title">bash</span>
+          <button class="code__copy" data-copy data-i18n="code.copy">Copy</button>
+        </div>
+<pre><code># 1. Fetch the exact upstream source
+curl -O https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.12.12.tar.xz
+tar xf linux-6.12.12.tar.xz
+cd linux-6.12.12
+
+# 2. Dry-run first — this changes nothing and reports conflicts
+patch -p1 --dry-run &lt; ../vet-waf/linux-6.12.12.patch
+
+# 3. If the dry run is clean, apply for real
+patch -p1 &lt; ../vet-waf/linux-6.12.12.patch</code></pre>
+      </div>
+      <div class="callout callout--tip">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+        <p data-i18n-html="kp.ap.tip">Never skip the <code>--dry-run</code>. If it reports a single <i>Hunk FAILED</i>, stop: a partially patched tree builds a kernel that loads Vet-WAF and then misbehaves in ways that are very hard to debug.</p>
+      </div>
+    </section>
+
+    <section class="doc-sec" id="config">
+      <h2 data-i18n="kp.cf.h">Configure and build</h2>
+      <p data-i18n-html="kp.cf.p1">Start from your running configuration so hardware support is preserved, then enable the options Vet-WAF needs.</p>
+      <div class="code">
+        <div class="code__bar">
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+          <span class="code__title">bash</span>
+          <button class="code__copy" data-copy data-i18n="code.copy">Copy</button>
+        </div>
+<pre><code># Inherit the running kernel's config
+cp /boot/config-$(uname -r) .config
+make olddefconfig
+
+# Required by Vet-WAF
+scripts/config --enable SECURITY
+scripts/config --enable NETFILTER
+scripts/config --enable  TLS
+scripts/config --disable DEBUG_INFO_BTF   # cuts build time sharply
+
+# Build (adjust -j to your core count) and install
+make -j"$(nproc)"
+sudo make modules_install install
+sudo reboot</code></pre>
+      </div>
+      <p data-i18n-html="kp.cf.p2">After the reboot, confirm you are on the patched kernel before building Vet-WAF itself:</p>
+      <div class="code">
+        <div class="code__bar">
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+          <span class="code__title">bash</span>
+          <button class="code__copy" data-copy data-i18n="code.copy">Copy</button>
+        </div>
+<pre><code>uname -r      # expects: 6.12.12</code></pre>
+      </div>
+    </section>
+
+    <section class="doc-sec" id="recover">
+      <h2 data-i18n="kp.rc.h">If the new kernel will not boot</h2>
+      <ol><li data-i18n-html="kp.rc.l1">At the bootloader menu, choose <b>Advanced options</b> and boot the previous kernel. Nothing is lost — the old kernel is still installed.</li><li data-i18n-html="kp.rc.l2">Once booted, read the failure: <code>journalctl -k -b -1</code> shows the kernel log from the failed boot attempt.</li><li data-i18n-html="kp.rc.l3">Most failures are a missing storage or filesystem driver in the initramfs. Rebuild it: <code>sudo update-initramfs -c -k 6.12.12</code>.</li><li data-i18n-html="kp.rc.l4">To remove the patched kernel entirely: <code>sudo rm -rf /boot/*6.12.12* /lib/modules/6.12.12</code> then <code>sudo update-grub</code>.</li></ol>
+    </section>
+
+
+
+    <nav class="doc-nav">
+      <a href="frang.html">
+        <span data-i18n="doc.next">Next</span>
+        <b data-i18n="doc.frang">Frang rules</b>
+      </a>
+      <a href="quickstart.html">
+        <span data-i18n="doc.related">Related</span>
+        <b data-i18n="doc.quickstart">Quick start</b>
+      </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <p class="footer__legal" data-i18n-html="footer.legal">
+      Vet-WAF is free software under <b>GPLv2</b> — engine, tooling and this site — derived from Tempesta FW. &copy; 2026 Vet-WAF.
+    </p>
+  </div>
+</footer>
+
+<script>
+window.VETWAF_I18N = {
+  "en": {
+    "code.copy": "Copy",
+    "doc.next": "Next",
+    "doc.related": "Related",
+    "kp.ap.h": "Apply the patch",
+    "kp.ap.p1": "Vet-WAF targets <b>Linux 6.12.12</b> exactly. The patch is <code>linux-6.12.12.patch</code> in the repository root. Other point releases may apply with offsets, but only 6.12.12 is tested.",
+    "kp.ap.tip": "Never skip the <code>--dry-run</code>. If it reports a single <i>Hunk FAILED</i>, stop: a partially patched tree builds a kernel that loads Vet-WAF and then misbehaves in ways that are very hard to debug.",
+    "kp.cf.h": "Configure and build",
+    "kp.cf.p1": "Start from your running configuration so hardware support is preserved, then enable the options Vet-WAF needs.",
+    "kp.cf.p2": "After the reboot, confirm you are on the patched kernel before building Vet-WAF itself:",
+    "kp.eyebrow": "Kernel",
+    "kp.h1": "Kernel patching",
+    "kp.lead": "Vet-WAF lives in the TCP/IP stack, so it needs kernel hooks the stock tree does not export. This is a one-time patch, build, and reboot.",
+    "kp.rc.h": "If the new kernel will not boot",
+    "kp.rc.l1": "At the bootloader menu, choose <b>Advanced options</b> and boot the previous kernel. Nothing is lost — the old kernel is still installed.",
+    "kp.rc.l2": "Once booted, read the failure: <code>journalctl -k -b -1</code> shows the kernel log from the failed boot attempt.",
+    "kp.rc.l3": "Most failures are a missing storage or filesystem driver in the initramfs. Rebuild it: <code>sudo update-initramfs -c -k 6.12.12</code>.",
+    "kp.rc.l4": "To remove the patched kernel entirely: <code>sudo rm -rf /boot/*6.12.12* /lib/modules/6.12.12</code> then <code>sudo update-grub</code>.",
+    "kp.why.h": "Why a patched kernel",
+    "kp.why.p1": "Vet-WAF is not a user-space proxy. It runs inside the Linux TCP/IP stack, which lets it answer a request without ever copying data to user space or scheduling a process. That is where the throughput comes from — and it is why the stock kernel is not enough.",
+    "kp.why.p2": "The patch exports hooks the stock kernel keeps private: socket-level callbacks for zero-copy reads, TLS handshake interception, and the ability to send a response straight from the softirq that received the packet.",
+    "kp.why.warn": "Patching replaces the kernel your machine boots. Always keep the previous kernel entry in your bootloader so you can recover if the new one fails to boot.",
+    "meta.description": "Apply the Vet-WAF patch to Linux 6.12.12, configure and build the kernel, and recover safely if it does not boot."
+  },
+  "vi": {
+    "code.copy": "Chép",
+    "doc.next": "Tiếp theo",
+    "doc.related": "Liên quan",
+    "kp.ap.h": "Áp dụng bản vá",
+    "kp.ap.p1": "Vet-WAF nhắm chính xác vào <b>Linux 6.12.12</b>. Bản vá là <code>linux-6.12.12.patch</code> ở thư mục gốc của mã nguồn. Các bản phát hành khác có thể áp dụng được nhưng chỉ 6.12.12 đã được kiểm thử.",
+    "kp.ap.tip": "Đừng bao giờ bỏ qua <code>--dry-run</code>. Nếu nó báo dù chỉ một <i>Hunk FAILED</i>, hãy dừng lại: một cây mã vá dở sẽ tạo ra nhân vẫn nạp được Vet-WAF nhưng chạy sai theo cách rất khó truy vết.",
+    "kp.cf.h": "Cấu hình và biên dịch",
+    "kp.cf.p1": "Hãy bắt đầu từ cấu hình nhân đang chạy để giữ nguyên hỗ trợ phần cứng, sau đó bật các tuỳ chọn mà Vet-WAF cần.",
+    "kp.cf.p2": "Sau khi khởi động lại, hãy xác nhận bạn đang chạy nhân đã vá trước khi biên dịch Vet-WAF:",
+    "kp.eyebrow": "Nhân Linux",
+    "kp.h1": "Vá nhân Linux",
+    "kp.lead": "Vet-WAF nằm trong ngăn xếp TCP/IP nên cần các hook mà nhân gốc không mở ra. Đây là công việc vá, biên dịch và khởi động lại chỉ làm một lần.",
+    "kp.rc.h": "Nếu nhân mới không khởi động",
+    "kp.rc.l1": "Ở menu bootloader, chọn <b>Advanced options</b> và khởi động nhân trước đó. Không mất gì cả — nhân cũ vẫn còn được cài.",
+    "kp.rc.l2": "Sau khi vào được hệ thống, hãy đọc nguyên nhân: <code>journalctl -k -b -1</code> cho xem log nhân của lần khởi động thất bại.",
+    "kp.rc.l3": "Phần lớn lỗi là do thiếu driver lưu trữ hoặc hệ thống tệp trong initramfs. Hãy tạo lại: <code>sudo update-initramfs -c -k 6.12.12</code>.",
+    "kp.rc.l4": "Để xoá hẳn nhân đã vá: <code>sudo rm -rf /boot/*6.12.12* /lib/modules/6.12.12</code> rồi <code>sudo update-grub</code>.",
+    "kp.why.h": "Vì sao cần vá nhân",
+    "kp.why.p1": "Vet-WAF không phải proxy ở tầng người dùng. Nó chạy ngay trong ngăn xếp TCP/IP của Linux, nhờ vậy có thể trả lời một request mà không cần sao chép dữ liệu lên tầng người dùng hay điều phối tiến trình. Đó là nguồn gốc của hiệu năng — và cũng là lý do nhân gốc chưa đủ.",
+    "kp.why.p2": "Bản vá mở ra các hook mà nhân gốc giữ riêng: callback ở tầng socket cho việc đọc zero-copy, chặn bắt tay TLS, và khả năng gửi phản hồi ngay từ softirq đã nhận gói tin.",
+    "kp.why.warn": "Việc vá sẽ thay thế nhân mà máy dùng để khởi động. Luôn giữ lại mục nhân cũ trong bootloader để có thể khôi phục nếu nhân mới không khởi động được.",
+    "meta.description": "Áp dụng bản vá Vet-WAF cho Linux 6.12.12, cấu hình và biên dịch nhân, và khôi phục an toàn nếu không khởi động được."
+  }
+};
+</script>
+<script src="site.js"></script>
+</body>
+</html>
