@@ -166,9 +166,15 @@ ifndef AVX2
 	$(warning !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!)
 endif
 	$(MAKE) -C tls/t generate_tables
+# Userspace helpers (db query CLI, libtus, ClickHouse access-log daemon) need a
+# C++23 toolchain (std::expected -> gcc-13+) that some targets (e.g. Ubuntu
+# 22.04) lack, and NONE are required to build or run the kernel modules. Build
+# only the engine with `make TFW_MODULES_ONLY=1`.
+ifndef TFW_MODULES_ONLY
 	$(MAKE) -C db
 	$(MAKE) -C libtus
 	$(MAKE) -C logger
+endif
 	$(MAKE) -C $(KERNEL) M=$(shell pwd) modules
 
 test: build

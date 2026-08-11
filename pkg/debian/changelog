@@ -1,3 +1,18 @@
+vet-waf (0.9.0) focal; urgency=medium
+
+  * Production edge profile (etc/vet_waf.prod.conf): kernel-space TLS
+    termination on :443, :80->:443 redirect, connection-pooled origin with
+    active health checks, and a hardened Frang anti-DDoS ruleset.
+  * Two-node edge-cluster tooling (scripts/cluster/): staging, rolling
+    cutover, verification, and rollback for firewall.hidev.dev.
+  * Complete documentation website under docs/ (quick start, kernel
+    patching, configuration, Frang rules, troubleshooting), published to
+    GitHub Pages; brighter, more responsive redesign.
+  * Rewrote README as a self-contained project front door (features,
+    install, configuration, repository layout).
+
+ -- Vet-WAF <trong20843@gmail.com>  Tue, 11 Aug 2026 21:44:07 +0700
+
 vet-waf (0.8.1) focal; urgency=medium
 
   * Security-by-default configuration (#2451)

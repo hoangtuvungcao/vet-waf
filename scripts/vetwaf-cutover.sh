@@ -38,7 +38,7 @@ set -uo pipefail
 TFW_SRC=${TFW_SRC:-/usr/src/vet_waf}
 TFW_CFG=${TFW_CFG:-/etc/vet_waf/vet_waf.conf}
 LEGACY_SVC=${LEGACY_SVC:-mango-waf}
-ORIGIN=${ORIGIN:-85.117.239.3:80}
+ORIGIN=${ORIGIN:-103.77.246.164:80}
 TEST_HOST=${TEST_HOST:-firewall.hidev.dev}
 TEST_PORT=${TEST_PORT:-80}
 

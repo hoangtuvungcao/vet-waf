@@ -74,3 +74,6 @@ logger/access_log_plugin/clickhouse-build
 logger/access_log_plugin/access_log.so
 logger/access_log_plugin/tfw_clickhouse.a
 logger/t/tfw_logger_tests
+
+# Release artifacts (published as GitHub Release assets, not committed)
+/dist/
