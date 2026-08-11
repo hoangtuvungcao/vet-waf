@@ -2909,7 +2909,7 @@ TEST_MPART(http2_parser, forwarded, 1)
 				{ .data = "forwarded", .len = 9 },
 				{ .data = "host=", .len = 5,
 				  .flags = TFW_STR_NAME|TFW_STR_HDR_VALUE},
-				{ .data = "example.com:443", .len = 11,
+				{ .data = "example.com", .len = 11,
 				  .flags = TFW_STR_VALUE|TFW_STR_HDR_VALUE},
 				{ .data = ":", .len = 1,
 				  .flags = TFW_STR_HDR_VALUE},
@@ -3061,7 +3061,7 @@ TEST_MPART(http2_parser, forwarded, 2)
 		TfwStr *forwarded = &req->h_tbl->tbl[TFW_HTTP_HDR_FORWARDED];
 		TfwStr h_expected = {
 			.chunks = (TfwStr []) {
-				{ .data = "forwarded:", .len = 9 },
+				{ .data = "forwarded", .len = 9 },
 				{ .data = "host=", .len = 5,
 				  .flags = TFW_STR_NAME|TFW_STR_HDR_VALUE },
 				{ .data = "example.com", .len = 11,

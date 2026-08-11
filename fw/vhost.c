@@ -2216,6 +2216,39 @@ frang_parse_ushort(const char *s, unsigned short *out, const char *spec_name)
 	return 0;
 }
 
+/*
+ * Parse a rate time frame given in seconds and store it pre-multiplied into
+ * ticks per quantum, as the hot path expects.
+ *
+ * The converted value must be range checked here, not just the input: it is
+ * stored in an unsigned short, and (n * HZ) / FRANG_FREQ overflows 16 bits
+ * long before the input does. A wrapped result silently shrinks the window
+ * (a 2098 s frame becomes 26 ticks at HZ=250), and for some HZ it wraps to 0,
+ * which then divides by zero in frang_time_quantum().
+ */
+static int
+frang_parse_tframe(const char *s, unsigned short *out, const char *spec_name)
+{
+	int n;
+
+	if (tfw_cfg_parse_int(s, &n)) {
+		T_ERR_NL("frang: %s: \"%s\" isn't a valid value\n",
+			 spec_name, s);
+		return -EINVAL;
+	}
+	if (tfw_cfg_check_range(n, 1, (USHRT_MAX * FRANG_FREQ) / HZ))
+		return -EINVAL;
+
+	*out = (n * HZ) / FRANG_FREQ;
+	if (!*out) {
+		T_ERR_NL("frang: %s: time frame \"%s\" is too small to be "
+			 "measured at HZ=%d\n", spec_name, s, HZ);
+		return -EINVAL;
+	}
+
+	return 0;
+}
+
 /**
  * Save response code block configuration
  */
@@ -2250,11 +2283,8 @@ __tfw_cfgop_frang_rsp_code_block(TfwCfgSpec *cs, TfwCfgEntry *ce,
 	}
 
 	if (frang_parse_ushort(ce->vals[ce->val_n - 2], &cb->limit, cs->name)
-	    || frang_parse_ushort(ce->vals[ce->val_n - 1], &cb->tf, cs->name))
+	    || frang_parse_tframe(ce->vals[ce->val_n - 1], &cb->tf, cs->name))
 		return -EINVAL;
-
-	/* Update time frame value to reduce calculations in hot-path. */
-	cb->tf = (cb->tf * HZ) / FRANG_FREQ;
 
 	return 0;
 }
@@ -2525,15 +2555,16 @@ __tfw_cfgop_frang_rates(TfwCfgSpec *cs, TfwCfgEntry *ce, unsigned int *rate,
 		return -EINVAL;
 	}
 
-	*tf = 1;
-	if (ce->val_n == 2 && frang_parse_ushort(ce->vals[1], tf, cs->name))
-		return -EINVAL;
-
 	/*
 	 * How many ticks in signle timeframe. Update the
 	 * value to reduce calculations in hot-path.
 	 */
-	*tf = (*tf * HZ) / FRANG_FREQ;
+	if (ce->val_n == 2) {
+		if (frang_parse_tframe(ce->vals[1], tf, cs->name))
+			return -EINVAL;
+	} else {
+		*tf = HZ / FRANG_FREQ;
+	}
 
 	return 0;
 }

@@ -984,7 +984,7 @@ TEST(http_match, choose_host)
 				{ .data = "example.ru" , .len = 10,
 				  .flags = TFW_STR_VALUE },
 			},
-			.len = 25,
+			.len = 26,
 			.nchunks = 4
 		};
 
