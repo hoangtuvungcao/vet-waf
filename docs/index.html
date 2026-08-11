@@ -47,6 +47,7 @@
       <a href="#security" data-i18n="nav.security">Security</a>
       <a href="#performance" data-i18n="nav.performance">Performance</a>
       <a href="#deploy" data-i18n="nav.deploy">Deploy</a>
+      <a href="#cluster" data-i18n="nav.cluster">Cluster</a>
       <a href="#quickstart" data-i18n="nav.quickstart">Quick start</a>
       <a href="quickstart.html" data-i18n="nav.docs">Docs</a>
       <a href="#support" data-i18n="nav.support">Support</a>
@@ -361,6 +362,70 @@ sudo sysctl net.vet_waf.state
   </div>
 </section>
 
+<!-- TWO-NODE CLUSTER -->
+<section class="section" id="cluster">
+  <div class="container">
+    <div class="section__head">
+      <h2 class="section__title" data-i18n="clu.title">Two-node cluster: synchronised policy &amp; automatic ejection</h2>
+      <p class="section__sub" data-i18n="clu.sub">Run Vet-WAF on two edge nodes behind one hostname. Policy is replicated from a single author, each node watches the other, and a node that stops protecting traffic is taken out of rotation automatically. The tooling lives in <code>scripts/cluster/</code>.</p>
+    </div>
+    <div class="grid grid--2">
+      <article class="card card--sec">
+        <h3 data-i18n="clu.c1.h">Author &amp; replica, not peer-to-peer</h3>
+        <p data-i18n-html="clu.c1.p">One node authors policy; the other pulls. <code>waf-sync.sh</code> refuses to push from a replica, because two writable copies is exactly how split-brain rulesets happen. Every change is a git commit in <code>/etc/vet_waf/cluster</code> — <code>git log</code> is the audit trail and <code>git revert</code> is the rollback. rsync is the fallback transport.</p>
+      </article>
+      <article class="card card--sec">
+        <h3 data-i18n="clu.c2.h">Validated before it reaches either node</h3>
+        <p data-i18n-html="clu.c2.p">The validator mirrors the kernel's own rule grammar from <code>fw/http_tbl.c</code>: the match field must be one of <code>uri</code>, <code>host</code>, <code>hdr</code>, <code>mark</code>, <code>method</code>, <code>cookie</code>, and every rule must terminate. A ruleset that the kernel would reject is stopped before the push, not after — including a bare default rule, which would silently shadow everything below it.</p>
+      </article>
+      <article class="card card--sec">
+        <h3 data-i18n="clu.c3.h">Health checks that catch a useless node</h3>
+        <p data-i18n-html="clu.c3.p">A TCP check only proves the socket answers. <code>waf-health.sh</code> additionally requires <code>state=start</code>, live origin connections in <code>/proc/vet_waf/perfstat</code>, and a real proxied request. haproxy runs it as an <code>agent-check</code> alongside the HTTP check and ejects after 3 consecutive failures, readmitting only after 2 successes.</p>
+      </article>
+      <article class="card card--sec">
+        <h3 data-i18n="clu.c4.h">Management ports the peer can reach, and nobody else</h3>
+        <p data-i18n-html="clu.c4.p"><code>waf-firewall.sh</code> leaves <code>80/443</code> public and restricts <code>22</code>, <code>8081</code> and <code>8404</code> to the peer plus any admin addresses you name. <code>--apply</code> arms a timed rollback so a mistake on a remote VPS cannot lock you out; <code>--commit</code> keeps the ruleset once you have confirmed you still have access.</p>
+      </article>
+    </div>
+    <div class="code">
+      <div class="code__bar">
+        <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        <span class="code__title">cluster bring-up (both nodes)</span>
+        <button class="code__copy" data-copy data-i18n="code.copy">Copy</button>
+      </div>
+<pre><code># 1. On BOTH nodes — dependencies, logging, systemd units
+./scripts/cluster/waf-bootstrap.sh --all
+./scripts/cluster/waf-bootstrap.sh --verify
+
+# 2. Firewall, with a 300s rollback armed. Open a SECOND ssh
+#    session and confirm it works before committing.
+./scripts/cluster/waf-firewall.sh --apply
+./scripts/cluster/waf-firewall.sh --commit
+
+# 3. On the AUTHOR node only — seed and replicate policy
+./scripts/cluster/waf-sync.sh --init
+./scripts/cluster/waf-sync.sh --commit "block scanner range"
+./scripts/cluster/waf-sync.sh --push
+
+# 4. On the REPLICA — pull every 5 minutes
+systemctl enable --now waf-sync.timer
+
+# 5. Verify from either node
+./scripts/cluster/waf-sync.sh --status      # digests must match
+./scripts/cluster/waf-health.sh --check     # up / down + reason</code></pre>
+    </div>
+    <div class="note-box">
+      <h4 data-i18n="clu.tradeoff.h">The tradeoff, stated plainly</h4>
+      <ul>
+        <li data-i18n-html="clu.t1"><b>haproxy and Vet-WAF cannot share port 80.</b> The fronting layout puts haproxy on <code>:80/:443</code> and moves Vet-WAF to <code>:8080</code>, so requests cross a user-space proxy before reaching the kernel-space WAF. That gives back part of the performance that makes Vet-WAF worth running.</li>
+        <li data-i18n-html="clu.t2"><b>Take this layout for automatic ejection.</b> If you want the throughput instead, run Vet-WAF directly on <code>:80</code> on both nodes, publish both A records, and withdraw the record of a failed node at the DNS layer.</li>
+        <li data-i18n-html="clu.t3"><b>Source addresses are not an <code>http_chain</code> field.</b> There is no <code>ip ==</code> match. Blacklisted sources are tagged in nftables and matched in policy as <code>mark == 16</code>; <code>waf-firewall.sh --blockip</code> manages that set for you.</li>
+        <li data-i18n-html="clu.t4"><b>Policy is three fixed files, not a directory.</b> <code>!include</code> expands with <code>find</code>, which returns directory order, and <code>http_chain</code> is first-match-wins — a rule directory can evaluate differently on each node while looking identical.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
 <!-- CONFIG -->
 <section class="section" id="config">
   <div class="container">
@@ -457,6 +522,7 @@ http_chain    { -> default; }
       <a href="#security" data-i18n="nav.security">Security</a>
       <a href="#performance" data-i18n="nav.performance">Performance</a>
       <a href="#deploy" data-i18n="nav.deploy">Deploy</a>
+      <a href="#cluster" data-i18n="nav.cluster">Cluster</a>
       <a href="#support" data-i18n="nav.support">Support</a>
       <a href="https://github.com/hoangtuvungcao/vet-waf" target="_blank" rel="noopener">GitHub</a>
       <a href="https://github.com/hoangtuvungcao/vet-waf/wiki" target="_blank" rel="noopener" data-i18n="nav.wiki">Wiki</a>
