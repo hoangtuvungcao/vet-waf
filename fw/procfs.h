@@ -1,7 +1,7 @@
 /**
- *		Tempesta FW
+ *		Vet-WAF
  *
- * Copyright (C) 2016-2025 Tempesta Technologies, Inc.
+ * Copyright (C) 2016-2025 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@
 #ifndef __TFW_PROCFS_H__
 #define __TFW_PROCFS_H__
 
-#include "tempesta_fw.h"
+#include "vet_waf.h"
 #include "stat.h"
 
 /*
@@ -41,11 +41,11 @@ typedef struct {
  *
  * @conn_attempts	- The number of connect attempts.
  * @conn_established	- The number of connections ever established
- *			  with peers while Tempesta is active.
+ *			  with peers while Vet-WAF is active.
  * @conn_disconnects	- The number of disconnects for any reason.
  *
  * @rx_bytes		- The number of bytes received from peers and
- *			  processed by Tempesta.
+ *			  processed by Vet-WAF.
  */
 #define TFW_STAT_COMMON							\
 	u64	rx_messages;						\

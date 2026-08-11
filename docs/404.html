@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>404 — Page not found · Vet-WAF</title>
+<meta name="theme-color" content="#0b1020">
+<link rel="icon" href="assets/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<link rel="stylesheet" href="styles.css">
+<style>
+  .nf{min-height:100vh;display:grid;place-items:center;text-align:center;padding:40px 24px}
+  .nf__code{font-size:clamp(72px,18vw,160px);font-weight:800;letter-spacing:-4px;line-height:1;
+    background:var(--grad-text);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .nf h1{font-size:clamp(22px,4vw,32px);font-weight:800;margin:8px 0 12px}
+  .nf p{color:var(--muted);max-width:420px;margin:0 auto 28px}
+  .nf__brand{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:26px;
+    font-weight:800;font-size:20px}
+</style>
+</head>
+<body>
+  <div class="nf">
+    <div>
+      <div class="nf__brand">
+        <img src="assets/mark.svg" alt="" width="34" height="34">
+        <span>Vet<span class="brand__accent">-WAF</span></span>
+      </div>
+      <div class="nf__code">404</div>
+      <h1>This page slipped past the firewall</h1>
+      <p>The page you’re looking for doesn’t exist or has moved.</p>
+      <a class="btn btn--primary" href="./">Back to home</a>
+    </div>
+  </div>
+</body>
+</html>

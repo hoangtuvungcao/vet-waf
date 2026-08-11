@@ -1,5 +1,5 @@
 /**
- *		Tempesta DB
+ *		Vet-WAF DB
  *
  * Index and memory management for cache conscious Burst Hash Trie.
  * Operations over the index tree are lock-free while buckets with collision
@@ -10,8 +10,8 @@
  * in sleepable contexts, such as configuration. Only the trie initialization
  * and shutdown are performed in process context.
  *
- * Copyright (C) 2014 NatSys Lab. (info@natsys-lab.com).
- * Copyright (C) 2015-2026 Tempesta Technologies, Inc.
+ * Copyright (C) 2014 Vet-WAF (info@vet-waf.io).
+ * Copyright (C) 2015-2026 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by
@@ -45,7 +45,7 @@
 typedef void tdb_on_remove_cb_t(TdbHdr *dbh, TdbRec *rec);
 
 /**
- * Tempesta DB extent descriptor.
+ * Vet-WAF DB extent descriptor.
  *
  * @b_bmp	- bitmap of used/free blocks;
  */
@@ -54,7 +54,7 @@ typedef struct {
 } __attribute__((packed)) TdbExt;
 
 /**
- * Tempesta DB HTrie node.
+ * Vet-WAF DB HTrie node.
  * This is exactly one cache line.
  * Each shift in @shifts determine index of a node in file including extent
  * and/or file headers, i.e. they start from 2 or 3.
@@ -579,7 +579,7 @@ tdb_htrie_init_bucket(TdbBucket *b)
 	/*
 	 * To lock buckets in a chain for the trie traversal.
 	 * Use subclass > SINGLE_DEPTH_NESTING to avoid collisions with
-	 * kernel and Tempesta FW locking subclasses.
+	 * kernel and Vet-WAF locking subclasses.
 	 */
 	lockdep_init_map(&b->lock.dep_map, "TdbBucket->lock",
 			 &__lockdep_no_validate__, 3);

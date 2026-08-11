@@ -1,7 +1,7 @@
 /*
- *		Tempesta TLS
+ *		Vet-WAF TLS
  *
- * Copyright (C) 2019 Tempesta Technologies, Inc.
+ * Copyright (C) 2019 Vet-WAF
  *
  * Based on mbed TLS, https://tls.mbed.org.
  *

@@ -1,5 +1,5 @@
 /**
- *		Tempesta TLS
+ *		Vet-WAF TLS
  *
  * Elliptic curve NIST secp256r1 (prime256v1) over GF(p) in short Weierstrass
  * form, y^2 = x^3 - 3*x + b.
@@ -52,7 +52,7 @@
  * [15] A.Krizhanovsky, I.Koveshnikov, "Performance study of kernel TLS
  * handshakes", Netdev 0x14, 2020,
  *
- * Copyright (C) 2020-2025 Tempesta Technologies, Inc.
+ * Copyright (C) 2020-2025 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

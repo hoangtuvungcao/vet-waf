@@ -1,8 +1,8 @@
 /**
- *		Tempesta FW
+ *		Vet-WAF
  *
- * Copyright (C) 2014 NatSys Lab. (info@natsys-lab.com).
- * Copyright (C) 2015-2025 Tempesta Technologies, Inc.
+ * Copyright (C) 2014 Vet-WAF (info@vet-waf.io).
+ * Copyright (C) 2015-2025 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by
@@ -25,7 +25,7 @@
 #include <linux/string.h>
 #include <net/net_namespace.h> /* for sysctl */
 
-#include "tempesta_fw.h"
+#include "vet_waf.h"
 #include "cfg.h"
 #include "client.h"
 #include "log.h"
@@ -64,7 +64,7 @@ static LIST_HEAD(tfw_mods);
 static DEFINE_RWLOCK(tfw_mods_lock);
 
 /**
- * Return true if Tempesta is reconfiguring, and false otherwise.
+ * Return true if Vet-WAF is reconfiguring, and false otherwise.
  */
 bool
 tfw_runstate_is_reconfig(void)
@@ -79,7 +79,7 @@ tfw_runstate_is_started_success(void)
 }
 
 /**
- * Return true if Tempesta is started, and false otherwise.
+ * Return true if Vet-WAF is started, and false otherwise.
  */
 bool
 tfw_runstate_is_started(void)
@@ -287,14 +287,14 @@ tfw_start(void)
 	tfw_cfg_conclude(&tfw_mods);
 	WRITE_ONCE(tfw_state, TFW_STATE_STARTED);
 
-	T_LOG_NL("Tempesta FW is ready\n");
+	T_LOG_NL("Vet-WAF is ready\n");
 
 	return 0;
 stop_mods:
 	/*
 	 * Live reconfiguration successfully parsed but failed just in the
 	 * middle of replacing the old configuration. This cannot be fixed
-	 * and Tempesta must be fully stopped and cleared.
+	 * and Vet-WAF must be fully stopped and cleared.
 	 */
 	WRITE_ONCE(tfw_reconfig, false);
 	tfw_mods_stop();
@@ -321,7 +321,7 @@ tfw_ctlfn_state_change(const char *new_state)
 
 		if (tfw_runstate_is_started()) {
 			WRITE_ONCE(tfw_reconfig, true);
-			T_LOG("Live reconfiguration of Tempesta.\n");
+			T_LOG("Live reconfiguration of Vet-WAF.\n");
 		}
 
 		r = tfw_start();
@@ -349,7 +349,7 @@ tfw_ctlfn_state_change(const char *new_state)
 }
 
 /**
- * Syctl handler for tempesta.state read/write operations.
+ * Syctl handler for vet_waf.state read/write operations.
  */
 static int
 tfw_ctlfn_state_io(const struct ctl_table *ctl, int is_write,
@@ -448,7 +448,7 @@ do {								\
 	T_DBG("init: %s\n", #mod);				\
 	r = tfw_##mod##_init();					\
 	if (r) {						\
-		T_ERR_NL("can't initialize Tempesta FW module: '%s' (%d)\n", \
+		T_ERR_NL("can't initialize Vet-WAF module: '%s' (%d)\n", \
 			   #mod, r);				\
 		goto err;					\
 	}							\
@@ -466,7 +466,7 @@ tfw_exit(void)
 	 * to avoid concurrent shutdown calls */
 	mutex_lock(&tfw_sysctl_mtx);
 	if (tfw_runstate_is_started()) {
-		T_WARN_NL("Tempesta FW is still running, shutting down...\n");
+		T_WARN_NL("Vet-WAF is still running, shutting down...\n");
 		tfw_stop();
 		WRITE_ONCE(tfw_state, TFW_STATE_STOPPED);
 	}
@@ -486,14 +486,14 @@ tfw_init(void)
 {
 	int r;
 
-	T_LOG("Initializing Tempesta FW kernel module...\n");
+	T_LOG("Initializing Vet-WAF kernel module...\n");
 
 #ifndef AVX2
-	T_LOG("ATTENTION: TEMPESTA IS BUILT WITHOUT AVX2 SUPPORT, "
+	T_LOG("ATTENTION: VET-WAF IS BUILT WITHOUT AVX2 SUPPORT, "
 	      "PERFORMANCE IS DEGRADED.");
 #endif
 
-	tfw_sysctl_hdr = register_net_sysctl(&init_net, "net/tempesta",
+	tfw_sysctl_hdr = register_net_sysctl(&init_net, "net/vet_waf",
 					     tfw_sysctl_tbl);
 	if (!tfw_sysctl_hdr) {
 		T_ERR_NL("can't register sysctl table\n");

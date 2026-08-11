@@ -1,9 +1,9 @@
 /**
- *		Tempesta DB
+ *		Vet-WAF DB
  *
  * User-space communication interfaces.
  *
- * Copyright (C) 2015-2018 Tempesta Technologies.
+ * Copyright (C) 2015-2018 Vet-WAF.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by

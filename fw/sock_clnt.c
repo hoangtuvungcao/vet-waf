@@ -1,10 +1,10 @@
 /**
- *		Tempesta FW
+ *		Vet-WAF
  *
  * TCP/IP stack hooks and socket routines to handle client traffic.
  *
- * Copyright (C) 2014 NatSys Lab. (info@natsys-lab.com).
- * Copyright (C) 2015-2026 Tempesta Technologies, Inc.
+ * Copyright (C) 2014 Vet-WAF (info@vet-waf.io).
+ * Copyright (C) 2015-2026 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@
 #include <linux/sort.h>
 #include <linux/bsearch.h>
 
-#include "tempesta_fw.h"
+#include "vet_waf.h"
 #include "lib/fault_injection_alloc.h"
 #include "cfg.h"
 #include "client.h"
@@ -122,7 +122,7 @@ tfw_cli_conn_alloc(int type)
 	 * The lock is acquired at only one place where there is no conflict
 	 * with the socket lock, so prevent LOCKDEP complaining the dependency.
 	 * Use subclass > SINGLE_DEPTH_NESTING to avoid collisions with kernel
-	 * and TempestaDB locking subclasses.
+	 * and Vet-WAF DB locking subclasses.
 	 */
 	lockdep_init_map(&cli_conn->ret_qlock.dep_map, "cli_conn->ret_qlock",
 			 &__lockdep_no_validate__, 2);
@@ -247,7 +247,7 @@ tfw_sock_clnt_new(struct sock *sk)
 	sock_set_flag(sk, SOCK_DBG);
 #endif
 
-	/* Link Tempesta with the socket and the peer. */
+	/* Link Vet-WAF with the socket and the peer. */
 	tfw_connection_revive(conn);
 	tfw_connection_link_to_sk(conn, sk);
 	tfw_connection_link_from_sk(conn, sk);
@@ -317,9 +317,9 @@ tfw_sock_clnt_drop(struct sock *sk)
 
 	/*
 	 * Withdraw from socket activity. Connection is now closed,
-	 * and Tempesta is not called anymore on events in the socket.
+	 * and Vet-WAF is not called anymore on events in the socket.
 	 * Remove the connection from the list that is kept in @peer.
-	 * Release resources allocated in Tempesta for the connection.
+	 * Release resources allocated in Vet-WAF for the connection.
 	 */
 	tfw_connection_unlink_from_sk(sk);
 	tfw_connection_unlink_from_peer(conn);
@@ -343,7 +343,7 @@ tfw_cli_conn_on_shutdown(TfwConn *conn)
 	 * After receiving ack from remote peer, such socket moved
 	 * to TCP_FIN_WAIT2 state and can stay in this state unlimited
 	 * time (`tcp_fin_timeout` which was set to 10 seconds during
-	 * Tempesta FW start doesn't work for such sockets).
+	 * Vet-WAF start doesn't work for such sockets).
 	 * To prevent such situation set connection keepalive timer
 	 * to 10 seconds and abort connection if this time is expired.
 	 *
@@ -432,7 +432,7 @@ tfw_cli_conn_close_all(void *data)
 /**
  * Close all connections with a given client, called on security events. Unlike
  * @tfw_cli_conn_close_all(), this one must guarantee that all the close
- * requests will be done. Attackers can spam Tempesta with lot of requests and
+ * requests will be done. Attackers can spam Vet-WAF with lot of requests and
  * connections, trying to cause a work queue overrun and delay security events
  * handlers. To detach attackers efficiently, we have to use synchronous close.
  */
@@ -469,7 +469,7 @@ typedef struct {
 /**
  * The list of all existing TfwListenSock structures.
  *
- * The list is filled when Tempesta FW is started and emptied when it is
+ * The list is filled when Vet-WAF is started and emptied when it is
  * stopped, and not changed in between. Therefore, no locking is required.
  */
 static LIST_HEAD(tfw_listen_socks);
@@ -759,7 +759,7 @@ tfw_sock_clnt_cfgend(void)
 
 	T_DBG("Checking backends and listeners\n");
 	if ((r = tfw_sg_for_each_srv_reconfig(tfw_sock_check_lst))) {
-		T_ERR_NL("One of the backends is Tempesta itself!"
+		T_ERR_NL("One of the backends is Vet-WAF itself!"
 			   " Please, fix the configuration.\n");
 		return r;
 	}

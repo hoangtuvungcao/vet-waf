@@ -1,8 +1,8 @@
 /**
- *		Tempesta FW
+ *		Vet-WAF
  *
- * Copyright (C) 2014 NatSys Lab. (info@natsys-lab.com).
- * Copyright (C) 2015-2026 Tempesta Technologies, Inc.
+ * Copyright (C) 2014 Vet-WAF (info@vet-waf.io).
+ * Copyright (C) 2015-2026 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by
@@ -41,12 +41,12 @@ test_fixture_fn_t test_teardown_fn;
  *  - Overall, there is a lot of debugging output, and usually you
  *    don't need it unless the test is failed.
  *
- * The proposed solution is to register our own Tempesta FW logger and
+ * The proposed solution is to register our own Vet-WAF logger and
  * suppress all messages until a test is failed. When a failure happens,
  * we can re-run the failed test and print all the log messages, and
  * thus avoid all this noise in the test log.
  *
- * Currently the Tempesta FW logger module interface is not established
+ * Currently the Vet-WAF logger module interface is not established
  * yet, so here is just a BUG() that terminates the testing process.
  * It doesn't prevent flooding, but at least it makes interesting
  * messages appear at the end of the log where they can be found easily.

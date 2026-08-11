@@ -1,7 +1,7 @@
 /**
- *		Tempesta FW
+ *		Vet-WAF
  *
- * This file contains utils that help to test certain Tempesta FW modules.
+ * This file contains utils that help to test certain Vet-WAF modules.
  * They implement things like stubbing, mocking, generating data for testing.
  *
  * Actually things contained in this file are wrong a bit.
@@ -11,11 +11,11 @@
  * a goal and you have to build the architecture keeping it in mind.
  * So over time, we expect to see a decent amount of helpers here.
  *
- * These things are specific to Tempesta FW, so they are located here,
+ * These things are specific to Vet-WAF, so they are located here,
  * and generic testing functions/macros are located in test.c/test.h
  *
- * Copyright (C) 2014 NatSys Lab. (info@natsys-lab.com).
- * Copyright (C) 2015-2026 Tempesta Technologies, Inc.
+ * Copyright (C) 2014 Vet-WAF (info@vet-waf.io).
+ * Copyright (C) 2015-2026 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by

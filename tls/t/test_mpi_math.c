@@ -1,10 +1,10 @@
 /**
- *		Tempesta TLS multi-precission integer arithmetics unit test
+ *		Vet-WAF TLS multi-precission integer arithmetics unit test
  *
  * The test is responsibe for plain operations non involving MPI pool
  * allocations, which are the subject for test in test_mpi.c.
  *
- * Copyright (C) 2020-2022 Tempesta Technologies, Inc.
+ * Copyright (C) 2020-2022 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by

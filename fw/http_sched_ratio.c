@@ -1,7 +1,7 @@
 /**
- *              Tempesta FW
+ *              Vet-WAF
  *
- * Copyright (C) 2017-2025 Tempesta Technologies, Inc.
+ * Copyright (C) 2017-2025 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@
 #include <linux/sort.h>
 
 #include "sched.h"
-#include "tempesta_fw.h"
+#include "vet_waf.h"
 #include "lib/fault_injection_alloc.h"
 #include "apm.h"
 #include "log.h"
@@ -952,7 +952,7 @@ rerun:
 	 * connection can not be found after multiple attempts, then
 	 * something is wrong with one or more upstream servers in
 	 * this group. Spinning in the loop here would just aggravate
-	 * the issue on Tempesta's side.
+	 * the issue on Vet-WAF's side.
 	 */
 	attempts = ratio->srv_n;
 	while (attempts--) {

@@ -1,10 +1,10 @@
 /**
- *		Tempesta FW
+ *		Vet-WAF
  *
  * HTTP session management.
  *
  * Typically Web applications identify HTTP sessions using special session ID
- * cookies. Tempesta does this using sticky cookies. So HTTP session contains
+ * cookies. Vet-WAF does this using sticky cookies. So HTTP session contains
  * at least its timestamp and secure HMAC over User-Agent, client IP address
  * and the timestamp - the hash is used to identify the session.
  *
@@ -29,7 +29,7 @@
  * JS challenge client should execute it and send new request with
  * appropriate cookie just in time.
  *
- * Copyright (C) 2015-2026 Tempesta Technologies, Inc.
+ * Copyright (C) 2015-2026 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by
@@ -94,7 +94,7 @@ typedef struct {
 /**
  * Context for TDB operations over sessions.
  *
- * @sv		- sticky value, calculated for a client by Tempesta;
+ * @sv		- sticky value, calculated for a client by Vet-WAF;
  * @cookie_val	- sticky cookie value learned from backend server;
  * @req		- currently processed request;
  * @resp	- currently processed response;
@@ -196,7 +196,7 @@ tfw_http_sticky_build_redirect(TfwHttpReq *req, StickyVal *sv, bool jsch_allow)
 }
 
 /*
- * Find Tempesta sticky cookie in an HTTP request.
+ * Find Vet-WAF sticky cookie in an HTTP request.
  *
  * Return the number of found cookies.
  */
@@ -208,7 +208,7 @@ tfw_http_sticky_get_req(TfwHttpReq *req, TfwStr *cookie_val)
 
 	/*
 	 * Find a 'Cookie:' header field in the request. Then search for
-	 * Tempesta sticky cookie within the field. In HTTP/1.x requests
+	 * Vet-WAF sticky cookie within the field. In HTTP/1.x requests
 	 * all cookies are stored in the only "Cookie:" header (RFC 6265
 	 * section 5.4), HTTP/2 requests may use either a single header
 	 * or multiple headers (RFC 7540 Section 8.1.2.5).
@@ -267,9 +267,9 @@ do {									\
 #endif
 
 /*
- * Create Tempesta sticky cookie value.
+ * Create Vet-WAF sticky cookie value.
  *
- * Tempesta sticky cookie is based on:
+ * Vet-WAF sticky cookie is based on:
  * - HTTP request source IP address;
  * - HTTP request User-Agent string;
  * - Current timestamp;
@@ -322,7 +322,7 @@ tfw_http_sticky_calc(TfwHttpReq *req, StickyVal *sv)
 }
 
 /*
- * Add Tempesta sticky cookie to an HTTP response.
+ * Add Vet-WAF sticky cookie to an HTTP response.
  *
  * Create a complete 'set-cookie' header field, and add it
  * to the HTTP response' header block.
@@ -489,7 +489,7 @@ tfw_http_sticky_challenge_start(TfwHttpReq *req)
 }
 
 /**
- * Verify found Tempesta sticky cookie.
+ * Verify found Vet-WAF sticky cookie.
  */
 static int
 tfw_http_sticky_verify(TfwHttpReq *req, TfwStr *value, StickyVal *sv)
@@ -546,7 +546,7 @@ tfw_http_sticky_verify(TfwHttpReq *req, TfwStr *value, StickyVal *sv)
 }
 
 /*
- * Process Tempesta sticky cookie in an HTTP request.
+ * Process Vet-WAF sticky cookie in an HTTP request.
  */
 static int
 tfw_http_sticky_req_process(TfwHttpReq *req, StickyVal *sv, TfwStr *cookie_val)
@@ -554,7 +554,7 @@ tfw_http_sticky_req_process(TfwHttpReq *req, StickyVal *sv, TfwStr *cookie_val)
 	int r;
 
 	/*
-	 * See if the Tempesta sticky cookie is present in the request,
+	 * See if the Vet-WAF sticky cookie is present in the request,
 	 * and act depending on the result.
 	 */
 	r = tfw_http_sticky_get_req(req, cookie_val);
@@ -570,13 +570,13 @@ tfw_http_sticky_req_process(TfwHttpReq *req, StickyVal *sv, TfwStr *cookie_val)
 
 		return TFW_HTTP_SESS_SUCCESS;
 	}
-	T_WARN("Multiple Tempesta sticky cookies found in request: %d\n", r);
+	T_WARN("Multiple Vet-WAF sticky cookies found in request: %d\n", r);
 
 	return TFW_HTTP_SESS_FAILURE;
 }
 
 /*
- * Add Tempesta sticky cookie to an HTTP response if needed.
+ * Add Vet-WAF sticky cookie to an HTTP response if needed.
  */
 int
 tfw_http_sess_resp_process(TfwHttpResp *resp, bool cache)
@@ -867,7 +867,7 @@ tfw_http_sess_obtain(TfwHttpReq *req)
 	if (req->vhost->cookie->learn) {
 		key = tfw_hash_str(c_val);
 	}
-	else /* TempestaFw native cookie */ {
+	else /* Vet-WAF native cookie */ {
 		if (!sv->ts)
 			/* No sticky cookie in request and no enforcement. */
 			if (tfw_http_sticky_calc(req, sv))
@@ -1134,7 +1134,7 @@ tfw_http_sticky_sess_failover_enabled(TfwMsg *msg)
 }
 
 /**
- * Find an outgoing connection for client with Tempesta sticky cookie.
+ * Find an outgoing connection for client with Vet-WAF sticky cookie.
  * @sess is not null when calling the function.
  *
  * Reuse req->sess->srv_conn if it is alive. If not,
@@ -1274,7 +1274,7 @@ static TfwCfgSpec tfw_http_sess_specs_table[] = {
 	},
 	{
 		.name = "sessions_db",
-		.deflt = "/opt/tempesta/db/sessions.tdb",
+		.deflt = "/opt/vet_waf/db/sessions.tdb",
 		.handler = tfw_cfg_set_str,
 		.dest = &sess_db_cfg.db_path,
 		.spec_ext = &(TfwCfgSpecStr) {

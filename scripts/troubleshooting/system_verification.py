@@ -13,8 +13,8 @@ import socket
 from typing import Optional
 
 
-__author__ = "Tempesta Technologies, Inc."
-__copyright__ = "Copyright (C) 2018-2025 Tempesta Technologies, Inc."
+__author__ = "Vet-WAF"
+__copyright__ = "Copyright (C) 2018-2025 Vet-WAF"
 __license__ = "GPL2"
 
 
@@ -98,25 +98,25 @@ class CommandLineArgs:
         :return: key-value arguments
         """
         parser = argparse.ArgumentParser(
-            description="Check if OS and Machine is suitable with minimal Tempesta requirements, start Netconsole",
+            description="Check if OS and Machine is suitable with minimal Vet-WAF requirements, start Netconsole",
             epilog='./system_verification.py -nh=192.168.0.100 -nni=eth0 -th=192.168.0.101 -tm=00:00:00:00:00:00',
             add_help=True
         )
         parser.add_argument(
             '-th', '--troubleshooting-host',
             type=str,
-            help="Tempesta Troubeshooting Server host, example (192.168.0.101)",
+            help="Vet-WAF Troubeshooting Server host, example (192.168.0.101)",
         )
         parser.add_argument(
             '-tp', '--troubleshooting-port',
             type=str,
             default='5555',
-            help="Tempesta Troubeshooting Server port, example (5555)",
+            help="Vet-WAF Troubeshooting Server port, example (5555)",
         )
         parser.add_argument(
             '-tm', '--troubleshooting-mac',
             type=str,
-            help="Tempesta Troubeshooting Server Mac Address, example (aa:bb:cc:dd:ee:ff)",
+            help="Vet-WAF Troubeshooting Server Mac Address, example (aa:bb:cc:dd:ee:ff)",
         )
         parser.add_argument(
             '-nh', '--netconsole-host',
@@ -226,9 +226,9 @@ class SystemInfo:
     @property
     def is_tfw_kernel_loaded(self) -> bool:
         """
-        Verify if custom Tempesta kernel is loaded
+        Verify if custom Vet-WAF kernel is loaded
 
-        :return: true if current kernel is Tempesta kernel
+        :return: true if current kernel is Vet-WAF kernel
         """
         return "tfw" in self.current_kernel
 
@@ -507,13 +507,13 @@ def is_system_suitable(system_info: SystemInfo, errors: list = None) -> bool:
 
     if not_supported_flags:
         errors.append(
-            "Your processor does not support minimal requirement to run Tempesta:"
+            "Your processor does not support minimal requirement to run Vet-WAF:"
             f" {not_supported_flags} are unsupported."
         )
 
     if system_info.ram_mb < MINIMAL_RAM_MB:
         errors.append(
-            f"The minimal amount of RAM required by Tempesta is {MINIMAL_RAM_MB} MB"
+            f"The minimal amount of RAM required by Vet-WAF is {MINIMAL_RAM_MB} MB"
             f", but you have {system_info.ram_mb} MB"
         )
 
@@ -537,7 +537,7 @@ def print_kernel_log(text: str):
     :return:
     """
     with open('/dev/kmsg', 'w') as f:
-        f.write(f'[tempesta sc] {text}')
+        f.write(f'[Vet-WAF sc] {text}')
 
 
 def tempesta_log(text):
@@ -627,10 +627,10 @@ def send_system_info(
         errors: list = None
 ) -> bool:
     """
-    Send system info to Tempesta Troubleshooting Server
+    Send system info to Vet-WAF Troubleshooting Server
 
-    :param support_host: Tempesta Troubleshooting Server host
-    :param support_port: Tempesta Troubleshooting Server port
+    :param support_host: Vet-WAF Troubleshooting Server host
+    :param support_port: Vet-WAF Troubleshooting Server port
     :param system_info: json serialized SystemInfo object
 
     :return: True if system info was sent
@@ -645,7 +645,7 @@ def send_system_info(
         sock.sendall(f"<sys-info>{system_info}</sys-info>".encode())
         return True
     except socket.timeout:
-        errors.append('Could not connect to Tempesta Troubleshooting Server. Timeout.')
+        errors.append('Could not connect to Vet-WAF Troubleshooting Server. Timeout.')
 
     except socket.gaierror:
         errors.append('Provided ip is invalid')
@@ -752,5 +752,5 @@ if __name__ == '__main__':
 
     if not is_sent:
         format_errors(
-            description="Connection to Tempesta Troubleshooting Server", errors=troubleshooting_server_errors
+            description="Connection to Vet-WAF Troubleshooting Server", errors=troubleshooting_server_errors
         )

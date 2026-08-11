@@ -1,12 +1,12 @@
 /**
- *		Tempesta TLS
+ *		Vet-WAF TLS
  *
  * Public Key layer for parsing key files and structures
  *
  * Based on mbed TLS, https://tls.mbed.org.
  *
  * Copyright (C) 2006-2015, ARM Limited, All Rights Reserved
- * Copyright (C) 2015-2025 Tempesta Technologies, Inc.
+ * Copyright (C) 2015-2025 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

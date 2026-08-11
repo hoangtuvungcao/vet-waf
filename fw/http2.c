@@ -1,7 +1,7 @@
 /**
- *		Tempesta FW
+ *		Vet-WAF
  *
- * Copyright (C) 2024-2026 Tempesta Technologies, Inc.
+ * Copyright (C) 2024-2026 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by
@@ -261,9 +261,9 @@ tfw_h2_context_alloc(void)
 	struct page *page;
 
 	/*
-	 * Tempesta FW allocates the whole page for http2 context.
+	 * Vet-WAF allocates the whole page for http2 context.
 	 * and uses extra memory for streams schedulers for better
-	 * memory locality. Tempesta FW preallocate only streams
+	 * memory locality. Vet-WAF preallocate only streams
 	 * schedulers not the whole streams, because size of
 	 * TfwStream structure is very big. There is no sence
 	 * to preallocate only two streams (count of streams that

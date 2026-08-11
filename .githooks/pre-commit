@@ -25,7 +25,7 @@ if command -v clang-format >/dev/null 2>&1 || ls /usr/bin/clang-format-* >/dev/n
 fi
 
 # update copyrights
-perl -i -pe "s/Copyright \(C\) (\d{4})(-\d{4})? Tempesta/Copyright \(C\) \$1-$year Tempesta/g" $files
-perl -i -pe "s/Copyright \(C\) $year-$year Tempesta/Copyright \(C\) $year Tempesta/g" $files
+perl -i -pe "s/Copyright \(C\) (\d{4})(-\d{4})? Vet-WAF/Copyright \(C\) \$1-$year Vet-WAF/g" $files
+perl -i -pe "s/Copyright \(C\) $year-$year Vet-WAF/Copyright \(C\) $year Vet-WAF/g" $files
 
 git add $files

@@ -1,9 +1,9 @@
 /**
- *		Tempesta FW
+ *		Vet-WAF
  *
  * Synchronous Sockets API for Linux socket buffers manipulation.
  *
- * Copyright (C) 2015-2026 Tempesta Technologies, Inc.
+ * Copyright (C) 2015-2026 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@ typedef int (*on_tcp_entail_cb_t)(void *conn, struct sk_buff *skb_head);
 typedef struct tfw_client_mem_t TfwClientMem;
 
 /*
- * Tempesta FW sk_buff callbacks.
+ * Vet-WAF sk_buff callbacks.
  *
  * @on_send		- callback to special handling this skb before sending;
  * @on_send_fail	- callback to special handling this skb if send fails;
@@ -47,7 +47,7 @@ typedef struct {
 } TfwSkbHooks;
 
 /*
- * Tempesta FW sk_buff private data.
+ * Vet-WAF sk_buff private data.
  * @cli_mem 		- pointer to TfwClientMem structure for memory
  *			  accounting;
  * @mem			- memory used for this skb, used to account appropriate

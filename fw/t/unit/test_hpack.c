@@ -1,7 +1,7 @@
 /**
- *		Tempesta FW
+ *		Vet-WAF
  *
- * Copyright (C) 2019-2026 Tempesta Technologies, Inc.
+ * Copyright (C) 2019-2026 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by
@@ -1339,7 +1339,7 @@ TEST(hpack, enc_huffman)
 
 	/*
 	 * TODO: add more test cases: encode<->decode the same text using
-	 * Tempesta functions.
+	 * Vet-WAF functions.
 	 */
 }
 

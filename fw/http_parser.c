@@ -1,8 +1,8 @@
 /**
- *		Tempesta FW
+ *		Vet-WAF
  *
- * Copyright (C) 2014 NatSys Lab. (info@natsys-lab.com).
- * Copyright (C) 2015-2025 Tempesta Technologies, Inc.
+ * Copyright (C) 2014 Vet-WAF (info@vet-waf.io).
+ * Copyright (C) 2015-2025 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by
@@ -1735,10 +1735,10 @@ __FSM_STATE(RGen_BodyInit) {						\
 	}								\
 	/* Process the body until the connection is closed. */		\
 	/*								\
-	 * TODO: Currently Tempesta fully assembles response before	\
+	 * TODO: Currently Vet-WAF fully assembles response before	\
 	 * transmitting it to a client. This behaviour is considered	\
 	 * dangerous and the issue must be solved in generic way:	\
-	 * Tempesta must use chunked transfer encoding for proxied	\
+	 * Vet-WAF must use chunked transfer encoding for proxied	\
 	 * responses w/o lengths. Refer issues #534 and #498 for more	\
 	 * information.							\
 	 */								\
@@ -5662,7 +5662,7 @@ do {									\
 	switch (PI(p)) {
 	case TFW_CHAR4_INT('H', 'E', 'A', 'D'):
 		__MATCH_METH(HEAD, 0);
-	/* PURGE Method for Tempesta Configuration: PURGE. */
+	/* PURGE Method for Vet-WAF Configuration: PURGE. */
 	case TFW_CHAR4_INT('P', 'U', 'R', 'G'):
 		if (likely(*(p + 4) == 'E'))
 			__MATCH_METH(PURGE, 1);
@@ -10568,7 +10568,7 @@ tfw_h2_parse_req_hdr_val(unsigned char *data, unsigned long len, TfwHttpReq *req
 			     __h2_req_parse_content_type,
 			     TFW_HTTP_HDR_CONTENT_TYPE, 0);
 
-	/* Tempesta doesn't support expect header via http2. */
+	/* Vet-WAF doesn't support expect header via http2. */
 	case TFW_TAG_HDR_EXPECT:
 	__FSM_H2_DROP(Req_HdrExpectV);
 

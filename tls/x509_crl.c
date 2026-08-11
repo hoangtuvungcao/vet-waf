@@ -1,5 +1,5 @@
 /**
- *		Tempesta TLS
+ *		Vet-WAF TLS
  *
  * X.509 Certificate Revocation List (CRL) parsing
  *
@@ -14,7 +14,7 @@
  * Based on mbed TLS, https://tls.mbed.org.
  *
  * Copyright (C) 2006-2015, ARM Limited, All Rights Reserved
- * Copyright (C) 2015-2024 Tempesta Technologies, Inc.
+ * Copyright (C) 2015-2024 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

@@ -1,7 +1,7 @@
 /**
- *		Tempesta kernel library
+ *		Vet-WAF kernel library
  *
- * Copyright (C) 2018-2025 Tempesta Technologies, INC.
+ * Copyright (C) 2018-2025 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@
 #include <linux/string.h>
 #include "str.h"
 
-MODULE_AUTHOR("Tempesta Technologies, INC");
+MODULE_AUTHOR("Vet-WAF");
 MODULE_VERSION("0.1.1");
 MODULE_LICENSE("GPL");
 

@@ -1,0 +1,29 @@
+[Unit]
+Description=High performance HTTP proxy server
+DefaultDependencies=false
+After=network.target
+
+[Service]
+Type=oneshot
+Environment="TFW_PATH=/usr/src/vet_waf/fw"
+Environment="TDB_PATH=/usr/src/vet_waf/db/core"
+Environment="TLS_PATH=/usr/src/vet_waf/tls"
+Environment="LIB_PATH=/usr/src/vet_waf/lib"
+Environment="REGEX_PATH=/usr/src/vet_waf/regex"
+Environment="REGEX_SETUP_SCRIPT_PATH=/lib/vet_waf/scripts/regex_setup.sh"
+Environment=TFW_CFG_PATH=/etc/vet_waf/vet_waf.conf
+Environment="TFW_SYSTEMD=1"
+Environment="TFW_NETCONSOLE_HOST="
+Environment="TFW_NETCONSOLE_PORT="
+Environment="TFW_NETCONSOLE_NI="
+Environment="TFW_TROUBLESHOOTING_HOST="
+Environment="TFW_TROUBLESHOOTING_PORT="
+Environment="TFW_TROUBLESHOOTING_MAC="
+RemainAfterExit=yes
+ExecStart=/lib/vet_waf/scripts/vet_waf.sh --start
+ExecStopPost=/lib/vet_waf/scripts/vet_waf.sh --stop
+ExecReload=/lib/vet_waf/scripts/vet_waf.sh --reload
+TimeoutSec=infinity
+
+[Install]
+WantedBy=multi-user.target

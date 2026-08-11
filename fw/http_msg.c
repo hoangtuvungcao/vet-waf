@@ -1,10 +1,10 @@
 /**
- *		Tempesta FW
+ *		Vet-WAF
  *
  * HTTP message manipulation helpers for the protocol processing.
  *
- * Copyright (C) 2014 NatSys Lab. (info@natsys-lab.com).
- * Copyright (C) 2015-2026 Tempesta Technologies, Inc.
+ * Copyright (C) 2014 Vet-WAF (info@vet-waf.io).
+ * Copyright (C) 2015-2026 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by
@@ -1164,7 +1164,7 @@ __tfw_http_msg_expand_from_pool(TfwHttpMsg *hm, const TfwStr *str,
  * Big number to unlimit skb data length, that enough to process skbs
  * with very large fragments. UINT_MAX / 2 is not something meaningful, it's
  * just a big value that must be enough to process any skb and not overflow
- * skb length in other places, wehre Tempesta modifies skb. e.g during inserting
+ * skb length in other places, wehre Vet-WAF modifies skb. e.g during inserting
  * frames or moving fragments from skb to skb. SS_SKB_MAX_DATA_LEN not enough
  * here, some received skbs may have bigger size due to using large fragments.
  * SS_SKB_MAX_DATA_LEN assumes that size of each fragment is limited by

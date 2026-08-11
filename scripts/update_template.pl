@@ -1,6 +1,6 @@
 #!/usr/bin/env perl
 #
-# Copyright (C) 2017-2022 Tempesta Technologies, Inc.
+# Copyright (C) 2017-2022 Vet-WAF
 #
 # This program is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -68,7 +68,7 @@ __END__
 
 =head1	NAME
 
-JavaScript Challenge template compilation tool for TempestaFW.
+JavaScript Challenge template compilation tool for Vet-WAF.
 
 =head1	SYNOPSIS
 
@@ -77,7 +77,7 @@ JavaScript Challenge template compilation tool for TempestaFW.
 FILE		- Path template file from 'js_challenge' directive.
 		  File extension must be '.tpl'.
 
-COOKIE		- Tempesta FW sticky cookie name (directive 'js_challenge').
+COOKIE		- Vet-WAF sticky cookie name (directive 'js_challenge').
 
 MIN_TIME	- Value of 'delay_min' parameter for directive 'js_challenge'.
 

@@ -1,7 +1,7 @@
 #
-# Tempesta FW regex setup script.
+# Vet-WAF regex setup script.
 #
-# Copyright (C) 2026 Tempesta Technologies, Inc.
+# Copyright (C) 2026 Vet-WAF
 #
 # This program is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -17,11 +17,11 @@
 # this program; if not, write to the Free Software Foundation, Inc., 59
 # Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-regex_dir_path=${REGEX_DIR_PATH:="/opt/tempesta/regex"}
+regex_dir_path=${REGEX_DIR_PATH:="/opt/vet_waf/regex"}
 
 print_dmesg()
 {
-	echo "[tempesta regexp]: $@" > /dev/kmsg
+	echo "[Vet-WAF regexp]: $@" > /dev/kmsg
 }
 
 cleanup()

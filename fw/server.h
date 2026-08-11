@@ -1,8 +1,8 @@
 /**
- *		Tempesta FW
+ *		Vet-WAF
  *
- * Copyright (C) 2014 NatSys Lab. (info@natsys-lab.com).
- * Copyright (C) 2015-2026 Tempesta Technologies, Inc.
+ * Copyright (C) 2014 Vet-WAF (info@vet-waf.io).
+ * Copyright (C) 2015-2026 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by
@@ -50,7 +50,7 @@ typedef struct tfw_scheduler_t TfwScheduler;
  * max_recns can be the maximum value for the data type to mean
  * the unlimited number of attempts, which is the value that should
  * never be reached. UINT_MAX seconds is more than 136 years. It's
- * safe to assume that it's not reached in a single run of Tempesta.
+ * safe to assume that it's not reached in a single run of Vet-WAF.
  */
 #define TFW_SRV_MAX_RECONNECT  (UINT_MAX - TFW_SRV_TMO_NR)
 

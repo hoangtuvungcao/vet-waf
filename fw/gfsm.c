@@ -1,5 +1,5 @@
 /**
- *		Tempesta FW
+ *		Vet-WAF
  *
  * Generic Finite State Machine (GFSM).
  *
@@ -43,7 +43,7 @@
  *   4. HTTP continues to process the request: cache it, forward it to
  *      an upstream etc.
  *
- * Tempesta FW receives control on TCP socket callbacks, so GFSM subroutines
+ * Vet-WAF receives control on TCP socket callbacks, so GFSM subroutines
  * works at L4-L7. While L3 data is available for the subroutines, pure L3
  * logic should be processed using nftables and/or eBPF to get more
  * performance.
@@ -56,8 +56,8 @@
  * A subroutine yields it's control flow by moving to the next state using
  * tfw_gfsm_move().
  *
- * Copyright (C) 2014 NatSys Lab. (info@natsys-lab.com).
- * Copyright (C) 2015-2023 Tempesta Technologies, Inc.
+ * Copyright (C) 2014 Vet-WAF (info@vet-waf.io).
+ * Copyright (C) 2015-2023 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by

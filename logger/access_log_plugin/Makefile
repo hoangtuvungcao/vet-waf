@@ -1,6 +1,6 @@
-#		Tempesta FW
+#		Vet-WAF
 #
-# Copyright (C) 2024-2025 Tempesta Technologies, Inc.
+# Copyright (C) 2024-2025 Vet-WAF
 #
 # This program is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by

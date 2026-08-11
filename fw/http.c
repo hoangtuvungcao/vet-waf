@@ -1,5 +1,5 @@
 /**
- *		Tempesta FW
+ *		Vet-WAF
  *
  * Core HTTP-layer processing, including HTTP/2 and HTTP/1.1 versions.
  *
@@ -65,8 +65,8 @@
  * away in HTTP/2-format instead of transforming into HTTP/2 from already
  * created HTTP/1.1-message.
  *
- * Copyright (C) 2014 NatSys Lab. (info@natsys-lab.com).
- * Copyright (C) 2015-2026 Tempesta Technologies, Inc.
+ * Copyright (C) 2014 Vet-WAF (info@vet-waf.io).
+ * Copyright (C) 2015-2026 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by
@@ -359,7 +359,7 @@ static TfwStr http_predef_resps[RESP_NUM] = {
 			    "/" TFW_VERSION S_CRLF S_CRLF),
 		.nchunks = 11
 	},
-	/* Internal error in TempestaFW. */
+	/* Internal error in Vet-WAF. */
 	[RESP_500] = {
 		.chunks = (TfwStr []){
 			{ .data = S_500, .len = SLEN(S_500) },
@@ -795,7 +795,7 @@ tfw_h1_prep_resp(TfwHttpResp *resp, unsigned short status, TfwStr *msg)
 
 /**
  * The response redirects the client to the same URI as the original request,
- * but it includes 'Set-Cookie:' header field that sets Tempesta sticky cookie.
+ * but it includes 'Set-Cookie:' header field that sets Vet-WAF sticky cookie.
  * If JS challenge is enabled, then body contained JS challenge is provided.
  * Body string contains the 'Content-Length' header, CRLF and body itself.
  */
@@ -834,7 +834,7 @@ do { 								\
 	p += len;						\
 } while (0)
 
-	/* Checked early during Tempesta FW config parsing. */
+	/* Checked early during Vet-WAF config parsing. */
 	BUG_ON(!status_line);
 
 	tfw_http_prep_date(date_val);
@@ -997,7 +997,7 @@ tfw_http_conn_msg_unlink_conn(TfwHttpMsg *hm)
  * can be safely dereferenced and used in the code.
  * In rare cases we're sure that a connection instance in a message
  * doesn't have multiple users. For example, when an error response
- * is prepared and sent by Tempesta, that HTTP message does not need
+ * is prepared and sent by Vet-WAF, that HTTP message does not need
  * a connection instance. The message is then immediately destroyed,
  * and a simpler tfw_http_msg_free() can be used for that.
  *
@@ -1077,7 +1077,7 @@ tfw_http_resp_pair_free_and_put_conn(void *opaque_data)
  * responses will not be sent to the client. That depends on the
  * order in which CPUs close the connection and call tfw_http_resp_fwd().
  * This is the intended behaviour. The goal is to free some memory
- * at the cost of dropping a few clients, so that Tempesta can
+ * at the cost of dropping a few clients, so that Vet-WAF can
  * continue working.
  */
 void
@@ -1814,7 +1814,7 @@ tfw_http_req_redir(TfwHttpReq *req, int status, TfwHttpRedir *redir)
 	char *status_line = tfw_http_resp_status_line(status, &status_line_len);
 	size_t i = 0;
 
-	/* Checked early during Tempesta FW config parsing. */
+	/* Checked early during Vet-WAF config parsing. */
 	BUG_ON(!status_line);
 
 	tfw_http_prep_date(date_val);
@@ -3089,9 +3089,9 @@ tfw_http_conn_abort(TfwConn *c)
  * The responses will never come now. Keep the queue. When the connection
  * is restored the requests will be re-sent to the server.
  *
- * If a server connection is completely destroyed (on Tempesta's shutdown),
+ * If a server connection is completely destroyed (on Vet-WAF's shutdown),
  * then all outstanding requests in @fwd_queue are dropped and released.
- * Depending on Tempesta's state, both user and kernel context threads
+ * Depending on Vet-WAF's state, both user and kernel context threads
  * may try to do that at the same time. As @fwd_queue is moved atomically
  * to local @zap_queue, only one thread is able to proceed and release
  * the resources.
@@ -4631,7 +4631,7 @@ tfw_http_resp_get_conn_flags(TfwHttpResp *resp)
 
 	/*
 	 * If request violated backend rules, backend may respond with 4xx code
-	 * and close connection to Tempesta. Don't encourage client to send
+	 * and close connection to Vet-WAF. Don't encourage client to send
 	 * more such requests and cause performance degradation, close the
 	 * client connection.
 	 */
@@ -5626,7 +5626,7 @@ tfw_h2_error_resp(TfwHttpReq *req, int status, bool reply, ErrorType type,
 		type == TFW_ERROR_TYPE_BAD);
 
 	/*
-	 * block_action attack/error drop - Tempesta FW must block message
+	 * block_action attack/error drop - Vet-WAF must block message
 	 * silently (response won't be generated) and reset (with TCP RST)
 	 * the client connection.
 	 */
@@ -5717,7 +5717,7 @@ tfw_h1_error_resp(TfwHttpReq *req, int status, bool reply, ErrorType type,
 	/* The client connection is to be closed with the last resp sent. */
 	reply &= !test_bit(TFW_HTTP_B_REQ_DROP, req->flags);
 	/*
-	 * block_action attack/error drop - Tempesta FW must block message
+	 * block_action attack/error drop - Vet-WAF must block message
 	 * silently (response won't be generated) and reset (with TCP RST)
 	 * the client connection.
 	 */
@@ -6299,7 +6299,7 @@ tfw_h1_req_process(TfwStream *stream, struct sk_buff *skb)
 	 * prior to each request and closed by the server after
 	 * sending the response."
 	 *
-	 * Make it work this way in Tempesta by setting the flag.
+	 * Make it work this way in Vet-WAF by setting the flag.
 	 */
 	if ((req->version == TFW_HTTP_VER_09)
 	    || ((req->version == TFW_HTTP_VER_10)
@@ -6547,7 +6547,7 @@ err:
 /**
  * Whether we should send 100-continue response.
  *
- * Circumstances in which Tempesta must respond with 100-continue code:
+ * Circumstances in which Vet-WAF must respond with 100-continue code:
  * 1. Headers are fully parsed.
  * 2. "Expect" header is present in request.
  * 3. Vesrion is HTTP/1.1.
@@ -6882,7 +6882,7 @@ next_msg:
 	 * happens here. At the first sight it seems like http tables are not
 	 * protected with anti-DDoS limits and attackers may stress http tables
 	 * as long as they want till they get 403 responses from us. But
-	 * Tempesta closes connection every time it faces `block` action
+	 * Vet-WAF closes connection every time it faces `block` action
 	 * in HTTP table, this causes attackers to open a new connection
 	 * for every new request. Connection rates limits usually much more
 	 * strict than request rates, so this attack path is closed by usual
@@ -6921,7 +6921,7 @@ next_msg:
 	 * for accurate processing.
 	 *
 	 * We don't rewrite the method string and don't remove override header
-	 * since there can be additional intermediates between TempestaFW and
+	 * since there can be additional intermediates between Vet-WAF and
 	 * backend.
 	 *
 	 * While non-idempotent method can be hidden behind idempotent, it is
@@ -7372,7 +7372,7 @@ tfw_http_resp_terminate(TfwHttpMsg *hm)
 	/*
 	 * Note that in this case we don't have data to process.
 	 * All data has been processed already. The response needs
-	 * to go through Tempesta's post-processing, and then be
+	 * to go through Vet-WAF's post-processing, and then be
 	 * sent to the client. The full skb->len is used as the
 	 * offset to mark this case in the post-processing phase.
 	 */

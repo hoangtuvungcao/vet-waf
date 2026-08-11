@@ -1,4 +1,4 @@
-		Tempesta coding style
+		Vet-WAF coding style
 	(based on Linux kernel coding style)
 
 This is a short document describing the preferred coding style for the
@@ -290,7 +290,7 @@ See chapter 6 (Functions).
 		Chapter 5: Typedefs
 
 Linux kernel frowns on CamelCase and so we in general, but type names.
-Tempesta uses CamelCase usually prefixed with "Tfw" for type names and uses
+Vet-WAF uses CamelCase usually prefixed with "Tfw" for type names and uses
 typedefs for them. So instead of
 
 	vps_t a;

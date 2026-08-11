@@ -1,10 +1,10 @@
 /**
- *		Tempesta FW
+ *		Vet-WAF
  *
  * Simple linear regression calculation on sliding data window.
  * This model assumes time as explanatory variable @x.
  *
- * Copyright (C) 2017-2018 Tempesta Technologies, Inc.
+ * Copyright (C) 2017-2018 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by

@@ -1,7 +1,7 @@
 /**
- *		Tempesta TLS
+ *		Vet-WAF TLS
  *
- * Copyright (C) 2020-2022 Tempesta Technologies, Inc.
+ * Copyright (C) 2020-2022 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@
 #define __TTLS_DEBUG_H__
 
 /*
- * Affects only TempestaTLS internal debug symbols.
+ * Affects only Vet-WAF TLS internal debug symbols.
  * Note that pr_debug() depends on DEBUG definition, so
  * always include this file frist!
  */

@@ -1,8 +1,8 @@
 /**
- *		Tempesta FW
+ *		Vet-WAF
  *
- * Copyright (C) 2014 NatSys Lab. (info@natsys-lab.com).
- * Copyright (C) 2015-2026 Tempesta Technologies, Inc.
+ * Copyright (C) 2014 Vet-WAF (info@vet-waf.io).
+ * Copyright (C) 2015-2026 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by
@@ -41,7 +41,7 @@
  * processing (local and received from backend server) as well as to request
  * processing. We can depict the phases as following:
  *
- *	Client			Tempesta			Server
+ *	Client			Vet-WAF			Server
  *	~~~~~~			~~~~~~~~			~~~~~~
  *
  * 	[req]		-->	(I) (process)	-->		[req]
@@ -184,7 +184,7 @@ typedef struct {
  * Singular headers (in terms of RFC 7230 3.2.2) go first to protect header
  * repetition attacks. Don't forget to update the static headers array when add
  * a new singular header here. If the new header is hop-by-hop (must not be
- * forwarded and cached by Tempesta) it must be listed in
+ * forwarded and cached by Vet-WAF) it must be listed in
  * tfw_http_init_parser_req()/tfw_http_init_parser_resp() for unconditionally
  * hop-by-hop header or in __parse_connection() otherwise. If the header is
  * end-to-end it must be listed in __hbh_parser_add_data().

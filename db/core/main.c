@@ -1,10 +1,10 @@
 /**
- *		Tempesta DB
+ *		Vet-WAF DB
  *
  * This is the entry point: initialization functions and public interfaces.
  *
- * Copyright (C) 2014 NatSys Lab. (info@natsys-lab.com).
- * Copyright (C) 2015-2026 Tempesta Technologies, Inc.
+ * Copyright (C) 2014 Vet-WAF (info@vet-waf.io).
+ * Copyright (C) 2015-2026 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by
@@ -31,8 +31,8 @@
 
 #define TDB_VERSION	"0.2.0"
 
-MODULE_AUTHOR("Tempesta Technologies");
-MODULE_DESCRIPTION("Tempesta DB");
+MODULE_AUTHOR("Vet-WAF");
+MODULE_DESCRIPTION("Vet-WAF DB");
 MODULE_VERSION(TDB_VERSION);
 MODULE_LICENSE("GPL");
 
@@ -249,7 +249,7 @@ tdb_info(char *buf, size_t len)
 	int n;
 
 	n = snprintf(buf, len,
-		     "\nTempesta DB version: %s\n"
+		     "\nVet-WAF DB version: %s\n"
 		     "Open tables: ",
 		     TDB_VERSION);
 	if (n <= 0)
@@ -465,7 +465,7 @@ tdb_init(void)
 {
 	int r;
 
-	TDB_LOG("Start Tempesta DB\n");
+	TDB_LOG("Start Vet-WAF DB\n");
 
 	r = tdb_init_mappings();
 	if (r)
@@ -481,7 +481,7 @@ tdb_init(void)
 static void __exit
 tdb_exit(void)
 {
-	TDB_LOG("Shutdown Tempesta DB\n");
+	TDB_LOG("Shutdown Vet-WAF DB\n");
 
 	tdb_if_exit();
 

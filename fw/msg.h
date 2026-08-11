@@ -1,10 +1,10 @@
 /**
- *		Tempesta FW
+ *		Vet-WAF
  *
  * Generic protocol message.
  *
- * Copyright (C) 2014 NatSys Lab. (info@natsys-lab.com).
- * Copyright (C) 2015-2026 Tempesta Technologies, Inc.
+ * Copyright (C) 2014 Vet-WAF (info@vet-waf.io).
+ * Copyright (C) 2015-2026 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by
@@ -36,7 +36,7 @@
  * TODO: Currently seq_list is used only in requests. Responses are not
  * put in any queues, they are simply attached to requests as req->resp.
  * However, a queue for responses may also be needed to mitigate sending
- * of responses and improve the distribution of load in Tempesta. Please
+ * of responses and improve the distribution of load in Vet-WAF. Please
  * refer to issues #391 and #488.
  * After these issues are resolved, it may well be that seq_list is more
  * suitable to stay in TfwHttpReq{} rather than here in TfwMsg{}.

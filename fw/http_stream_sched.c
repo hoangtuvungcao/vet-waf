@@ -1,5 +1,5 @@
 /**
- *		Tempesta FW
+ *		Vet-WAF
  *
  * HTTP2 stream scheduler which implements stream prioritization
  * accoring RFC 7540 5.3.
@@ -42,7 +42,7 @@
  * (streams 3 and 5) and choose the stream (which is active) with the greatest
  * weight.
  *
- * Copyright (C) 2024 - 2025 Tempesta Technologies, Inc.
+ * Copyright (C) 2024 - 2025 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by

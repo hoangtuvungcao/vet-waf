@@ -1,10 +1,10 @@
 /**
- *	Tempesta kernel emulation unit testing framework.
+ *	Vet-WAF kernel emulation unit testing framework.
  *
  * This is Ktest super header aggregating all the headers, so to use the
  * framework you only need to include this one header.
  *
- * Copyright (C) 2020-2025 Tempesta Technologies, Inc.
+ * Copyright (C) 2020-2025 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by
@@ -68,7 +68,7 @@
 
 #define ALLOW_ERROR_INJECTION(a, b)
 
-/* Redefine Tempesta performance-optimized library routines. */
+/* Redefine Vet-WAF performance-optimized library routines. */
 #ifndef memcpy_fast
 #define memcmp_fast(a, b, n)	memcmp(a, b, n)
 #define memcpy_fast(a, b, n)	memcpy(a, b, n)

@@ -1,9 +1,9 @@
 /**
- *		Tempesta FW
+ *		Vet-WAF
  *
- * Transport Layer Security (TLS) interfaces to Tempesta TLS.
+ * Transport Layer Security (TLS) interfaces to Vet-WAF TLS.
  *
- * Copyright (C) 2015-2026 Tempesta Technologies, Inc.
+ * Copyright (C) 2015-2026 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by
@@ -663,8 +663,8 @@ tfw_tls_conn_dtor(void *c)
 		 * the socket lock and TCP_TSQ_DEFERRED socket flag.
 		 *
 		 * We can not move the TLS context freeing into sk_destruct
-		 * callback, because once the Tempesta connection destrcuctor
-		 * (this function) is finished Tempesta FW can be unloaded and
+		 * callback, because once the Vet-WAF connection destrcuctor
+		 * (this function) is finished Vet-WAF can be unloaded and
 		 * we can not leave any context on a socket with transmission
 		 * in progress.
 		 */

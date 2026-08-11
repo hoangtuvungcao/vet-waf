@@ -1,7 +1,7 @@
 /**
- *		Tempesta kernel library
+ *		Vet-WAF kernel library
  *
- * Copyright (C) 2015-2026 Tempesta Technologies, INC.
+ * Copyright (C) 2015-2026 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@
 #endif
 
 /*
- * Tempesta FW common return codes.
+ * Vet-WAF common return codes.
  */
 typedef enum {
 	/* The message looks good and we can safely pass it. */
@@ -43,13 +43,13 @@ typedef enum {
 
 	/*
 	 * The message must be blocked (typically on a security event).
-	 * Tempesta send TCP RST in this case.
+	 * Vet-WAF send TCP RST in this case.
 	 */
 	T_BLOCK_WITH_RST = __T_COMMON_ERROR_CODE_START + 1,
 
 	/*
 	 * The message must be blocked (typically on a security event).
-	 * Tempesta send TCP FIN in this case.
+	 * Vet-WAF send TCP FIN in this case.
 	 */
 	T_BLOCK_WITH_FIN = __T_COMMON_ERROR_CODE_START + 2,
 
@@ -74,7 +74,7 @@ typedef enum {
 } TfwRcCommon;
 
 /*
- * Tempesta FW internal error codes. Can be returned from different
+ * Vet-WAF internal error codes. Can be returned from different
  * modules (e.g. hpack, frang). Should be converted to common return
  * code before use on low level (connection, socket) layer.
  */
@@ -134,7 +134,7 @@ static inline bool
 tfw_error_code_is_crucial(int err_code)
 {
 	/*
-	 * Also works with system error codes, not only Tempesta FW
+	 * Also works with system error codes, not only Vet-WAF
 	 * error codes.
 	 */
 	return err_code && err_code != T_POSTPONE && err_code != T_DROP;
@@ -167,7 +167,7 @@ tfw_error_code_is_crucial(int err_code)
  *   4 [VERBOSE] - all of the above + verbose dumping of internal structures
  *                 content, e.g. SKB queues, rbtree, etc.
  */
-#define __BNR		"[tempesta " BANNER "] "
+#define __BNR		"[Vet-WAF " BANNER "] "
 #define __T_DBG1(...) 	printk(KERN_DEBUG __BNR "  " __VA_ARGS__)
 #define __T_DBG2(...) 	printk(KERN_DEBUG __BNR "    " __VA_ARGS__)
 #define __T_DBG3(...)	printk(KERN_DEBUG __BNR "      " __VA_ARGS__)

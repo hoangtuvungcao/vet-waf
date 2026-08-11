@@ -1,5 +1,5 @@
 /**
- *		Tempesta FW
+ *		Vet-WAF
  *
  * Prototype for fast percentiles calculation.
  *
@@ -24,7 +24,7 @@
  *    value for different percentile, e.g. 81st. This is very possible if we
  *    don't have enough data for accurate percentiles calculation.
  *
- * Copyright (C) 2016-2018 Tempesta Technologies, Inc.
+ * Copyright (C) 2016-2018 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by
@@ -442,8 +442,8 @@ main(int argc, char *argv[])
 		Percentile p0[6] = { {1}, {50}, {75}, {90}, {95}, {99} };
 		Percentile p1[6] = { {1}, {50}, {75}, {90}, {95}, {99} };
 
-		/* Store previous statistic for Tempesta trends.
-		 * This should be used for /proc/tempesta/perfstat since
+		/* Store previous statistic for Vet-WAF trends.
+		 * This should be used for /proc/vet_waf/perfstat since
 		 * tfw_stats_calc() should be called on timer.
 		 * BTW (for further extensions) it's also good to send probe
 		 * request to all the servers on the timer to estimate their
@@ -457,7 +457,7 @@ main(int argc, char *argv[])
 		       p0[0].val, p0[1].val, p0[2].val, p0[3].val, p0[4].val,
 		       p0[5].val);
 
-		/* Tempesta percentiles. */
+		/* Vet-WAF percentiles. */
 		tfw_percentile(sets[i].set, sets[i].len, p1, ARRAY_SIZE(p1));
 		printf("tfw:\t%d->%u\t%d->%u\t%d->%u\t%d->%u\t%d->%u\t%d->%u\n",
 		       p1[0].ith, p1[0].val, p1[1].ith, p1[1].val,

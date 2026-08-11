@@ -1,7 +1,7 @@
 /**
- *		Tempesta DB Query Tool
+ *		Vet-WAF DB Query Tool
  *
- * Copyright (C) 2015 Tempesta Technologies.
+ * Copyright (C) 2015 Vet-WAF.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by
@@ -108,7 +108,7 @@ int
 main(int argc, char *argv[])
 {
 	Cfg cfg;
-	po::options_description desc("\n\tTempesta DB CLI Query Tool\n"
+	po::options_description desc("\n\tVet-WAF DB CLI Query Tool\n"
 				     "\nUsage:");
 	desc.add_options()
 		("debug,d", "Switch on debug mode")

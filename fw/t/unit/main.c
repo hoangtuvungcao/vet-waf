@@ -1,8 +1,8 @@
 /**
- *		Tempesta FW
+ *		Vet-WAF
  *
- * Copyright (C) 2014 NatSys Lab. (info@natsys-lab.com).
- * Copyright (C) 2015-2017 Tempesta Technologies, Inc.
+ * Copyright (C) 2014 Vet-WAF (info@vet-waf.io).
+ * Copyright (C) 2015-2017 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by
@@ -25,11 +25,11 @@
 #define DEBUG DBG_TEST
 #endif
 
-#include "tempesta_fw.h"
+#include "vet_waf.h"
 #include "test.h"
 
 MODULE_AUTHOR(TFW_AUTHOR);
-MODULE_DESCRIPTION("Tempesta FW tests");
+MODULE_DESCRIPTION("Vet-WAF tests");
 MODULE_VERSION("0.1.0");
 MODULE_LICENSE("GPL");
 

@@ -1,5 +1,5 @@
 /**
- *		Tempesta DB User-space Library
+ *		Vet-WAF DB User-space Library
  *
  * Handler for database operations.
  *
@@ -7,7 +7,7 @@
  * Update the code when the library support the feature,
  * track status of https://github.com/thom311/libnl/issues/33.
  *
- * Copyright (C) 2015-2018 Tempesta Technologies.
+ * Copyright (C) 2015-2018 Vet-WAF.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by

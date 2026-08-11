@@ -1,6 +1,6 @@
-#		TempestaUser-space Library
+#		Vet-WAF User-space Library
 #
-# Copyright (C) 2025 Tempesta Technologies.
+# Copyright (C) 2025 Vet-WAF.
 #
 # This program is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by

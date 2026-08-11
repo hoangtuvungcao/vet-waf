@@ -1,9 +1,9 @@
 /**
- *		Tempesta FW
+ *		Vet-WAF
  *
- * Websocket proxy protocol implementation for Tempesta FW.
+ * Websocket proxy protocol implementation for Vet-WAF.
  *
- * Copyright (C) 2022-2026 Tempesta Technologies, Inc.
+ * Copyright (C) 2022-2026 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by
@@ -29,7 +29,7 @@
 #include "websocket.h"
 #include "server.h"
 #include "sync_socket.h"
-#include "tempesta_fw.h"
+#include "vet_waf.h"
 
 #define TFW_CONN_HTTP_TYPE(c)	\
 	(TFW_FSM_TYPE(TFW_CONN_TYPE(c)) & (TFW_FSM_HTTP | TFW_FSM_HTTPS))

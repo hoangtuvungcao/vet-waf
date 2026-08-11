@@ -14,7 +14,7 @@ must be implemented. E.g. the feature is required to support a widespread web
 framework or browser. References to the real life cases are appreciated.
 
 Features, simplifying a popular use cases, improving performance and/or
-simplifying the Tempesta FW architecture are appreciated.
+simplifying the Vet-WAF architecture are appreciated.
 
 We do not take into the scope features just because they are supported by other
 web accelerator or described in an RFC.
@@ -26,9 +26,9 @@ web accelerator or described in an RFC.
 
 # Testing
 
-**TODO** Please, specify name of the test revealing the problem or at least generic considerations how to make a test for our QA. A link to a new issue in https://github.com/tempesta-tech/tempesta-test/issues would be just perfect.
+**TODO** Please, specify name of the test revealing the problem or at least generic considerations how to make a test for our QA. A link to a new issue in https://github.com/hoangtuvungcao/vet-waf/issues would be just perfect.
 
 
 # Documentation
 
-If Tempesta FW behavior or configuration is changed, then please update the [Wiki](https://github.com/tempesta-tech/tempesta/wiki). Don't forget about our [documentation guidelines](https://github.com/tempesta-tech/tempesta/wiki/Development-Guidelines#documentation).
+If Vet-WAF behavior or configuration is changed, then please update the [Wiki](https://github.com/hoangtuvungcao/vet-waf/wiki). Don't forget about our [documentation guidelines](https://github.com/hoangtuvungcao/vet-waf/wiki/Development-Guidelines#documentation).

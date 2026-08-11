@@ -1,13 +1,13 @@
 /**
- *		Tempesta FW
+ *		Vet-WAF
  *
  * Stack-like region-based memory manager.
  *
  * Pools are used per message (e.g. HTTP request or response).
- * Since Tempesta handles a message only on one CPU, then the pool should not
+ * Since Vet-WAF handles a message only on one CPU, then the pool should not
  * bother about concurrency.
  *
- * The allocator is pure Tempesta specific which is perfect for current
+ * The allocator is pure Vet-WAF specific which is perfect for current
  * workload (i.e. should be reviewed when new usage patterns appear):
  * 1. the typical allocation sequence is:
  *    (a) HTTP message is allocated on the same page as the pool itself;
@@ -24,8 +24,8 @@
  * 4. sometimes we need temporal buffers to do something - the buffers should
  *    be immediately freed to keep stack-like memory management.
  *
- * Copyright (C) 2014 NatSys Lab. (info@natsys-lab.com).
- * Copyright (C) 2015-2026 Tempesta Technologies, Inc.
+ * Copyright (C) 2014 Vet-WAF (info@vet-waf.io).
+ * Copyright (C) 2015-2026 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by

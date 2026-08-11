@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 240" width="900" height="240" role="img" aria-label="Vet-WAF">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#6d5efc"/>
+      <stop offset="0.55" stop-color="#5b8def"/>
+      <stop offset="1" stop-color="#06b6d4"/>
+    </linearGradient>
+    <linearGradient id="shine" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.28"/>
+      <stop offset="0.5" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="vgrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#e8f6ff"/>
+    </linearGradient>
+    <linearGradient id="wordgrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#7c6ffd"/>
+      <stop offset="1" stop-color="#22d3ee"/>
+    </linearGradient>
+  </defs>
+  <!-- icon -->
+  <g transform="translate(20,20)">
+    <rect x="0" y="0" width="200" height="200" rx="46" fill="url(#bg)"/>
+    <rect x="0" y="0" width="200" height="200" rx="46" fill="url(#shine)"/>
+    <path d="M100 30 L156 51 V99 C156 133 131 156 100 169 C69 156 44 133 44 99 V51 Z"
+          fill="#ffffff" fill-opacity="0.14" stroke="#ffffff" stroke-opacity="0.6" stroke-width="5"/>
+    <path d="M72 76 L100 128 L128 76" fill="none" stroke="url(#vgrad)"
+          stroke-width="18" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="100" cy="140" r="6.5" fill="#a7f3ff"/>
+  </g>
+  <!-- wordmark -->
+  <g transform="translate(250,0)" font-family="'DejaVu Sans','Segoe UI',Arial,sans-serif">
+    <text x="0" y="140" font-size="112" font-weight="800" letter-spacing="-2" fill="#e9edf7">Vet</text>
+    <text x="196" y="140" font-size="112" font-weight="800" letter-spacing="-2" fill="url(#wordgrad)">-WAF</text>
+    <text x="4" y="188" font-size="30" font-weight="600" letter-spacing="6" fill="#8b93a7">KERNEL-LEVEL WAF &amp; ADC</text>
+  </g>
+</svg>

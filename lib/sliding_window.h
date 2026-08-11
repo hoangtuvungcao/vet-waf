@@ -1,5 +1,5 @@
 /**
- *		Tempesta kernel library
+ *		Vet-WAF kernel library
  *
  * Sliding window rate estimation library.
  *
@@ -33,7 +33,7 @@
  * Similar techniques are widely used in high-performance systems, see:
  *   https://blog.cloudflare.com/counting-things-a-lot-of-different-things/
  *
- * Copyright (C) 2026 Tempesta Technologies, INC.
+ * Copyright (C) 2026 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by

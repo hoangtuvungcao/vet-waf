@@ -1,8 +1,8 @@
-# Tempesta Kernel Emulation Framework for Unit Testing
+# Vet-WAF Kernel Emulation Framework for Unit Testing
 
 Light-weigh Linux kernel mocking headers-only library for unit testing.
 Read description and comparison with other testing framework at the
-[Wiki](https://github.com/tempesta-tech/tempesta/wiki/Testing).
+[Wiki](https://github.com/hoangtuvungcao/vet-waf/wiki/Testing).
 
 See usage examples in tempesta\_db/t/tdb\_htrie.c and tls/t/test\_tls.c.
 

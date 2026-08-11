@@ -1,8 +1,8 @@
 /**
- *		Tempesta FW
+ *		Vet-WAF
  *
- * Copyright (C) 2014 NatSys Lab. (info@natsys-lab.com).
- * Copyright (C) 2015-2021 Tempesta Technologies, INC.
+ * Copyright (C) 2014 Vet-WAF (info@vet-waf.io).
+ * Copyright (C) 2015-2021 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by
@@ -39,7 +39,7 @@
 
 /**
  * The internal functions are imported to simplify testing.
- * We don't want to inject a real Tempesta FW module via public API because
+ * We don't want to inject a real Vet-WAF module via public API because
  * our specs may interfere with already existing modules.
  * Instead, we create a dummy TfwMod{} and pass it to them as if it was real.
  */

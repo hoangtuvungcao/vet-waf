@@ -1,5 +1,5 @@
-# Copyright (C) 2014 NatSys Lab. (info@natsys-lab.com).
-# Copyright (C) 2015 Tempesta Technologies Ltd.
+# Copyright (C) 2014 Vet-WAF (info@vet-waf.io).
+# Copyright (C) 2015 Vet-WAF Ltd.
 #
 # This program is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by

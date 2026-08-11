@@ -1,6 +1,6 @@
-## Packaging Tempesta
+## Packaging Vet-WAF
 
-TempestaFW packaging is plain and simple. It is build as a binary Linux package.
+Vet-WAF packaging is plain and simple. It is build as a binary Linux package.
 
 ### Structure
 ```text
@@ -11,7 +11,7 @@ TempestaFW packaging is plain and simple. It is build as a binary Linux package.
 │   ├── copyright
 │   ├── dirs
 │   ├── rules
-│   ├── tempesta-fw.service
+│   ├── vet-waf.service
 ```
 
 - changelog - contains a log of changes made to the package in each version. 
@@ -30,5 +30,5 @@ For example: `linux-headers-5.10.35.tfw-39c65d3, linux-image-5.10.35.tfw-39c65d3
 - rules - is a makefile that defines how the package is built and installed. 
 It contains instructions on how to install files and other tasks necessary to 
 create a Debian package.
-- tempesta-fw.service - defines a systemd service unit for TempestaFW. It specifies
+- vet-waf.service - defines a systemd service unit for Vet-WAF. It specifies
  virtual variables in the system.

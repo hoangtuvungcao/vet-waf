@@ -1,10 +1,10 @@
 /**
- *		Tempesta FW
+ *		Vet-WAF
  *
  * HTTP cache (RFC 7234).
  *
- * Copyright (C) 2014 NatSys Lab. (info@natsys-lab.com).
- * Copyright (C) 2015-2026 Tempesta Technologies, Inc.
+ * Copyright (C) 2014 Vet-WAF (info@vet-waf.io).
+ * Copyright (C) 2015-2026 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by
@@ -38,7 +38,7 @@
 
 #include "apm.h"
 #include "lib/str.h"
-#include "tempesta_fw.h"
+#include "vet_waf.h"
 #include "vhost.h"
 #include "cache.h"
 #include "http_msg.h"
@@ -3374,7 +3374,7 @@ cache_do_not_service_request(TfwHttpReq *req, tfw_http_cache_cb_t action)
 		/*
 		 * TODO: RFC 7234 4.3.2: Extend preconditional request headers
 		 * if any with values from cached entries to revalidate stored
-		 * stale responses for both: client and Tempesta.
+		 * stale responses for both: client and Vet-WAF.
 		 */
 		action((TfwHttpMsg *)req);
 	}
@@ -3847,14 +3847,14 @@ tfw_cfgop_cache_val(TfwCfgSpec *cs, TfwCfgEntry *ce)
 	if (r)
 		return r;
 
-	/* Note: Issue #400. Tempesta doesn't support NUMA nodes without CPU. */
+	/* Note: Issue #400. Vet-WAF doesn't support NUMA nodes without CPU. */
 	if (cache == TFW_CACHE_SHARD) {
 		int node;
 
 		for_each_online_node(node) {
 			if (!nr_cpus_node(node)) {
 				T_ERR_NL("NUMA: Node %d doesn't have cpu. "
-					 "Tempesta doesn't support nodes without cpu in SHARD mode.\n",
+					 "Vet-WAF doesn't support nodes without cpu in SHARD mode.\n",
 					 node);
 				return -EINVAL;
 			}
@@ -3945,7 +3945,7 @@ static TfwCfgSpec tfw_cache_specs[] = {
 	},
 	{
 		.name = "cache_db",
-		.deflt = "/opt/tempesta/db/cache.tdb",
+		.deflt = "/opt/vet_waf/db/cache.tdb",
 		.handler = tfw_cfg_set_str,
 		.dest = &cache_cfg.db_path,
 		.spec_ext = &(TfwCfgSpecStr) {

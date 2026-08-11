@@ -1,7 +1,7 @@
 /**
- *		Tempesta FW
+ *		Vet-WAF
  *
- * Copyright (C) 2026 Tempesta Technologies, Inc.
+ * Copyright (C) 2026 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,14 +22,14 @@
 #include "regex.h"
 #include "log.h"
 #include "regex/kmod/rex.h"
-#include "tempesta_fw.h"
+#include "vet_waf.h"
 
-static char *regex_setup_script_path = "/lib/tempesta/scripts/regex_setup.sh";
+static char *regex_setup_script_path = "/lib/vet_waf/scripts/regex_setup.sh";
 module_param(regex_setup_script_path, charp, 0444);
 MODULE_PARM_DESC(regex_setup_script_path, "Path to regex user space helper.");
 
 /* Path to folder where tfw_write_regexp() writes regexp files for compilation. */
-static char *regex_dir_path = "/opt/tempesta/regex";
+static char *regex_dir_path = "/opt/vet_waf/regex";
 module_param(regex_dir_path, charp, 0444);
 MODULE_PARM_DESC(regex_dir_path, "Path to regex databases.");
 
@@ -51,7 +51,7 @@ static unsigned short number_of_db_regex;
  * several expressions, we count both the number of databases(see number_of_regex)
  * and the number of expressions(see number_of_regex).
  *
- * Directory /opt/tempesta/regex is created from tempesta.sh script.
+ * Directory /opt/vet_waf/regex is created from vet_waf.sh script.
  *
  * @arg - expression to write into the database.
  * @out_db_num - the database ID in which the expression has been written

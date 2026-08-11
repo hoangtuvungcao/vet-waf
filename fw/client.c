@@ -1,10 +1,10 @@
 /**
- *		Tempesta FW
+ *		Vet-WAF
  *
  * Clients handling.
  *
- * Copyright (C) 2014 NatSys Lab. (info@natsys-lab.com).
- * Copyright (C) 2015-2026 Tempesta Technologies, Inc.
+ * Copyright (C) 2014 Vet-WAF (info@vet-waf.io).
+ * Copyright (C) 2015-2026 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by
@@ -323,7 +323,7 @@ tfw_client_free(TdbRec *rec)
 	 * Client always has extra reference counter, so
 	 * it can be deleted only when client_lru.lru_size is
 	 * exceeded from `tfw_client_update_lru` or when
-	 * Tempesta FW shut down from `tfw_client_free_lru`
+	 * Vet-WAF shut down from `tfw_client_free_lru`
 	 */
 	WARN_ON(!list_empty(&cli->list));
 	if (likely(cli->cli_mem)) {
@@ -626,7 +626,7 @@ static TfwCfgSpec tfw_client_specs[] = {
 	},
 	{
 		.name = "client_db",
-		.deflt = "/opt/tempesta/db/client.tdb",
+		.deflt = "/opt/vet_waf/db/client.tdb",
 		.handler = tfw_cfg_set_str,
 		.dest = &client_cfg.db_path,
 		.spec_ext = &(TfwCfgSpecStr) {

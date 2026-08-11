@@ -10,7 +10,7 @@
  * The implementation doesn't use alignment function prologs since aligned
  * version has shown worse performance, see the memcpy.c microbenchmark.
  *
- * Copyright (C) 2018-2021 Tempesta Technologies, Inc.
+ * Copyright (C) 2018-2021 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by

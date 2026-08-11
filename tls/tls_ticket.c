@@ -1,12 +1,12 @@
 /**
- *		Tempesta TLS
+ *		Vet-WAF TLS
  *
  * TLS server tickets implementation (RFC 5077).
  *
  * Based on mbed TLS, https://tls.mbed.org.
  *
  * Copyright (C) 2006-2015, ARM Limited, All Rights Reserved
- * Copyright (C) 2015-2026 Tempesta Technologies, Inc.
+ * Copyright (C) 2015-2026 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -54,7 +54,7 @@ static TlsTicketsCfg t_cfg;
 
 /*
  * Initialisation vector for session ticket master key. Hard-coded to allow
- * the same key generation on all Tempesta nodes with the same user
+ * the same key generation on all Vet-WAF nodes with the same user
  * configuration and user secrets. It's ok, that attacker may know it,
  * it's just a value HMAC'ed with a really secret key.
  */
@@ -217,7 +217,7 @@ ttls_ticket_rotate_keys(struct timer_list *t)
 	 * jiffies + msecs_to_jiffies(tcfg->lifetime * 1000))
 	 * because timers never fire at exact time, they're always a bit late.
 	 * Making plain increments will accumulate and propagate the difference
-	 * and callback will fire at different time on different Tempesta
+	 * and callback will fire at different time on different Vet-WAF
 	 * nodes. To avoid it need to recalculate timer every time.
 	 */
 	tfw_current_timestamp_ts64(&ts);
@@ -295,7 +295,7 @@ found:
  * @vn_len		- vhost name length;
  *
  * If user didn't provided a secret key, a random key is generated, but in this
- * case it's not possible to restart the same session on a different Tempesta
+ * case it's not possible to restart the same session on a different Vet-WAF
  * node in the same group.
  */
 int
@@ -354,7 +354,7 @@ ttls_tickets_configure(TlsPeerCfg *cfg, unsigned long lifetime,
 		 * Make a unique name for the key: mix vhost_name and key number
 		 * and ticket_key_name_iv. We don't need any cryptography safe
 		 * values here. Just something pretty unique, but equal on all
-		 * Tempesta noes with the same configuration. Since vhost name
+		 * Vet-WAF noes with the same configuration. Since vhost name
 		 * is not something really random, anyone can deduce the value
 		 * behind the hash. It's not a problem, we just want to check,
 		 * that we have issued the ticket.
@@ -383,7 +383,7 @@ ttls_tickets_configure(TlsPeerCfg *cfg, unsigned long lifetime,
 		 * The configuration is just being created or updated,
 		 * create current key, and previous key to allow resuming
 		 * sessions with clients who got the session before
-		 * (re-)configuration or switched from existent Tempesta nodes
+		 * (re-)configuration or switched from existent Vet-WAF nodes
 		 * to this fresh new one.
 		 */
 		ts = ttls_ticket_get_time(tcfg->lifetime);

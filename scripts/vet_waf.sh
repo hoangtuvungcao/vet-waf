@@ -1,9 +1,9 @@
 #!/bin/bash
 #
-# Tempesta FW service script.
+# Vet-WAF service script.
 #
-# Copyright (C) 2014 NatSys Lab. (info@natsys-lab.com).
-# Copyright (C) 2015-2026 Tempesta Technologies, Inc.
+# Copyright (C) 2014 Vet-WAF (info@vet-waf.io).
+# Copyright (C) 2015-2026 Vet-WAF
 #
 # This program is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -23,10 +23,10 @@
 
 if [ -z "$TFW_SYSTEMD" ]; then
 	if [ "${TEMPESTA_LCK}" != "$0" ]; then
-		env TEMPESTA_LCK="$0" flock -n -E 254 "/tmp/tempesta-lock-file" "$0" "$@"
+		env TEMPESTA_LCK="$0" flock -n -E 254 "/tmp/vet-waf-lock-file" "$0" "$@"
 		ret=$?
 		if [ $ret -eq 254 ]; then
-			log "Cannot operate with Tempesta FW: locked by another process"
+			log "Cannot operate with Vet-WAF: locked by another process"
 			exit 3
 		fi
 		exit $ret
@@ -40,10 +40,10 @@ tfw_path=${TFW_PATH:="$TFW_ROOT/fw"}
 tls_path=${TLS_PATH:="$TFW_ROOT/tls"}
 lib_path=${LIB_PATH:="$TFW_ROOT/lib"}
 logger_path=${LOGGER_PATH:="$TFW_ROOT/logger"}
-tfw_cfg_path=${TFW_CFG_PATH:="$TFW_ROOT/etc/tempesta_fw.conf"}
-tfw_cfg_temp=${TFW_CFG_TMPL:="$TFW_ROOT/etc/tempesta_tmp.conf"}
+tfw_cfg_path=${TFW_CFG_PATH:="$TFW_ROOT/etc/vet_waf.conf"}
+tfw_cfg_temp=${TFW_CFG_TMPL:="$TFW_ROOT/etc/vet_waf_tmp.conf"}
 regex_setup_script=${REGEX_SETUP_SCRIPT_PATH:="$TFW_ROOT/scripts/regex_setup.sh"}
-regex_dir_path=${REGEX_DIR_PATH:="/opt/tempesta/regex"}
+regex_dir_path=${REGEX_DIR_PATH:="/opt/vet_waf/regex"}
 tfw_logger_config="$TFW_ROOT/etc/tfw_logger.json"
 tfw_netconsole_host="$TFW_NETCONSOLE_HOST"
 tfw_netconsole_port="$TFW_NETCONSOLE_PORT"
@@ -76,8 +76,8 @@ usage()
 	echo -e "Actions:"
 	echo -e "  --help               Show this message and exit."
 	echo -e "  --output-time        Show time for log messages."
-	echo -e "  --load               Load Tempesta modules."
-	echo -e "  --unload             Unload Tempesta modules."
+	echo -e "  --load               Load Vet-WAF modules."
+	echo -e "  --unload             Unload Vet-WAF modules."
 	echo -e "  --start [options]    Load modules and start."
 	echo -e "  --stop               Stop and unload modules."
 	echo -e "  --restart [options]  Restart."
@@ -161,17 +161,17 @@ error()
 	exit 1
 }
 
-# Tempesta requires kernel module loading, so we need root credentials.
+# Vet-WAF requires kernel module loading, so we need root credentials.
 [ `id -u` -ne 0 ] && error "Please, run the script as root"
 
 prepare_db_directory()
 {
 	# Create database directory if it doesn't exist.
-	mkdir -p /opt/tempesta/db/;
+	mkdir -p /opt/vet_waf/db/;
 	# At this time we don't have stable TDB data format, so
 	# it would be nice to clean all the tables before the start.
 	# TODO #515: Remove the hack when TDB is fixed.
-	rm -f /opt/tempesta/db/*.tdb;
+	rm -f /opt/vet_waf/db/*.tdb;
 }
 
 prepare_regex_directory()
@@ -203,20 +203,20 @@ load_one_module()
 # The separate load_modules/unload_modules routines are used for unit testing.
 load_modules()
 {
-	log "Loading Tempesta kernel modules..."
+	log "Loading Vet-WAF kernel modules..."
 
 	# Set verbose kernel logging,
 	# so debug messages are shown on serial console as well.
 	echo '8 7 1 7' > /proc/sys/kernel/printk
 
 	load_one_module "$lib_path/$lib_mod.ko" ||
-		error "cannot load tempesta library module"
+		error "cannot load Vet-WAF library module"
 
 	load_one_module "$tls_path/$tls_mod.ko" ||
-		error "cannot load tempesta TLS module"
+		error "cannot load Vet-WAF TLS module"
 
 	load_one_module "$tdb_path/$tdb_mod.ko" ||
-		error "cannot load tempesta database module"
+		error "cannot load Vet-WAF database module"
 
 	load_one_module "$rgx_path/$rgx_mod.ko" ||
 		error "cannot load regex module"
@@ -224,12 +224,12 @@ load_modules()
 	load_one_module "$tfw_path/$tfw_mod.ko" "tfw_cfg_path=$tfw_cfg_temp \
 			regex_setup_script_path=$regex_setup_script \
 			regex_dir_path=$regex_dir_path"||
-		error "cannot load tempesta module"
+		error "cannot load Vet-WAF module"
 }
 
 unload_modules()
 {
-	log "Un-loading Tempesta kernel modules..."
+	log "Un-loading Vet-WAF kernel modules..."
 
 	rmmod $tfw_mod
 	regex_cleanup
@@ -251,7 +251,7 @@ setup()
 	echo 1 > /proc/sys/kernel/panic_on_oops
 	echo 0 > /proc/sys/kernel/panic_on_warn
 
-	# Tempesta builds socket buffers by itself, don't cork TCP segments.
+	# Vet-WAF builds socket buffers by itself, don't cork TCP segments.
 	sysctl -w net.ipv4.tcp_autocorking=0 >/dev/null
 	# Sotfirqs are doing more work, so increase input queues.
 	sysctl -w net.core.netdev_max_backlog=10000 >/dev/null
@@ -302,7 +302,7 @@ update_single_js_template()
 	cookie=`echo $1 | perl -ne 'print "$1\n" if /\sname=\"?([\w_]+)\"?/'`
 
 	# Set default values
-	template=${template:-"/etc/tempesta/js_challenge.html"}
+	template=${template:-"/etc/vet_waf/js_challenge.html"}
 	cookie=${cookie:-"__tfw"}
 
 	if [[ -z $d_min || -z $d_range ]]; then
@@ -316,10 +316,10 @@ update_single_js_template()
 }
 
 # JS challenge file is a template file, update it using values defined in
-# TempestaFW configuration file.
+# Vet-WAF configuration file.
 # Don't break start up process if there are errors in configuration file.
 # Handling all the possible cases is too complicated for this script.
-# Let TempestaFW warn user on issues.
+# Let Vet-WAF warn user on issues.
 update_js_challenge_templates()
 {
 	templater
@@ -338,18 +338,18 @@ start_tempesta_and_check_state()
 {
 	local _err
 
-	_err=$((echo start > /proc/sys/net/tempesta/state) 2>&1)
-	TFW_STATE=$(sysctl net.tempesta.state 2> /dev/null)
-	TFW_STATE=${TFW_STATE##net.tempesta.state = }
+	_err=$((echo start > /proc/sys/net/vet_waf/state) 2>&1)
+	TFW_STATE=$(sysctl net.vet_waf.state 2> /dev/null)
+	TFW_STATE=${TFW_STATE##net.vet_waf.state = }
 
 	remove_tmp_conf
 	if [[ ${TFW_STATE} != "start" && ${TFW_STATE} != "start (failed reconfig)" ]]; then
 		unload_modules
-		error "cannot start Tempesta FW (sysctl message: ${_err##*: }, please check dmesg)"
+		error "cannot start Vet-WAF (sysctl message: ${_err##*: }, please check dmesg)"
 	else
 		if [[ $TFW_STATE == "start (failed reconfig)" ]]; then
-			error "Tempesta FW reconfiguration fails (sysctl message: ${_err##*: }, please check dmesg)."`
-				`" Tempesta FW is still running with old configuration."
+			error "Vet-WAF reconfiguration fails (sysctl message: ${_err##*: }, please check dmesg)."`
+				`" Vet-WAF is still running with old configuration."
 		fi
 	fi
 }
@@ -371,15 +371,15 @@ start_tfw_logger()
 
 	# Check if config file exists - CRITICAL ERROR if missing when logger is required
 	if [ ! -f "$config_path" ]; then
-		sysctl -e -w net.tempesta.state=stop 2>/dev/null || true
+		sysctl -e -w net.vet_waf.state=stop 2>/dev/null || true
 		unload_modules
 		tfw_irqbalance_revert
-		error "TFW Logger configuration file not found: $config_path. Cannot start Tempesta with access_log mmap enabled."
+		error "TFW Logger configuration file not found: $config_path. Cannot start Vet-WAF with access_log mmap enabled."
 	fi
 
 	# Start daemon
 	"$logger_path/tfw_logger" --config="$config_path" || {
-		sysctl -e -w net.tempesta.state=stop 2>/dev/null || true
+		sysctl -e -w net.vet_waf.state=stop 2>/dev/null || true
 		unload_modules
 		tfw_irqbalance_revert
 		error "cannot start tfw_logger daemon"
@@ -394,7 +394,7 @@ start_tfw_logger()
 		if (( elapsed_time >= tfw_logger_timeout )); then
 			# Try to cleanup any failed start
 			"$logger_path/tfw_logger" --stop 2>/dev/null || true
-			sysctl -e -w net.tempesta.state=stop 2>/dev/null || true
+			sysctl -e -w net.vet_waf.state=stop 2>/dev/null || true
 			unload_modules
 			tfw_irqbalance_revert
 			error "tfw_logger failed to start within $tfw_logger_timeout seconds, see logs for details"
@@ -424,15 +424,15 @@ stop_tfw_logger()
 check_configuration_file_presense()
 {
 	if [ ! -f "$tfw_cfg_path" ]; then
-		error "Configuration file $tfw_cfg_path does not exist. Please create a configuration file before starting Tempesta FW."
+		error "Configuration file $tfw_cfg_path does not exist. Please create a configuration file before starting Vet-WAF."
 	fi
 }
 
 start()
 {
-	log "Starting Tempesta..."
+	log "Starting Vet-WAF..."
 
-	TFW_STATE=$(sysctl net.tempesta.state 2> /dev/null)
+	TFW_STATE=$(sysctl net.vet_waf.state 2> /dev/null)
 	TFW_STATE=${TFW_STATE##* }
 	TFW_LOGGER_EXEC=$(expr "$TFW_STATE" != "start")
 
@@ -441,7 +441,7 @@ start()
 	if [[ -z ${TFW_STATE} ]]; then
 		setup
 
-		log "...load Tempesta modules"
+		log "...load Vet-WAF modules"
 		load_modules;
 
 		prepare_regex_directory
@@ -453,9 +453,9 @@ start()
 	update_js_challenge_templates
 	if [ $? -ne 0 ]; then
 		unload_modules
-		error "cannot start Tempesta FW: error at configuration pre-processing"
+		error "cannot start Vet-WAF: error at configuration pre-processing"
 	fi
-	log "...start Tempesta FW"
+	log "...start Vet-WAF"
 
 	start_tempesta_and_check_state
 
@@ -468,13 +468,13 @@ start()
 
 stop()
 {
-	log "Stopping Tempesta..."
+	log "Stopping Vet-WAF..."
 
 	stop_tfw_logger
 
-	sysctl -e -w net.tempesta.state=stop>/dev/null
+	sysctl -e -w net.vet_waf.state=stop>/dev/null
 
-	log "...unload Tempesta modules"
+	log "...unload Vet-WAF modules"
 	unload_modules
 
 	tfw_irqbalance_revert
@@ -486,7 +486,7 @@ reload()
 {
 	check_configuration_file_presense
 	update_js_challenge_templates
-	log "Running live reconfiguration of Tempesta..."
+	log "Running live reconfiguration of Vet-WAF..."
 
 	start_tempesta_and_check_state
 	log "done"

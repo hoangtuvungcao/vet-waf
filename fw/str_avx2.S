@@ -1,11 +1,11 @@
 /**
- *		Tempesta FW
+ *		Vet-WAF
  *
  * x86-64 SIMD routines for HTTP strings processing. See the algorithms'
  * description and performance comparison with other implementations at
  * http://natsys-lab.blogspot.ru/2016/10/http-strings-processing-using-c-sse42.html
  *
- * Copyright (C) 2016-2024 Tempesta Technologies, Inc.
+ * Copyright (C) 2016-2024 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by

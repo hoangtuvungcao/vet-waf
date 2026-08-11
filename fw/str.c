@@ -1,12 +1,12 @@
 /**
- *		Tempesta FW
+ *		Vet-WAF
  *
- * Tempesta chunked strings. The strings use SIMD instructions, so use them
+ * Vet-WAF chunked strings. The strings use SIMD instructions, so use them
  * carefully to not to call casually from sleepable context, e.g. on
  * configuration phase.
  *
- * Copyright (C) 2014 NatSys Lab. (info@natsys-lab.com).
- * Copyright (C) 2015-2025 Tempesta Technologies, Inc.
+ * Copyright (C) 2014 Vet-WAF (info@vet-waf.io).
+ * Copyright (C) 2015-2025 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by

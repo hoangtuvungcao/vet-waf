@@ -1,5 +1,5 @@
 /**
- *		Tempesta FW
+ *		Vet-WAF
  *
  * A basic set of macros for writing unit tests that run in the kernel space.
  *
@@ -8,8 +8,8 @@
  * Later on we may decide to move them into user-space. These macros try to
  * imitate the GoogleTest API. That should facilitate the future migration.
  *
- * Copyright (C) 2014 NatSys Lab. (info@natsys-lab.com).
- * Copyright (C) 2015-2026 Tempesta Technologies, Inc.
+ * Copyright (C) 2014 Vet-WAF (info@vet-waf.io).
+ * Copyright (C) 2015-2026 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by

@@ -1,5 +1,5 @@
 /**
- *		Tempesta TLS
+ *		Vet-WAF TLS
  *
  * Main TLS shared functions for the server and client.
  *
@@ -8,7 +8,7 @@
  * Based on mbed TLS, https://tls.mbed.org.
  *
  * Copyright (C) 2006-2015, ARM Limited, All Rights Reserved
- * Copyright (C) 2015-2025 Tempesta Technologies, Inc.
+ * Copyright (C) 2015-2025 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,8 +41,8 @@
 #include "tls_ticket.h"
 #include "lib/fault_injection_alloc.h"
 
-MODULE_AUTHOR("Tempesta Technologies, Inc");
-MODULE_DESCRIPTION("Tempesta TLS");
+MODULE_AUTHOR("Vet-WAF");
+MODULE_DESCRIPTION("Vet-WAF TLS");
 MODULE_VERSION("0.3.3");
 MODULE_LICENSE("GPL");
 
@@ -833,7 +833,7 @@ ttls_make_aad(const TlsCtx *tls, TlsIOCtx *io, unsigned char *aad_buf)
 
 /**
  * Use per-cpu AEAD crypto requests in static memory instead of allocating them
- * each time from the heap. Tempesta TLS works in softirq context, so there are
+ * each time from the heap. Vet-WAF TLS works in softirq context, so there are
  * no concurrent crypto requests on the same CPU and there is no preemption.
  * Fallback to kmalloc() if we use not enough reserved memory in TlsReq and
  * print a warning to reserve bit more memory.

@@ -1,7 +1,7 @@
 /**
- *		Tempesta DB User-space Library Definitions
+ *		Vet-WAF DB User-space Library Definitions
  *
- * Copyright (C) 2015 Tempesta Technologies.
+ * Copyright (C) 2015 Vet-WAF.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by

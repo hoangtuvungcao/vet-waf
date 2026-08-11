@@ -1,5 +1,5 @@
 /**
- *		Tempesta FW
+ *		Vet-WAF
  *
  * String handling.
  * There are few design concepts and properties which make our strings special:
@@ -43,8 +43,8 @@
  * the field are reserved for flags. Remaining bits are used to store
  * the number of chunks in a compound string. Zero means a plain string.
 
- * Copyright (C) 2014 NatSys Lab. (info@natsys-lab.com).
- * Copyright (C) 2015-2025 Tempesta Technologies, Inc.
+ * Copyright (C) 2014 Vet-WAF (info@vet-waf.io).
+ * Copyright (C) 2015-2025 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by
@@ -233,7 +233,7 @@ basic_stricmp_fast(const BasicStr *s1, const BasicStr *s2)
 
 /*
  * ------------------------------------------------------------------------
- *	Tempesta chunked strings
+ *	Vet-WAF chunked strings
  *
  * The strings use SIMD instructions, so use them carefully to not to call
  * casually from sleepable context, e.g. on configuration phase.

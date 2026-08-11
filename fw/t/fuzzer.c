@@ -1,9 +1,9 @@
 /**
- *		Tempesta FW
+ *		Vet-WAF
  *
- * Tempesta HTTP fuzzer.
+ * Vet-WAF HTTP fuzzer.
  *
- * Copyright (C) 2015-2025 Tempesta Technologies, Inc.
+ * Copyright (C) 2015-2025 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by
@@ -27,8 +27,8 @@
 #include "fuzzer.h"
 #include "log.h"
 
-MODULE_AUTHOR("Tempesta Technologies, Inc");
-MODULE_DESCRIPTION("Tempesta HTTP fuzzer");
+MODULE_AUTHOR("Vet-WAF");
+MODULE_DESCRIPTION("Vet-WAF HTTP fuzzer");
 MODULE_VERSION("0.2.0");
 MODULE_LICENSE("GPL");
 

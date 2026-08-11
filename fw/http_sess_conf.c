@@ -1,7 +1,7 @@
 /**
- *		Tempesta FW
+ *		Vet-WAF
  *
- * Copyright (C) 2019-2025 Tempesta Technologies, Inc.
+ * Copyright (C) 2019-2025 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,7 +40,7 @@ static TfwVhost *cur_vhost;
  * the JavaScript and Cookie challenges.
  */
 static const unsigned int tfw_cfg_jsch_code_dflt = 503;
-#define TFW_CFG_JS_PATH "/etc/tempesta/js_challenge.html"
+#define TFW_CFG_JS_PATH "/etc/vet_waf/js_challenge.html"
 
 struct {
 	TfwStickyCookie		sticky;
@@ -458,7 +458,7 @@ tfw_cfgop_cookie_learn(TfwCfgSpec *cs, TfwCfgEntry *ce)
 		return r;
 	sticky->learn = 1;
 	/*
-	 * Unlike native TempestaFW cookies, the 'learn' directive has only one
+	 * Unlike native Vet-WAF cookies, the 'learn' directive has only one
 	 * purpose: LB stickiness. It doesn't challenge the client, session
 	 * failovering algorithm is also meaningless for the 'learn' mode.
 	 * So enable the only usable stickiness mode.

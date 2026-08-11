@@ -1,7 +1,7 @@
 /**
- *		Tempesta FW
+ *		Vet-WAF
  *
- * Copyright (C) 2024-2025 Tempesta Technologies, Inc.
+ * Copyright (C) 2024-2025 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by
@@ -45,7 +45,7 @@ TfwLoggerPluginApi plugin_api = {
 	.send			= nullptr
 };
 
-constexpr char dev_path[] = "/dev/tempesta_mmap_log";
+constexpr char dev_path[] = "/dev/vet_waf_mmap_log";
 constexpr std::chrono::seconds wait_for_dev{1};
 
 int dev_fd = -1;

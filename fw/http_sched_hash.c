@@ -1,5 +1,5 @@
 /**
- *		Tempesta FW
+ *		Vet-WAF
  *
  * Hash-based HTTP request scheduler.
  *
@@ -18,8 +18,8 @@
  * TfwSrver hash which is chosen, and thus any request always goes to its home
  * server unless it is offline.
  *
- * Copyright (C) 2014 NatSys Lab. (info@natsys-lab.com).
- * Copyright (C) 2015-2025 Tempesta Technologies, Inc.
+ * Copyright (C) 2014 Vet-WAF (info@vet-waf.io).
+ * Copyright (C) 2015-2025 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by
@@ -39,7 +39,7 @@
 #include <linux/module.h>
 
 #include "sched.h"
-#include "tempesta_fw.h"
+#include "vet_waf.h"
 #include "lib/hash.h"
 #include "lib/random.h"
 #include "lib/fault_injection_alloc.h"
@@ -150,7 +150,7 @@ __is_conn_suitable(TfwSrvConn *conn, bool hmonitor)
  *  - A weak hash function adds unfairness to the load balancing.
  *    There may be a case when a server pulls all load from all other servers.
  *    Although it is quite improbable, such condition is quite stable:
- *    it cannot be fixed by adding/removing servers and restarting Tempesta FW.
+ *    it cannot be fixed by adding/removing servers and restarting Vet-WAF.
  *  - For every HTTP request, we have to scan the list of all servers to find
  *    a matching one with the highest weight. That adds some overhead.
  */

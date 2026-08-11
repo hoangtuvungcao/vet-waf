@@ -1,7 +1,7 @@
 /**
- *		Tempesta FW
+ *		Vet-WAF
  *
- * Copyright (C) 2024-2025 Tempesta Technologies, Inc.
+ * Copyright (C) 2024-2025 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by
@@ -45,9 +45,9 @@ namespace po = boost::program_options;
 
 namespace {
 
-constexpr char dev_path[] = "/dev/tempesta_mmap_log";
+constexpr char dev_path[] = "/dev/vet_waf_mmap_log";
 constexpr char pid_file_path[] = "/var/run/tfw_logger.pid";
-constexpr char default_config_path[] = "/etc/tempesta/tfw_logger.json";
+constexpr char default_config_path[] = "/etc/vet_waf/tfw_logger.json";
 constexpr char default_log_path[] = "/var/log/tempesta/tfw_logger.log";
 constexpr std::chrono::seconds wait_for_dev{1};
 
@@ -265,7 +265,7 @@ ParsedOptions
 parse_command_line(int argc, char *argv[])
 try {
 	ParsedOptions result;
-	po::options_description desc("Tempesta FW Logger options");
+	po::options_description desc("Vet-WAF Logger options");
 
 	// Create description string for config option
 	std::string config_desc = "Path to configuration file (default: " +
@@ -458,10 +458,10 @@ setup_daemon_mode(const ParsedOptions &opts)
 
 	/*
 	 * When the daemon forks, it inherits the file descriptor for
-	 * /tmp/tempesta-lock-file, which was originally opened and locked
-	 * by flock in the tempesta.sh script. After daemonizing, the daemon
+	 * /tmp/vet-waf-lock-file, which was originally opened and locked
+	 * by flock in the vet_waf.sh script. After daemonizing, the daemon
 	 * process continues to hold this lock, preventing subsequent
-	 * executions of tempesta.sh.
+	 * executions of vet_waf.sh.
 	 *
 	 * Close all descriptors before daemonizing.
 	 */
@@ -589,7 +589,7 @@ execute_workers() noexcept(false)
 } // anonymous namespace
 
 /**
- * Main entry point for Tempesta FW Logger.
+ * Main entry point for Vet-WAF Logger.
  * Supports both daemon and foreground modes for flexibility.
  */
 int
@@ -635,7 +635,7 @@ main(int argc, char *argv[])
 			throw tus::Except("Cannot create PID file");
 
 		// Log startup information
-		spdlog::info("Starting Tempesta FW Logger...");
+		spdlog::info("Starting Vet-WAF Logger...");
 		if (config.clickhouse_mmap)
 			spdlog::info("ClickHouse access log configuration: {}",
 				*config.clickhouse_mmap);
@@ -648,7 +648,7 @@ main(int argc, char *argv[])
 		// Start workers and wait for them to finish
 		execute_workers();
 
-		spdlog::info("Tempesta FW Logger stopped");
+		spdlog::info("Vet-WAF Logger stopped");
 
 		if (pidfile_fd >= 0) {
 			tus::pidfile_remove(pid_file_path, pidfile_fd);

@@ -1,13 +1,13 @@
 /**
- *		Tempesta FW
+ *		Vet-WAF
  *
- * Tempesta FW Configuration Framework.
+ * Vet-WAF Configuration Framework.
  *
  * Requirements:
  *  - The configuring process must be habitual for any system administrator.
  *  - An ability to specify relatively complex configuration entities
  *    (lists, dictionaries, trees, etc).
- *  - Decomposition into modules. Other Tempesta subsystems should be able to
+ *  - Decomposition into modules. Other Vet-WAF subsystems should be able to
  *    register their sections in a configuration file. That should be possible
  *    for other kernel modules as well, so late binding has to be used.
  *  - Configuration refresh in run time (at least partially).
@@ -43,7 +43,7 @@
  *  to SDL (http://www.ikayzo.org/display/SDL/Language+Guide), but our syntax
  *  and terminology is more habitual for C/Linux programmers and users.
  *
- *  Tempesta FW modules register themselves and provide configuration specs
+ *  Vet-WAF modules register themselves and provide configuration specs
  *  via TfwMod{} and TfwCfgSpec{} structures. The code here pushes events
  *  and parsed configuration via callbacks specified in these structures.
  *
@@ -63,8 +63,8 @@
  *  - Handling large sets of data, possibly via TDB.
  *  - Improve efficiency: too many memory allocations and data copying.
  *
- * Copyright (C) 2014 NatSys Lab. (info@natsys-lab.com).
- * Copyright (C) 2015-2026 Tempesta Technologies, Inc.
+ * Copyright (C) 2014 Vet-WAF (info@vet-waf.io).
+ * Copyright (C) 2015-2026 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by
@@ -1926,7 +1926,7 @@ tfw_cfg_set_mem(TfwCfgSpec *cs, TfwCfgEntry *e)
  */
 static char *tfw_cfg_path = TFW_CFG_PATH;
 module_param(tfw_cfg_path, charp, 0444);
-MODULE_PARM_DESC(tfw_cfg_path, "Path to Tempesta FW configuration file."
+MODULE_PARM_DESC(tfw_cfg_path, "Path to Vet-WAF configuration file."
 			       " Must be absolute.");
 
 static void

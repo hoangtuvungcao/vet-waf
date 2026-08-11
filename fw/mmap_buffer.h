@@ -1,7 +1,7 @@
 /**
- *		Tempesta FW
+ *		Vet-WAF
  *
- * Tempesta ring buffers mmaped to user space.
+ * Vet-WAF ring buffers mmaped to user space.
  * The overall concept behind is to implement a highly efficient, lock-free
  * data transfer mechanism between the kernel and user space using per-CPU
  * ring buffers. These buffers allow each CPU to handle its own data stream
@@ -83,7 +83,7 @@
  * at module start and freed at module stop, so repeated initialization or
  * freeing is not expected.
  *
- * Copyright (C) 2024-2026 Tempesta Technologies, Inc.
+ * Copyright (C) 2024-2026 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by

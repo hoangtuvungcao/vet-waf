@@ -1,12 +1,12 @@
 /*
- *		Tempesta TLS
+ *		Vet-WAF TLS
  *
  * TLS server-side finite state machine.
  *
  * Based on mbed TLS, https://tls.mbed.org.
  *
  * Copyright (C) 2006-2015, ARM Limited, All Rights Reserved
- * Copyright (C) 2015-2025 Tempesta Technologies, Inc.
+ * Copyright (C) 2015-2025 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1627,7 +1627,7 @@ ttls_write_certificate_request(TlsCtx *tls, struct sg_table *sgt,
 	if (tls->conf->cert_req_ca_list) {
 		TTLS_WARN(tls, "List of acceptable CAs isn't supported"
 			  " (reference issue"
-			  " https://github.com/tempesta-tech/tempesta/issues/830)\n");
+			  " https://github.com/hoangtuvungcao/vet-waf/issues/830)\n");
 		return -EINVAL;
 	}
 	end = buf + 128;

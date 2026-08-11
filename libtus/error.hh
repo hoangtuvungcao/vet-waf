@@ -1,12 +1,12 @@
 /**
- *		Tempesta FW
+ *		Vet-WAF
  *
  * Error handling - rules of thumb:
  * 1. prefer std::expected and std::optional on the data plane to reduce
  *    overhead and improve reliability;
  * 2. it's OK to use exceptions on control path for easier error management.
  *
- * Copyright (C) 2024-2025 Tempesta Technologies, Inc.
+ * Copyright (C) 2024-2025 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by

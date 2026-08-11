@@ -1,8 +1,8 @@
 /**
  *		Synchronous Socket API.
  *
- * Copyright (C) 2014 NatSys Lab. (info@natsys-lab.com).
- * Copyright (C) 2015-2026 Tempesta Technologies, Inc.
+ * Copyright (C) 2014 Vet-WAF (info@vet-waf.io).
+ * Copyright (C) 2015-2026 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by
@@ -38,7 +38,7 @@
 #include "log.h"
 #include "procfs.h"
 #include "sync_socket.h"
-#include "tempesta_fw.h"
+#include "vet_waf.h"
 #include "work_queue.h"
 #include "http_limits.h"
 #include "tcp.h"
@@ -102,7 +102,7 @@ static const char *ss_statename[] = {
 
 /**
  * Constants for active socket operations.
- * SS uses downcalls (SS functions calls from Tempesta layer) and upcalls
+ * SS uses downcalls (SS functions calls from Vet-WAF layer) and upcalls
  * (SS callbacks), but all of them are executed in softirq context.
  * Meantime, system shutdown is performed in process context.
  * So __ss_act_cnt and the constants at the below are used to count number of
@@ -115,8 +115,8 @@ static const char *ss_statename[] = {
  * values.
  *
  * However, softirqs can call SS down- or upcall any time. Moreover, there could
- * be an ingress packet for some Tempesta's socket and it initiates new
- * Tempesta's calls in softirq. So to guarantee shutdown process convergence we
+ * be an ingress packet for some Vet-WAF's socket and it initiates new
+ * Vet-WAF's calls in softirq. So to guarantee shutdown process convergence we
  * firstly finish all new established connections activity using
  * SS_V_ACT_NEWCONN and next we wait for finishing all active connections
  * using SS_V_ACT_LIVECONN.
@@ -144,9 +144,9 @@ static void ss_linkerror(struct sock *sk, int flags);
 
 /*
  * In case error occurs when during call `tcp_push_pending_frames` or
- * some other linux kernel function from Tempesta FW source code, we
+ * some other linux kernel function from Vet-WAF source code, we
  * just set socket state to TCP_CLOSE in `tcp_tfw_handle_error` and
- * it is Tempesta FW responsibilty to check socket state and drop
+ * it is Vet-WAF responsibilty to check socket state and drop
  * connection and close socket.
  */
 #define SS_STATE_PROCESS_RETURN(sk)			\
@@ -521,7 +521,7 @@ ss_skb_tcp_entail_list(struct sock *sk, struct sk_buff **skb_head,
 
 		/*
 		 * Zero-sized SKBs may appear when the message headers (or any
-		 * other contents) are modified or deleted by Tempesta. Drop
+		 * other contents) are modified or deleted by Vet-WAF. Drop
 		 * these SKBs.
 		 * If `on_tcp_entail` callback fails we also free all skbs from
 		 * the list.
@@ -589,7 +589,7 @@ ss_do_send(struct sock *sk, struct sk_buff **skb_head, int flags)
 	 * We set SOCK_TEMPESTA_HAS_DATA when we add some skb in our
 	 * scheduler tree or connection write queue.
 	 * So there are three cases here:
-	 * - TCP window is not equal to zero. In this case Tempesta FW pushes
+	 * - TCP window is not equal to zero. In this case Vet-WAF pushes
 	 *   skbs from connection write queue to socket write queue according
 	 *   TCP window and then (if there is a still available TCP window and
 	 *   this is http2 client connection) calls our scheduler to choose the
@@ -658,8 +658,8 @@ ss_send(struct sock *sk, struct sk_buff **skb_head, int flags)
 	}
 
 	/*
-	 * Remove the skbs from Tempesta lists if we won't use them,
-	 * or copy them if they're going to be used by Tempesta during
+	 * Remove the skbs from Vet-WAF lists if we won't use them,
+	 * or copy them if they're going to be used by Vet-WAF during
 	 * and after the transmission.
 	 */
 	if (flags & SS_F_KEEP_SKB) {
@@ -740,7 +740,7 @@ EXPORT_SYMBOL(ss_send);
  * processes data from the socket (RSS and RPS distribute packets that way).
  *
  * Note: it used to be called in process context as well, at the time when
- * Tempesta starts or stops. That's not the case right now, but it may change.
+ * Vet-WAF starts or stops. That's not the case right now, but it may change.
  *
  * Called with locked socket.
  */
@@ -977,7 +977,7 @@ do {									\
 		WARN_ON_ONCE(skb->sk);
 
 		/*
-		 * Some SKBs may have dev, however tempesta uses dev to store
+		 * Some SKBs may have dev, however Vet-WAF uses dev to store
 		 * own flags, thus clear it.
 		 */
 		skb->dev = NULL;
@@ -1236,7 +1236,7 @@ ss_tcp_state_change(struct sock *sk)
 		 * from ss_connect(). About LIVECONN guard ss_connect() cares
 		 * on it's own.
 		 * If we cannot acquire one or both guards, that means that
-		 * Tempesta is shutting down. Tempesta isn't aware about any
+		 * Vet-WAF is shutting down. Vet-WAF isn't aware about any
 		 * @sk except connections to server, so we have to close
 		 * it on our own without calling upper layer hooks.
 		 */
@@ -1298,7 +1298,7 @@ ss_tcp_state_change(struct sock *sk)
 		 * When FIN is received from the other side of a connection,
 		 * this function is called first before ss_tcp_data_ready()
 		 * is called, as the kernel moves the socket's state to
-		 * TCP_CLOSE_WAIT. The usual action in Tempesta is to close
+		 * TCP_CLOSE_WAIT. The usual action in Vet-WAF is to close
 		 * the connection.
 		 *
 		 * It may happen that FIN comes with a data SKB, or there's
@@ -1345,7 +1345,7 @@ ss_tcp_state_change(struct sock *sk)
 /**
  * Make data socket serviced by synchronous sockets.
  *
- * This function is called for each socket that is created by Tempesta.
+ * This function is called for each socket that is created by Vet-WAF.
  * It's run before a socket is bound or connected, so locking is not
  * required at that time. It's also called for each accepted socket,
  * and at that time it's run under the socket lock (see the comment
@@ -1601,7 +1601,7 @@ EXPORT_SYMBOL(ss_listen);
 
 /**
  * Mostly copy-pasted from inet_getname() and inet6_getname().
- * All Tempesta internal operations are with IPv6 addresses only,
+ * All Vet-WAF internal operations are with IPv6 addresses only,
  * as with more scalable and backward compatible with IPv4.
  */
 void
@@ -1643,7 +1643,7 @@ __sk_close_locked(struct sock *sk, int flags)
 		BUG_ON(!sock_flag(sk, SOCK_DEAD)
 		       || ((flags & SS_F_ABORT) == SS_F_ABORT));
 		/*
-		 * Tempesta FW sends all pending data in socket
+		 * Vet-WAF sends all pending data in socket
 		 * write queue and doesn't push anymore.
 		 */
 		sock_reset_flag(sk, SOCK_TEMPESTA_HAS_DATA);
@@ -1702,7 +1702,7 @@ ss_tx_action(void)
 		 *   error response should be dropped, because socket is
 		 *   already closed.
 		 * - We close and drop connection immediately with __SS_F_FORCE
-		 *   flag, because Tempesta FW is shutdowning.
+		 *   flag, because Vet-WAF is shutdowning.
 		 */
 		if (sock_flag(sk, SOCK_DEAD)) {
 			if (sk->sk_user_data
@@ -1955,7 +1955,7 @@ ss_synchronize(void)
  * not overflow.
  *
  * TODO: since iface MTU and net.core.dev_weight can be changed in runtime,
- * we might need to support dynamic queue resize without reloading the Tempesta
+ * we might need to support dynamic queue resize without reloading the Vet-WAF
  */
 static unsigned int
 ss_estimate_pcpu_wq_size(void)
@@ -1985,9 +1985,9 @@ ss_estimate_pcpu_wq_size(void)
 }
 
 /**
- * We need the explicit flag about Tempesta intention to shutdown.
+ * We need the explicit flag about Vet-WAF intention to shutdown.
  * The problem is that there are upcalls from Linux TCP/IP layer allocating
- * new connections and downcalls from Tempesta layer working with sockets.
+ * new connections and downcalls from Vet-WAF layer working with sockets.
  * Shutdown code is also downcall executed in user context. There are socket
  * jobs waiting for tasklet to execute them. All in all we need the flag to be
  * able to wait while all upcalls are finished at each of several shutdown

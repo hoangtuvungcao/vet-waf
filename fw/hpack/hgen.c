@@ -1,9 +1,9 @@
 /**
- *		Tempesta FW
+ *		Vet-WAF
  *
  * HTTP/2 Huffman state machine generator.
  *
- * Copyright (C) 2017-2019 Tempesta Technologies, Inc.
+ * Copyright (C) 2017-2019 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by

@@ -1,5 +1,5 @@
 /*
- *		Tempesta TLS
+ *		Vet-WAF TLS
  *
  * MPI memory pool based on PK exchange type (profile).
  *
@@ -10,7 +10,7 @@
  * a handshake. An MPI profile contains all the memory required to perform all
  * PK computations for a particular handshake type (RSA, EC etc).
  *
- * Tempesta TLS handshake happens in softirq non-preemptable context, so we can
+ * Vet-WAF TLS handshake happens in softirq non-preemptable context, so we can
  * keep per-cpu memory pool for all temporary MPIs required for a particular
  * handshake step taken on a CPU. The memory pool is cleaned and freed after
  * each handshake step.
@@ -19,7 +19,7 @@
  * implicitly for MPI math. Dynamically allocated pages are used instead of
  * static per-cpu ones.
  *
- * Copyright (C) 2019-2026 Tempesta Technologies, Inc.
+ * Copyright (C) 2019-2026 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2016-2020, Intel Corporation
- * Copyright (C) 2026 Tempesta Technologies, Inc.
+ * Copyright (C) 2026 Vet-WAF
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:

@@ -1,10 +1,10 @@
 /**
- *		Tempesta FW
+ *		Vet-WAF
  *
  * Servers handling.
  *
- * Copyright (C) 2014 NatSys Lab. (info@natsys-lab.com).
- * Copyright (C) 2015-2026 Tempesta Technologies, Inc.
+ * Copyright (C) 2014 Vet-WAF (info@vet-waf.io).
+ * Copyright (C) 2015-2026 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by
@@ -64,7 +64,7 @@ static atomic64_t total_srv_n = ATOMIC64_INIT(0);
  * sg_hash		- list of active groups,
  * sg_hash_reconfig	- list of groups filled during configuration parsing.
  *
- * On the TempestaFW start or live reconfiguration a new configuration is
+ * On the Vet-WAF start or live reconfiguration a new configuration is
  * parsed and all server groups declared in the configuration are added into
  * sg_hash_reconfig. If the configuration is valid sg_hash_reconfig replaces
  * sg_hash by tfw_sg_apply_reconfig(). Otherwise reconfig list is cleared by

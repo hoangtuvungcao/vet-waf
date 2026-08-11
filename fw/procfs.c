@@ -1,7 +1,7 @@
 /**
- *		Tempesta FW
+ *		Vet-WAF
  *
- * Copyright (C) 2016-2025 Tempesta Technologies, Inc.
+ * Copyright (C) 2016-2025 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@
 #include "lib/fault_injection_alloc.h"
 
 /*
- * Common Tempesta statistics.
+ * Common Vet-WAF statistics.
  */
 DEFINE_PER_CPU_ALIGNED(TfwPerfStat, tfw_perfstat);
 
@@ -98,7 +98,7 @@ tfw_perfstat_collect(TfwPerfStat *stat)
 
 		/*
 		 * Health statistics (differs from health monitor statistics):
-		 * total responses for tempesta
+		 * total responses for Vet-WAF
 		 */
 		if (stat->hm && pcp_stat->hm)
 			for (i = 0; i < stat->hm->ccnt; ++i) {
@@ -229,7 +229,7 @@ skip_apm:
 	SPRN("Server failed TLS handshakes\t\t\t", serv.tls_hs_failed);
 
 	if (stat.hm) {
-		seq_printf(seq, "Tempesta health statistics:\n");
+		seq_printf(seq, "Vet-WAF health statistics:\n");
 		for (i = 0; i < stat.hm->ccnt; ++i) {
 			seq_printf(seq, "\tHTTP '%d' code\t: %llu\n",
 				   stat.hm->rsums[i].code,
@@ -515,7 +515,7 @@ static struct proc_ops tfw_state_fops = {
 int
 tfw_procfs_init(void)
 {
-	tfw_procfs_tempesta = proc_mkdir("tempesta", NULL);
+	tfw_procfs_tempesta = proc_mkdir("vet_waf", NULL);
 	if (!tfw_procfs_tempesta)
 		goto out;
 
@@ -538,7 +538,7 @@ tfw_procfs_init(void)
 out_state:
 	remove_proc_entry("state", NULL);
 out_tempesta:
-	remove_proc_entry("tempesta", NULL);
+	remove_proc_entry("vet_waf", NULL);
 out:
 	return -ENOMEM;
 }
@@ -549,5 +549,5 @@ tfw_procfs_exit(void)
 	tfw_mod_unregister(&tfw_procfs_mod);
 	remove_proc_entry("perfstat", tfw_procfs_tempesta);
 	remove_proc_entry("state", tfw_procfs_tempesta);
-	remove_proc_entry("tempesta", NULL);
+	remove_proc_entry("vet_waf", NULL);
 }

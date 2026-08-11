@@ -1,7 +1,7 @@
 /**
- *	Tempesta kernel emulation unit testing framework.
+ *	Vet-WAF kernel emulation unit testing framework.
  *
- * Copyright (C) 2019 Tempesta Technologies, Inc.
+ * Copyright (C) 2019 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by

@@ -1,7 +1,7 @@
 /*
- *		Tempesta FW
+ *		Vet-WAF
  *
- * Copyright (C) 2016-2026 Tempesta Technologies, Inc.
+ * Copyright (C) 2016-2026 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -692,7 +692,7 @@ static int tfw_apm_jtmintrvl;		/* Time interval in jiffies. */
 static int tfw_apm_tmwscale;		/* Time window scale. */
 
 /*
- * Global statistics for all requests passing through Tempesta (whether cached
+ * Global statistics for all requests passing through Vet-WAF (whether cached
  * or not). Relies on the 'apm_stats' directive, same as the statistics for
  * individual servers.
  */
@@ -861,7 +861,7 @@ tfw_apm_prnctl_calc(TfwApmRBuf *rbuf, TfwApmRBCtl *rbctl, TfwPrcntlStats *pstats
 
 /*
  * Reset a ring buffer entry.
- * Note that the ranges are not reset. As Tempesta runs the ranges
+ * Note that the ranges are not reset. As Vet-WAF runs the ranges
  * are adjusted to reflect the actual response time values.
  */
 static inline void

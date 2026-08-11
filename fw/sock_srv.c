@@ -1,10 +1,10 @@
 /**
- *		Tempesta FW
+ *		Vet-WAF
  *
  * Handling server connections.
  *
- * Copyright (C) 2014 NatSys Lab. (info@natsys-lab.com).
- * Copyright (C) 2015-2026 Tempesta Technologies, Inc.
+ * Copyright (C) 2014 Vet-WAF (info@vet-waf.io).
+ * Copyright (C) 2015-2026 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@
 #include <net/inet_sock.h>
 
 #include "apm.h"
-#include "tempesta_fw.h"
+#include "vet_waf.h"
 #include "connection.h"
 #include "http_sess.h"
 #include "addr.h"
@@ -79,8 +79,8 @@
  *
  * So a TfwSrvConn{} instance has a longer lifetime. In a sense,
  * a TfwSrvConn{} instance is persistent. It lives from the time
- * it is created when Tempesta is started, and until the time it is
- * destroyed when Tempesta is stopped.
+ * it is created when Vet-WAF is started, and until the time it is
+ * destroyed when Vet-WAF is stopped.
  *
  * @sk member of an instance is supposed to have the same lifetime as
  * the instance. But in this case the semantics is different. @sk member
@@ -724,7 +724,7 @@ tfw_sock_srv_connect_drop(struct sock *sk)
 	 * This is executed when there's unrecoverable error in a connection
 	 * (and not executed when an established connection is closed as usual).
 	 * An error may occur in any TCP state including data processing on
-	 * application layer. All Tempesta resources associated with the socket
+	 * application layer. All Vet-WAF resources associated with the socket
 	 * must be released in case they were allocated before. Server socket
 	 * must be recovered.
 	 */
@@ -769,15 +769,15 @@ tfw_sock_srv_abort(TfwConn *conn)
  *    to the backend if the connection is restored relatively quickly.
  *    Otherwise, pending requests are re-scheduled to other connections
  *    or servers. All of that is part of failover process.
- * 2. A connection is closed by Tempesta. That is considered permanent.
+ * 2. A connection is closed by Vet-WAF. That is considered permanent.
  *    The connection is not restored. Pending requests are deleted, and
  *    all resources are released. Right now this happens only at shutdown.
  *
- * Tempesta is in the process of being shut down when this function is
+ * Vet-WAF is in the process of being shut down when this function is
  * called. First, any attempts to reconnect are stopped. Then, closing
  * of the connection is initiated if it's not being closed yet. Still,
  * closing of a connection may be initiated concurrently by a backend
- * or Tempesta. Only one request for a close is allowed to proceed, so
+ * or Vet-WAF. Only one request for a close is allowed to proceed, so
  * it may happen that request from a backend is serviced first. Either
  * way, all resources attached to a connection are released by calling
  * the connection destructor once the socket linked to a connection is
@@ -889,8 +889,8 @@ tfw_sock_srv_disconnect(TfwConn *conn)
  * ------------------------------------------------------------------------
  *
  * At this time, only reverse proxy mode is supported. All servers are
- * connected to when Tempesta is started, and all connections are closed
- * when Tempesta is stopped. The code in this section takes care of that.
+ * connected to when Vet-WAF is started, and all connections are closed
+ * when Vet-WAF is stopped. The code in this section takes care of that.
  *
  * This behavior may change in future for a forward proxy implementation.
  * Then there will be lots of short-living connections. That should be kept
@@ -973,7 +973,7 @@ tfw_sock_srv_disconnect_srv(TfwServer *srv)
  * All server connections (TfwSrvConn{} objects) are pre-allocated when
  * TfwServer{} is created. That happens at the configuration parsing stage.
  *
- * Later on, when Tempesta FW is started, these TfwSrvConn{} objects are
+ * Later on, when Vet-WAF is started, these TfwSrvConn{} objects are
  * used to establish connections. These connection objects are re-used
  * (but not re-allocated) when connections are re-established.
  */
@@ -1266,7 +1266,7 @@ static struct kmem_cache *tfw_sg_cfg_cache;
  * with the same name if any. @orig_sg remain unchanged until applying stage.
  * @orig_sg if any or @parsed_sg otherwize is registered as server group
  * available after reconfig by tfw_sg_add_reconfig() call. This allow other
- * TempestaFW modules to save pointer to the desired group.
+ * Vet-WAF modules to save pointer to the desired group.
  *
  * On applying stage changes from @parsed_sg are distributed to @orig_sg if
  * @orig_sg is available, or @parsed_sg is promoted to active group by

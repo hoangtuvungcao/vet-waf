@@ -1,5 +1,5 @@
 /**
- *		Tempesta FW
+ *		Vet-WAF
  *
  * Helpers for Linux socket buffers manipulation.
  *
@@ -7,7 +7,7 @@
  * on top on native Linux socket buffers. The helpers provide common and
  * convenient wrappers for skb processing.
  *
- * Copyright (C) 2015-2026 Tempesta Technologies, Inc.
+ * Copyright (C) 2015-2026 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by
@@ -1258,7 +1258,7 @@ ss_skb_process(struct sk_buff *skb, ss_skb_actor_t actor, void *objdata,
 EXPORT_SYMBOL(ss_skb_process);
 
 /**
- * Tempesta makes use of the source IP address that is kept in the IP
+ * Vet-WAF makes use of the source IP address that is kept in the IP
  * header of the original skb @from. Copy the needed IP header contents to
  * the new skb @to.
  */
@@ -1318,7 +1318,7 @@ ss_skb_split(struct sk_buff *skb, int len)
 
 	/*
 	 * These are orphaned SKBs that are taken out of the TCP/IP
-	 * stack and are completely owned by Tempesta. There is no
+	 * stack and are completely owned by Vet-WAF. There is no
 	 * need to correct the sequence numbers, adjust TCP flags,
 	 * or recalculate the checksum.
 	 */
@@ -1330,7 +1330,7 @@ ss_skb_split(struct sk_buff *skb, int len)
 }
 
 /**
- * Tempesta FW forwards skbs with application and transport payload as is,
+ * Vet-WAF forwards skbs with application and transport payload as is,
  * so initialize such skbs such that TCP/IP stack won't stumble on dirty
  * data.
  */
@@ -1487,7 +1487,7 @@ cleanup:
  *
  * The major reason for splitting a GRO SKB is that the kernel's TCP stack
  * uses skb_split() (called from tso_fragment() or tcp_fragment()) to split
- * outgoing SKBs according to MSS. The same skb_split() is used in Tempesta
+ * outgoing SKBs according to MSS. The same skb_split() is used in Vet-WAF
  * to split SKBs with pipelined messages. However, this function can not
  * handle frag_list fragments. Such SKBs lose data in frag_list and generally
  * get malformed.
@@ -1500,7 +1500,7 @@ cleanup:
  * module (for HTTP headers, etc) will get significantly more complex in
  * order to keep it effective. The issue is in having direct access to SKBs
  * in frag_list, rather than to the root (parent) SKB. The proper support
- * for that will require changes in multiple places in Tempesta.
+ * for that will require changes in multiple places in Vet-WAF.
  */
 int
 ss_skb_unroll(struct sk_buff **skb_head, struct sk_buff *skb)
@@ -1510,10 +1510,10 @@ ss_skb_unroll(struct sk_buff **skb_head, struct sk_buff *skb)
 	/*
 	 * Skbs are marked as cloned when they passed through loopback
 	 * interface, and this is not related to the type of virtual adapter.
-	 * This is unusual case for Tempesta FW and can occur when a client
-	 * or a server and Tempesta FW are on the same computer.
+	 * This is unusual case for Vet-WAF and can occur when a client
+	 * or a server and Vet-WAF are on the same computer.
 	 *
-	 * In the normal case, Tempesta FW receives not cloned skbs, and during
+	 * In the normal case, Vet-WAF receives not cloned skbs, and during
 	 * the parsing process calls ss_skb_split() for each portion of data.
 	 * This variant is not as memory-demanding as the first.
 	 *
@@ -1745,9 +1745,9 @@ ss_skb_realloc_headroom(struct sk_buff *skb)
 ALLOW_ERROR_INJECTION(ss_skb_realloc_headroom, ERRNO);
 
 /*
- * Orphan skb from Tempesta-specific ownership.
+ * Orphan skb from Vet-WAF-specific ownership.
  * We use our own version (instead of using `skb_orphan`) to
- * don't use `skb->sk` field inside Tempesta FW source code.
+ * don't use `skb->sk` field inside Vet-WAF source code.
  */
 void
 ss_skb_orphan(struct sk_buff *skb)

@@ -1,10 +1,10 @@
 /**
- *		Tempesta DB
+ *		Vet-WAF DB
  *
  * Generic storage layer.
  *
- * Copyright (C) 2014 NatSys Lab. (info@natsys-lab.com).
- * Copyright (C) 2015-2026 Tempesta Technologies, INC.
+ * Copyright (C) 2014 Vet-WAF (info@vet-waf.io).
+ * Copyright (C) 2015-2026 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by
@@ -82,7 +82,7 @@ typedef TdbFRec TdbRec;
 typedef void tdb_before_free_cb_t(TdbRec *rec);
 
 /**
- * Tempesta DB file descriptor.
+ * Vet-WAF DB file descriptor.
  *
  * We store independent records in at least cache line size data blocks
  * to avoid false sharing.
@@ -202,7 +202,7 @@ typedef bool tdb_eq_cb_t(TdbHdr *db_hdr, TdbRec *rec, void *data);
 #define TDB_BANNER		"[tdb] "
 
 /*
- * Tempesta DB is too internal piece of code, so print its messages on
+ * Vet-WAF DB is too internal piece of code, so print its messages on
  * higher debugging levels.
  */
 #if defined(DEBUG) && (DEBUG >= 2)

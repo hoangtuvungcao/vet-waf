@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vet-WAF — Kernel-level HTTPS Load Balancer, WAF &amp; ADC</title>
+<meta name="description" content="Vet-WAF is an open-source, kernel-level hybrid of a web accelerator and a multi-layer firewall: an HTTPS load balancer, DDoS mitigation system, and web application firewall built into the Linux TCP/IP stack.">
+<meta name="theme-color" content="#0b1020">
+<link rel="canonical" href="https://hoangtuvungcao.github.io/vet-waf/">
+
+<!-- Icons / PWA -->
+<link rel="icon" href="assets/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="manifest" href="site.webmanifest">
+
+<!-- Open Graph / Twitter -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Vet-WAF">
+<meta property="og:title" content="Vet-WAF — Kernel-level HTTPS Load Balancer, WAF &amp; ADC">
+<meta property="og:description" content="Open-source, kernel-level hybrid of a web accelerator and a multi-layer firewall. Up to 1.8M HTTP req/s on commodity hardware.">
+<meta property="og:url" content="https://hoangtuvungcao.github.io/vet-waf/">
+<meta property="og:image" content="https://hoangtuvungcao.github.io/vet-waf/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Vet-WAF — Kernel-level WAF &amp; ADC">
+<meta name="twitter:description" content="Up to 1.8M HTTP req/s on commodity hardware. HTTPS load balancer · WAF · DDoS mitigation, built into the Linux kernel.">
+<meta name="twitter:image" content="https://hoangtuvungcao.github.io/vet-waf/assets/og-image.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- NAV -->
+<header class="nav" id="nav">
+  <div class="container nav__inner">
+    <a class="brand" href="#top" aria-label="Vet-WAF home">
+      <img src="assets/mark.svg" alt="" width="34" height="34" class="brand__mark">
+      <span class="brand__name">Vet<span class="brand__accent">-WAF</span></span>
+    </a>
+    <nav class="nav__links" aria-label="Primary">
+      <a href="#features">Features</a>
+      <a href="#performance">Performance</a>
+      <a href="#architecture">Architecture</a>
+      <a href="#quickstart">Quick start</a>
+      <a class="btn btn--ghost btn--sm" href="https://github.com/hoangtuvungcao/vet-waf" target="_blank" rel="noopener">
+        <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+        GitHub
+      </a>
+    </nav>
+    <button class="nav__toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<main id="top">
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero__glow" aria-hidden="true"></div>
+  <div class="container hero__inner">
+    <div class="badge">Open-source · GPLv2 · Linux kernel module</div>
+    <h1 class="hero__title">
+      The kernel-level<br>
+      <span class="grad-text">web firewall &amp; accelerator</span>
+    </h1>
+    <p class="hero__lead">
+      <strong>Vet-WAF</strong> is an all-in-one, high-performance solution for web content delivery
+      and advanced protection against DDoS and web attacks — a drop-in replacement for your whole
+      frontend: HTTPS load balancer, web accelerator, DDoS mitigation, and WAF, built directly into
+      the Linux TCP/IP stack.
+    </p>
+    <div class="hero__cta">
+      <a class="btn btn--primary" href="#quickstart">Get started</a>
+      <a class="btn btn--ghost" href="https://github.com/hoangtuvungcao/vet-waf" target="_blank" rel="noopener">View on GitHub</a>
+    </div>
+    <div class="hero__stats">
+      <div class="stat"><div class="stat__num">1.8M</div><div class="stat__label">HTTP req/s</div></div>
+      <div class="stat"><div class="stat__num">×3</div><div class="stat__label">faster than Nginx/HAProxy</div></div>
+      <div class="stat"><div class="stat__num">×4</div><div class="stat__label">lower TLS latency</div></div>
+      <div class="stat"><div class="stat__num">L3–L7</div><div class="stat__label">multi-layer defense</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="section" id="features">
+  <div class="container">
+    <div class="section__head">
+      <h2 class="section__title">One engine, the whole frontend</h2>
+      <p class="section__sub">Vet-WAF fuses a web accelerator and a multi-layer firewall into a single kernel-space core — no context switches, no user-space copy overhead.</p>
+    </div>
+    <div class="grid grid--3">
+      <article class="card">
+        <div class="card__icon">🛡️</div>
+        <h3>Web Application Firewall</h3>
+        <p>Inspect and filter HTTP/HTTPS at wire speed. Block injections, bad bots, and abusive clients with rule-based and rate-limiting policies (Frang).</p>
+      </article>
+      <article class="card">
+        <div class="card__icon">⚡</div>
+        <h3>HTTPS Load Balancer</h3>
+        <p>Terminate TLS and balance traffic across upstreams with hash, ratio, and predictive schedulers — all inside the kernel data path.</p>
+      </article>
+      <article class="card">
+        <div class="card__icon">🚀</div>
+        <h3>Web Accelerator</h3>
+        <p>A built-in, RAM-resident HTTP cache serves hot content in microseconds and shields origins from load spikes.</p>
+      </article>
+      <article class="card">
+        <div class="card__icon">🌊</div>
+        <h3>DDoS Mitigation</h3>
+        <p>Absorb volumetric and application-layer floods early in the stack, with seamless integration into Linux iptables / nftables.</p>
+      </article>
+      <article class="card">
+        <div class="card__icon">🔐</div>
+        <h3>Kernel-native TLS</h3>
+        <p>Vet-WAF TLS runs the handshake in-kernel — 40–80% faster than Nginx/OpenSSL, with optional constant-time crypto.</p>
+      </article>
+      <article class="card">
+        <div class="card__icon">📊</div>
+        <h3>Observability</h3>
+        <p>Structured access logging to ClickHouse, live perfstat via procfs, and APM-grade latency percentiles out of the box.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- PERFORMANCE -->
+<section class="section section--alt" id="performance">
+  <div class="container">
+    <div class="section__head">
+      <h2 class="section__title">Built for the fast path</h2>
+      <p class="section__sub">Because Vet-WAF lives inside the Linux TCP/IP stack, it avoids the socket-API and kernel-bypass overhead that caps traditional proxies.</p>
+    </div>
+    <div class="perf">
+      <div class="perf__bars">
+        <div class="bar"><span class="bar__name">Vet-WAF</span><div class="bar__track"><div class="bar__fill" style="--w:100%"><b>1.8M rps</b></div></div></div>
+        <div class="bar"><span class="bar__name">Nginx</span><div class="bar__track"><div class="bar__fill bar__fill--muted" style="--w:33%"><b>~0.6M rps</b></div></div></div>
+        <div class="bar"><span class="bar__name">HAProxy</span><div class="bar__track"><div class="bar__fill bar__fill--muted" style="--w:31%"><b>~0.55M rps</b></div></div></div>
+      </div>
+      <ul class="perf__points">
+        <li><b>Zero-copy data path.</b> Requests are parsed and routed without leaving kernel space.</li>
+        <li><b>Small kernel footprint.</b> The patch is only a few thousand lines against the Linux tree.</li>
+        <li><b>SIMD everywhere.</b> AVX2-accelerated HTTP parsing, hashing, and string ops.</li>
+        <li><b>Predictable latency.</b> No GC, no user/kernel round-trips on the hot path.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ARCHITECTURE -->
+<section class="section" id="architecture">
+  <div class="container">
+    <div class="section__head">
+      <h2 class="section__title">How it works</h2>
+      <p class="section__sub">Vet-WAF is a set of loosely-coupled Linux kernel modules that sit between the NIC and your origin servers.</p>
+    </div>
+    <div class="arch">
+      <div class="arch__row">
+        <div class="node node--client">Clients<br><small>HTTP/1.1 · HTTP/2 · TLS</small></div>
+        <div class="arrow">→</div>
+        <div class="node node--core">
+          <img src="assets/mark.svg" alt="" width="40" height="40">
+          <div>
+            <b>Vet-WAF core</b><br>
+            <small>WAF · LB · Cache · TLS · DDoS — in kernel</small>
+          </div>
+        </div>
+        <div class="arrow">→</div>
+        <div class="node node--origin">Upstreams<br><small>your app / origin servers</small></div>
+      </div>
+      <div class="arch__mods">
+        <span class="mod">tempesta_fw</span>
+        <span class="mod">tempesta_tls</span>
+        <span class="mod">tempesta_db</span>
+        <span class="mod">tempesta_lib</span>
+        <span class="mod">tempesta_regex</span>
+      </div>
+      <p class="arch__note">Module names keep the upstream kernel-ABI identifiers for binary compatibility with the patched Linux image.</p>
+    </div>
+  </div>
+</section>
+
+<!-- QUICK START -->
+<section class="section section--alt" id="quickstart">
+  <div class="container">
+    <div class="section__head">
+      <h2 class="section__title">Quick start</h2>
+      <p class="section__sub">Build from source against a Vet-WAF-patched Linux 6.12.12 kernel, then start the service.</p>
+    </div>
+    <div class="code">
+      <div class="code__bar">
+        <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        <span class="code__title">bash</span>
+        <button class="code__copy" data-copy>Copy</button>
+      </div>
+<pre><code># 1. Clone
+git clone https://github.com/hoangtuvungcao/vet-waf.git
+cd vet-waf
+
+# 2. Build the kernel modules and user-space tools
+make
+
+# 3. Load and start Vet-WAF (reads /etc/vet_waf/vet_waf.conf)
+sudo ./scripts/vet_waf.sh --start
+
+# 4. Check runtime state
+cat /proc/vet_waf/perfstat
+sudo sysctl net.vet_waf.state
+</code></pre>
+    </div>
+    <p class="quickstart__hint">A minimal config lives in <code>etc/vet_waf.conf</code>. The systemd unit is <code>vet-waf.service</code>.</p>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta">
+  <div class="container cta__inner">
+    <h2>Ready to put the firewall in the kernel?</h2>
+    <p>Star the project, read the source, and build your own high-performance secure frontend.</p>
+    <div class="hero__cta">
+      <a class="btn btn--primary" href="https://github.com/hoangtuvungcao/vet-waf" target="_blank" rel="noopener">Star on GitHub</a>
+      <a class="btn btn--ghost" href="#quickstart">Read the quick start</a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container footer__inner">
+    <div class="footer__brand">
+      <img src="assets/mark.svg" alt="" width="30" height="30">
+      <span class="brand__name">Vet<span class="brand__accent">-WAF</span></span>
+    </div>
+    <nav class="footer__links" aria-label="Footer">
+      <a href="#features">Features</a>
+      <a href="#performance">Performance</a>
+      <a href="#architecture">Architecture</a>
+      <a href="#quickstart">Quick start</a>
+      <a href="https://github.com/hoangtuvungcao/vet-waf" target="_blank" rel="noopener">GitHub</a>
+    </nav>
+    <p class="footer__legal">
+      Engine licensed under <b>GPLv2</b> (derived from Tempesta FW). Website &amp; brand assets © 2026 Vet-WAF, MIT.
+    </p>
+  </div>
+</footer>
+
+<script src="main.js"></script>
+</body>
+</html>

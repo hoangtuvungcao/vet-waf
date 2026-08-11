@@ -1,7 +1,7 @@
 /**
- *		Tempesta FW
+ *		Vet-WAF
  *
- * Tempesta HTTP tables.
+ * Vet-WAF HTTP tables.
  *
  * The goal of this module is to implement HTTP requests routing system based on
  * HTTP message contents, that is, to provide user a way to route HTTP requests
@@ -14,7 +14,7 @@
  *   - another web application for another domain, say "site2.example2.com";
  *   - a bunch of storage servers, they can't generate dynamic contents, but
  *     good at handling large amounts of static files: images, videos, etc.
- * ...and you want to use Tempesta FW to route requests between them, so this
+ * ...and you want to use Vet-WAF to route requests between them, so this
  * scheduler module allows you to reach that.
  *
  * We utilize rule-based HTTP matching logic from http_match.c here.
@@ -82,8 +82,8 @@
  * TODO:
  *   - Extended string matching operators: "regex", "substring".
  *
- * Copyright (C) 2014 NatSys Lab. (info@natsys-lab.com).
- * Copyright (C) 2015-2026 Tempesta Technologies, Inc.
+ * Copyright (C) 2014 Vet-WAF (info@vet-waf.io).
+ * Copyright (C) 2015-2026 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by
@@ -104,7 +104,7 @@
 
 #include "http_tbl.h"
 #include "lib/fault_injection_alloc.h"
-#include "tempesta_fw.h"
+#include "vet_waf.h"
 #include "cfg.h"
 #include "http_match.h"
 #include "server.h"

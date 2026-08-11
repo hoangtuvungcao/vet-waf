@@ -1,7 +1,7 @@
-#		Tempesta FW
+#		Vet-WAF
 #
-# Copyright (C) 2014 NatSys Lab. (info@natsys-lab.com).
-# Copyright (C) 2015-2026 Tempesta Technologies, Inc.
+# Copyright (C) 2014 Vet-WAF (info@vet-waf.io).
+# Copyright (C) 2015-2026 Vet-WAF
 #
 # This program is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -32,15 +32,15 @@ ifdef DEBUG
 	TFW_CFLAGS += -DDEBUG=$(DEBUG)
 endif
 
-# Use `$ TFW_GCOV=y make` to compile Tempesta modules with GCOV.
+# Use `$ TFW_GCOV=y make` to compile Vet-WAF modules with GCOV.
 # The kernel should be built with:
 #	CONFIG_GCOV_KERNEL=y
 #	CONFIG_GCOV_PROFILE_ALL=y
 #	CONFIG_GCOV_FORMAT_AUTODETECT=y
 TFW_GCOV ?= n
 
-# Specify the defines below if you need to build Tempesta FW with
-# debugging of the subsystem, e.g. for Tempesta TLS:
+# Specify the defines below if you need to build Vet-WAF with
+# debugging of the subsystem, e.g. for Vet-WAF TLS:
 #
 #	$ DEBUG=1 DBG_SS=2 DBG_TLS=3 make clean all
 #
@@ -96,7 +96,7 @@ TFW_CFLAGS += -DDBG_HPACK=$(DBG_HPACK) -DDBG_CACHE=$(DBG_CACHE)
 TFW_CFLAGS += -DDBG_SRV=$(DBG_SRV) -DDBG_VHOST=$(DBG_VHOST) -DDBG_TEST=$(DBG_TEST)
 TFW_CFLAGS += -DDBG_HTTP2=$(DBG_HTTP2)
 
-# By default Tempesta TLS randomizes elliptic curve points using RDRAND
+# By default Vet-WAF TLS randomizes elliptic curve points using RDRAND
 # instruction, which provides a high speed random numbers generator.
 # However, if you do not trust your CPU vendor, then use CRYPTO_CONST_TIME
 # to make all the computations constant time to prevent side channel attacks.
@@ -123,7 +123,7 @@ ifneq (, $(findstring bmi2, $(PROC)))
 	BMI2 = "y"
 	TFW_CFLAGS += -DBMI2=1
 else
-	ERROR = "BMI2 CPU extension is required for Tempesta TLS"
+	ERROR = "BMI2 CPU extension is required for Vet-WAF TLS"
 endif
 ifneq (, $(findstring adx, $(PROC)))
 	ADX = "y"
@@ -139,7 +139,7 @@ endif
 ifeq ($(ADX_SUPPORTED), y)
 	ADX = "y"
 else
-	ERROR = "ADX CPU extension is required for Tempesta TLS"
+	ERROR = "ADX CPU extension is required for Vet-WAF TLS"
 endif
 endif
 ifeq ($(ADX),y)
@@ -172,7 +172,7 @@ endif
 	$(MAKE) -C $(KERNEL) M=$(shell pwd) modules
 
 test: build
-	./scripts/tempesta.sh --stop
+	./scripts/vet_waf.sh --stop
 	./fw/t/unit/run_all_tests.sh
 
 clean:

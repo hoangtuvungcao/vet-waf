@@ -1,7 +1,7 @@
 /**
- *		Tempesta FW
+ *		Vet-WAF
  *
- * Copyright (C) 2026 Tempesta Technologies, Inc.
+ * Copyright (C) 2026 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by
@@ -31,8 +31,8 @@
 #define TF_FILTER_TIME_SLOTS_MASK	(TF_FILTER_TIME_SLOTS_CNT - 1)
 #define DB_RECS_TO_FREE_CNT		32
 
-#define TLS_TDB_FILE_PATH	"/opt/tempesta/db/tft_flt.tdb"
-#define HTTP_TDB_FILE_PATH	"/opt/tempesta/db/tfh_flt.tdb"
+#define TLS_TDB_FILE_PATH	"/opt/vet_waf/db/tft_flt.tdb"
+#define HTTP_TDB_FILE_PATH	"/opt/vet_waf/db/tfh_flt.tdb"
 
 /**
  * Holds time slot's @counter for timestamp @ts

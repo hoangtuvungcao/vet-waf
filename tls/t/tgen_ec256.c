@@ -1,9 +1,9 @@
 /**
- *		Tempesta TLS
+ *		Vet-WAF TLS
  *
  * Precomputation of the static table for m * G in NIST secp256r1.
  *
- * Copyright (C) 2020-2022 Tempesta Technologies, Inc.
+ * Copyright (C) 2020-2022 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

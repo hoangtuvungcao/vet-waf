@@ -1,7 +1,7 @@
 /**
- *		Tempesta FW
+ *		Vet-WAF
  *
- * Copyright (C) 2022-2025 Tempesta Technologies, Inc.
+ * Copyright (C) 2022-2025 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by
@@ -69,7 +69,7 @@
 #define ACCESS_LOG_DMESG 1
 #define ACCESS_LOG_MMAP  2
 
-#define MMAP_LOG_PATH "tempesta_mmap_log"
+#define MMAP_LOG_PATH "vet_waf_mmap_log"
 
 static int access_log_type = ACCESS_LOG_OFF;
 static TfwMmapBufferHolder *mmap_buffer;

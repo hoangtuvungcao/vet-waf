@@ -1,10 +1,10 @@
 /**
- *		Tempesta FW
+ *		Vet-WAF
  *
  * Definitions for generic connection management at OSI level 6 (presentation).
  *
- * Copyright (C) 2014 NatSys Lab. (info@natsys-lab.com).
- * Copyright (C) 2015-2026 Tempesta Technologies, Inc.
+ * Copyright (C) 2014 Vet-WAF (info@vet-waf.io).
+ * Copyright (C) 2015-2026 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by
@@ -74,7 +74,7 @@ enum {
  *
  * An instance of TfwConn{} structure links each HTTP message to properties
  * of a connection the message has come on. Some messages may stay longer
- * in Tempesta after they're sent out to their destinations. Requests are
+ * in Vet-WAF after they're sent out to their destinations. Requests are
  * kept until a paired response comes. By the time the request's connection
  * is needed for sending the response, it may be destroyed already. Thus,
  * TfwConn{} instance is not destroyed along with the connection so that
@@ -327,12 +327,12 @@ typedef struct {
 	void (*conn_repair)(TfwConn *conn);
 
 	/*
-	 * Called to close a connection intentionally on Tempesta side.
+	 * Called to close a connection intentionally on Vet-WAF side.
 	 */
 	int (*conn_close)(TfwConn *conn, bool sync);
 
 	/*
-	 * Called to abort a connection intentionally on Tempesta side.
+	 * Called to abort a connection intentionally on Vet-WAF side.
 	 * This is rough connection closing without any notifications like TLS
 	 * alerts, probably with TCP RST or just silent connection termination.
 	 */
@@ -511,8 +511,8 @@ tfw_srv_conn_init_as_dead(TfwSrvConn *srv_conn)
 }
 
 /*
- * Link Sync Sockets layer with Tempesta. The socket @sk now carries
- * a reference to Tempesta's @conn instance. When a Tempesta's socket
+ * Link Sync Sockets layer with Vet-WAF. The socket @sk now carries
+ * a reference to Vet-WAF's @conn instance. When a Vet-WAF's socket
  * callback is called by Sync Sockets on an event in the socket, then
  * the reference to @conn instance for the socket can be found quickly.
  */
@@ -524,7 +524,7 @@ tfw_connection_link_from_sk(TfwConn *conn, struct sock *sk)
 }
 
 /*
- * Link Tempesta with Sync Sockets layer. @conn instance now carries
+ * Link Vet-WAF with Sync Sockets layer. @conn instance now carries
  * a reference to @sk. When there's need to send data on a connection,
  * then the socket for that connection can be found quickly. Also,
  * get a hold of the socket to avoid premature socket release.
@@ -540,7 +540,7 @@ tfw_connection_link_to_sk(TfwConn *conn, struct sock *sk)
 
 /*
  * Do an opposite to what tfw_connection_link_from_sk() does.
- * Sync Sockets layer is unlinked from Tempesta, so that Tempesta
+ * Sync Sockets layer is unlinked from Vet-WAF, so that Vet-WAF
  * callbacks are not called anymore on events in the socket.
  */
 static inline void

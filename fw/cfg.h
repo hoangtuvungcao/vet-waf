@@ -1,8 +1,8 @@
 /**
- *		Tempesta FW
+ *		Vet-WAF
  *
- * Copyright (C) 2014 NatSys Lab. (info@natsys-lab.com).
- * Copyright (C) 2015-2025 Tempesta Technologies, Inc.
+ * Copyright (C) 2014 Vet-WAF (info@vet-waf.io).
+ * Copyright (C) 2015-2025 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by
@@ -25,11 +25,11 @@
 
 /*
  * ------------------------------------------------------------------------
- *	Interface for Tempesta FW modules.
+ *	Interface for Vet-WAF modules.
  * ------------------------------------------------------------------------
  */
 
-#define TFW_CFG_PATH "/etc/tempesta/tempesta_fw.conf"
+#define TFW_CFG_PATH "/etc/vet_waf/vet_waf.conf"
 
 /*
  * For simplicity, attributes and values are stored in a static array.
@@ -325,7 +325,7 @@ do {								\
  * current set of TfwCfgSpec{} definitions.
  *
  * @allow_reconfig allows a live reconfiguration of a directive when
- * Tempesta is running already. @handler for the directive must know
+ * Vet-WAF is running already. @handler for the directive must know
  * how to handle a live reconfiguration.
  * NOTE: This is an interim solution. Every configuration directive
  * should have a corresponding handler function that can handle a live
@@ -348,15 +348,15 @@ do {								\
  *
  * @__called_cfg is also an internal field. It's also set when @handler
  * is invoked during the parsing process. However, it's not reset until
- * the parsing is completed and Tempesta is (re)started. Before it is
+ * the parsing is completed and Vet-WAF is (re)started. Before it is
  * reset, its state migrates to a corresponding @__called_ever field.
  * If an error occurs before that, it's used to determine whether to
  * invoke a corresponding @cleanup callback.
  *
  * @__called_ever is another internal field. It tracks the state of a
  * corresponding @__called_cfg field after the configuration has been
- * processed and Tempesta successfully (re)started, but not before that.
- * It's never reset until Tempesta is completely stopped. It is used to
+ * processed and Vet-WAF successfully (re)started, but not before that.
+ * It's never reset until Vet-WAF is completely stopped. It is used to
  * determine whether to invoke a corresponding @cleanup callback.
  *
  * It's been mentioned that a configuration specification may have nested
@@ -457,10 +457,10 @@ tfw_cfg_is_dflt_value(TfwCfgEntry *cfg_entry)
 }
 
 /*
- * Tempesta strives to support live reconfiguration. New configuration
- * is loaded, processed and set while Tempesta is running. Ultimately,
+ * Vet-WAF strives to support live reconfiguration. New configuration
+ * is loaded, processed and set while Vet-WAF is running. Ultimately,
  * directives in configuration file are translated into internal data
- * structures in Tempesta. Internal data structures for data that may
+ * structures in Vet-WAF. Internal data structures for data that may
  * be reconfigured need to have a configuration flags member that will
  * indicate one of several major actions noted below. Implementation
  * of each action is specific to configuration entry.

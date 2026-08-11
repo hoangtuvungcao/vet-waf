@@ -1,42 +1,42 @@
-# TRex ASTF against Tempesta FW
+# TRex ASTF against Vet-WAF
 
 This document describes a **lab stand used to explore how ASTF works** on
 separate generator (gen) and system-under-test (SUT) machines. It is a
 **real** setup that was run in practice, not a reference recipe for how
-Tempesta must be performance-tested. Numbers, frang limits, single-client
+Vet-WAF must be performance-tested. Numbers, frang limits, single-client
 IPs, and a toy backend are for learning ASTF — not a production benchmark
 methodology.
 
 ## Topology
 
-TRex generates client traffic only. The TCP peer is **Tempesta FW**. Behind
-Tempesta sits a plain **Python `http.server`** (stdlib simple HTTP server),
+TRex generates client traffic only. The TCP peer is **Vet-WAF**. Behind
+Vet-WAF sits a plain **Python `http.server`** (stdlib simple HTTP server),
 not TRex server mode and not a production origin.
 
 ```
 ┌─────────────┐         ┌──────────────────┐         ┌─────────────────────┐
 │  gen host   │         │     SUT host     │         │  same SUT (or co-   │
 │             │         │                  │         │  located process)   │
-│  TRex ASTF  │ ──────► │  Tempesta FW     │ ──────► │  Python http.server │
+│  TRex ASTF  │ ──────► │  Vet-WAF     │ ──────► │  Python http.server │
 │  (clients)  │  :80    │  (proxy / cache) │  :8080  │  (origin backend)   │
 └─────────────┘         └──────────────────┘         └─────────────────────┘
 ```
 
 - **Gen:** TRex in ASTF mode (client programs / pcap templates).
-- **SUT:** Tempesta FW terminates client TCP and proxies to the origin.
+- **SUT:** Vet-WAF terminates client TCP and proxies to the origin.
 - **Origin:** `python3 -m http.server 8080` (or equivalent) on the backend
-  address configured in Tempesta.
+  address configured in Vet-WAF.
 
 TRex does **not** run an L7 server for these tests: responses come from
-Tempesta (and ultimately from the Python server, or from cache).
+Vet-WAF (and ultimately from the Python server, or from cache).
 
 Lab IPs used in the examples below:
 
 | Role | Address |
 |------|---------|
-| Tempesta front (SUT) | `192.168.2.1` |
+| Vet-WAF front (SUT) | `192.168.2.1` |
 | TRex client (gen) | `192.168.2.2` |
-| Python origin (behind Tempesta) | `127.0.0.1:8080` on SUT |
+| Python origin (behind Vet-WAF) | `127.0.0.1:8080` on SUT |
 
 Example origin on the SUT:
 
@@ -50,7 +50,7 @@ python3 -m http.server 8080 --bind 127.0.0.1
 
 ## 1. SUT config (HTTP/1)
 
-Minimal Tempesta config used on this stand (no domain-based limits). Adjust
+Minimal Vet-WAF config used on this stand (no domain-based limits). Adjust
 listen IP and backend as needed for your lab.
 
 ```
@@ -83,7 +83,7 @@ http_chain {
 ```
 
 If the profile sends a `Host:` header for a specific site (e.g.
-`tempesta-tech.com`), either:
+`vet-waf.io`), either:
 
 - configure a matching vhost / rules for that host, or
 - change the request `Host` to match this config.
@@ -114,7 +114,7 @@ sudo ./dpdk_setup_ports.py -i
 ```
 
 Interactive setup asks for interfaces and IPs. For FW testing, one client
-port toward Tempesta is enough.
+port toward Vet-WAF is enough.
 
 Start TRex in ASTF mode (from the extracted version directory):
 
@@ -168,10 +168,10 @@ ip -br link
 sudo tcpdump -i enp152s0f0np0 -nn -s 0 -U -w http1_raw.pcap \
   'host 192.168.2.1 and tcp port 80'
 
-# terminal 2 — generate one request through Tempesta
+# terminal 2 — generate one request through Vet-WAF
 curl --retry 0 --max-time 5 "http://192.168.2.1/" -o /dev/null
 # or against a public front, if that is your DUT path:
-# curl --retry 0 --max-time 5 "http://tempesta-tech.com/" -o /dev/null
+# curl --retry 0 --max-time 5 "https://vet-waf.io/" -o /dev/null
 
 # terminal 1 — keep a single TCP stream, write classic pcap
 tshark -r http1_raw.pcap -Y "tcp.stream eq 0" -F pcap -w http1_one.pcap
@@ -193,7 +193,7 @@ from trex.astf.api import *
 
 class Prof1:
     def get_profile(self, *_, **__):
-        # clients → Tempesta front
+        # clients → Vet-WAF front
         ip_gen_c = ASTFIPGenDist(
             ip_range=["192.168.2.2", "192.168.2.2"], distribution="seq")
         ip_gen_s = ASTFIPGenDist(
@@ -230,8 +230,8 @@ sudo ./t-rex-64 --astf \
 
 ## 5. HTTP/1 — Python program
 
-Client-only program: open TCP to Tempesta, send a request, wait for the
-response. **Tempesta is the peer** — TRex does not serve HTTP.
+Client-only program: open TCP to Vet-WAF, send a request, wait for the
+response. **Vet-WAF is the peer** — TRex does not serve HTTP.
 
 ASTF still requires a server *template object* in the profile API. That stub
 is **not** the traffic peer when only clients are started.
@@ -247,17 +247,17 @@ class Prof1:
         prog_c.connect()
         prog_c.send(
             b"GET /?hello=world HTTP/1.1\r\n"
-            b"Host: tempesta-tech.com\r\n"
-            b"User-Agent: Mozilla/5.0 (TRex-ASTF; Tempesta-load)\r\n"
+            b"Host: vet-waf.io\r\n"
+            b"User-Agent: Mozilla/5.0 (TRex-ASTF; Vet-WAF-load)\r\n"
             b"Accept: text/html,application/json;q=0.9,*/*;q=0.8\r\n"
             b"Accept-Language: en-US,en;q=0.5\r\n"
             b"Connection: close\r\n"
             b"\r\n"
         )
-        # wait for at least N bytes from Tempesta (tune to real response size)
+        # wait for at least N bytes from Vet-WAF (tune to real response size)
         prog_c.recv(8192)
 
-        # stub: required by ASTF profile shape, not used as peer vs Tempesta
+        # stub: required by ASTF profile shape, not used as peer vs Vet-WAF
         prog_s = ASTFProgram()
         prog_s.recv(1)
         prog_s.send(b"H")
@@ -304,7 +304,7 @@ sudo ./t-rex-64 --astf \
 
 ### 5.1. Slow-send variant
 
-Same peer (Tempesta); only the client program changes — headers are sent
+Same peer (Vet-WAF); only the client program changes — headers are sent
 with delays (usec):
 
 ```python
@@ -320,9 +320,9 @@ class Prof1:
         prog_c.connect()
         prog_c.send(b"GET /?hello=world HTTP/1.1\r\n")
         prog_c.delay(delay)
-        prog_c.send(b"Host: tempesta-tech.com\r\n")
+        prog_c.send(b"Host: vet-waf.io\r\n")
         prog_c.delay(delay)
-        prog_c.send(b"User-Agent: Mozilla/5.0 (TRex-ASTF; Tempesta-load)\r\n")
+        prog_c.send(b"User-Agent: Mozilla/5.0 (TRex-ASTF; Vet-WAF-load)\r\n")
         prog_c.delay(delay)
         prog_c.send(b"Accept: text/html,application/json;q=0.9,*/*;q=0.8\r\n")
         prog_c.delay(delay)
@@ -370,15 +370,15 @@ def register():
     return Prof1()
 ```
 
-Useful to exercise Tempesta HTTP timeouts / slow-header handling.
+Useful to exercise Vet-WAF HTTP timeouts / slow-header handling.
 
 ---
 
 ## 6. HTTP/2 — pcap (theoretical; TLS gap)
 
-**Status:** not usable end-to-end for Tempesta today.
+**Status:** not usable end-to-end for Vet-WAF today.
 
-- Tempesta serves HTTP/2 over **TLS** (`proto=h2` on 443).
+- Vet-WAF serves HTTP/2 over **TLS** (`proto=h2` on 443).
 - TRex ASTF does **not** implement TLS encryption for L7 programs.
 - Replaying a TLS pcap as opaque payload is possible in principle, but the
   capture is bound to that TLS session and is not a general load tool.
@@ -388,7 +388,7 @@ Useful to exercise Tempesta HTTP timeouts / slow-header handling.
 Illustrative profile (h2c pcap against port 80) — for future / lab only:
 
 ```python
-# http2_pcap.py — not a working Tempesta h2 load path today
+# http2_pcap.py — not a working Vet-WAF h2 load path today
 from trex.astf.api import *
 
 
@@ -424,7 +424,7 @@ def register():
 
 | Scenario | Profile type | Chain | Notes |
 |----------|--------------|-------|--------|
-| HTTP/1 load from capture | `ASTFCapInfo` pcap | TRex → Tempesta → Python `http.server` | One TCP flow per pcap |
+| HTTP/1 load from capture | `ASTFCapInfo` pcap | TRex → Vet-WAF → Python `http.server` | One TCP flow per pcap |
 | HTTP/1 request flood | `ASTFProgram` client | same | Stub server template only in TRex |
 | HTTP/1 slow headers | `delay()` in client program | same | Timeout / frang exploration |
 | HTTP/2 | pcap | — | Blocked on TLS in ASTF |
@@ -432,7 +432,7 @@ def register():
 Checklist before a run on this stand:
 
 1. Python origin listening (`python3 -m http.server 8080`).
-2. Tempesta up; `listen` = server IP in the profile (`192.168.2.1`).
+2. Vet-WAF up; `listen` = server IP in the profile (`192.168.2.1`).
 3. Gen client IP (`192.168.2.2`) reachable; reverse path to TRex OK.
 4. `Host` / vhost aligned with the request.
 5. Frang limits high enough for the intended CPS (`-m` × profile `cps`).

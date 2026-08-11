@@ -1,7 +1,7 @@
 /**
- *	Tempesta kernel emulation unit testing framework.
+ *	Vet-WAF kernel emulation unit testing framework.
  *
- * Copyright (C) 2015-2024 Tempesta Technologies, Inc.
+ * Copyright (C) 2015-2024 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by
@@ -45,7 +45,7 @@ typedef enum {
 	__GFP_ZERO = 1,
 } gfp_t;
 
-/* Tempesta FW specific API. */
+/* Vet-WAF specific API. */
 #ifndef pg_skb_alloc
 #define pg_skb_alloc(size, ...)		malloc(size)
 #endif

@@ -1,11 +1,11 @@
-## Tempesta DB
+## Vet-WAF DB
 
-**Tempesta DB** (TDB) is persistent in-memory in-kernel key-value database.
+**Vet-WAF DB** (TDB) is persistent in-memory in-kernel key-value database.
 The typical applications are: application caches, filter rules,
 resolver results, events, staistics and access logs or traffic dumps.
 
 **libtdb** provices access to the database from user-space. Unlike other common
-embedded databases, Tempesta DB can be used by many processes concurrently.
+embedded databases, Vet-WAF DB can be used by many processes concurrently.
 Meantime, the database has much lower overhead for data transport in comparison
 with client-server databases. The library should be considered as an embedded
 database.
@@ -17,7 +17,7 @@ Fixed and variable length records can be stored. However, fixed size records
 can't have zero key and data at the same time - such records treated as deleted.
 
 
-### Tempesta DB Query Tool
+### Vet-WAF DB Query Tool
 
 **tdbq** is user-space CLI tool to query the in-kernel database.
 The tool is built on top of **libtdb**.

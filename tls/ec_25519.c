@@ -1,5 +1,5 @@
 /**
- *		Tempesta TLS
+ *		Vet-WAF TLS
  *
  * Elliptic curve 25519 (Montgomery).
  * http://cr.yp.to/ecdh/curve25519-20060209.pdf
@@ -12,7 +12,7 @@
  *
  * For scalar multiplication, we'll use a Montgomery ladder.
  *
- * Copyright (C) 2020-2025 Tempesta Technologies, Inc.
+ * Copyright (C) 2020-2025 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

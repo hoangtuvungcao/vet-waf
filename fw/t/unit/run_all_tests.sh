@@ -1,7 +1,7 @@
 #!/bin/bash
 #
-# Copyright (C) 2014 NatSys Lab. (info@natsys-lab.com).
-# Copyright (C) 2015-2026 Tempesta Technologies, Inc.
+# Copyright (C) 2014 Vet-WAF (info@vet-waf.io).
+# Copyright (C) 2015-2026 Vet-WAF
 #
 # This program is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@ root="$(pwd)"
 popd > /dev/null
 
 regex_setup_script=${REGEX_SETUP_SCRIPT_PATH:="$root/../../../scripts/regex_setup.sh"}
-regex_dir_path=${REGEX_DIR_PATH:="/opt/tempesta/regex"}
+regex_dir_path=${REGEX_DIR_PATH:="/opt/vet_waf/regex"}
 
 prepare_regex_directory()
 {
@@ -54,9 +54,9 @@ clean_exit()
 echo -e "\n @@@ RUNNING UNIT TESTS..."
 
 prepare_regex_directory
-# Load helper modules - here we test and mock Tempesta FW module only,
+# Load helper modules - here we test and mock Vet-WAF module only,
 # so that's OK to include all the service modules.
-insmod $root/../../../lib/tempesta_lib.ko || clean_exit 1
+insmod $root/../../../lib/vet_waf_lib.ko || clean_exit 1
 insmod $root/../../../db/core/tempesta_db.ko || clean_exit 1
 insmod $root/../../../regex/tempesta_regex.ko || clean_exit 1
 

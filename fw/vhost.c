@@ -1,7 +1,7 @@
 /**
- *		Tempesta FW
+ *		Vet-WAF
  *
- * Copyright (C) 2016-2026 Tempesta Technologies, Inc.
+ * Copyright (C) 2016-2026 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@
 #define DEBUG DBG_VHOST
 #endif
 
-#include "tempesta_fw.h"
+#include "vet_waf.h"
 #include "cache.h"
 #include "hash.h"
 #include "http.h"

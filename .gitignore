@@ -44,7 +44,7 @@ package-lock.json
 /db/libtdb/libtdb.so
 /db/tdbq/tdbq
 
-# tempesta user-space library
+# Vet-WAF user-space library
 /libtus/libtus.so
 /libtus/t/tfw_libtus_tests
 

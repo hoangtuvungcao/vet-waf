@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
 # SPDX-FileCopyrightText: Copyright 2022 G-Core Labs S.A.
-# SPDX-FileCopyrightText: Copyright 2026 Tempesta Technologies, Inc.
+# SPDX-FileCopyrightText: Copyright 2026 Vet-WAF
 
 obj-m := tempesta_regex.o
 

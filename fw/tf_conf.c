@@ -1,9 +1,9 @@
 /**
- *		Tempesta FW
+ *		Vet-WAF
  *
- * Transport Layer Security (TLS) interfaces to Tempesta TLS.
+ * Transport Layer Security (TLS) interfaces to Vet-WAF TLS.
  *
- * Copyright (C) 2025 Tempesta Technologies, Inc.
+ * Copyright (C) 2025 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@
 #include "hash.h"
 #include "lib/tf.h"
 #include "log.h"
-#include "tempesta_fw.h"
+#include "vet_waf.h"
 
 static int tf_cfgop_handle_hash_entry(TfwCfgSpec *, TfwCfgEntry *);
 

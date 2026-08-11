@@ -1,10 +1,10 @@
 /**
- *		Tempesta FW
+ *		Vet-WAF
  *
  * We split traditional filtering logic to two separate pieces:
  * - packet classification (e.g. should we pass or block a packet);
  * - packet action (e.g. drop the packet or close whole TCP connection).
- * Tempesta classifiers are responsible for the first task while filtering
+ * Vet-WAF classifiers are responsible for the first task while filtering
  * modules are responsible for the second one. Different classifiers can imply
  * different policies to service/block packets (e.g. QoS), so typically
  * filtering actions are called by classifiers.
@@ -15,8 +15,8 @@
  * and GFSM is responsible to pass or block a message. This is the way how
  * application level filters must be implemented.
  *
- * Copyright (C) 2014 NatSys Lab. (info@natsys-lab.com).
- * Copyright (C) 2015-2026 Tempesta Technologies, Inc.
+ * Copyright (C) 2014 Vet-WAF (info@vet-waf.io).
+ * Copyright (C) 2015-2026 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by
@@ -42,7 +42,7 @@
 
 #include "lib/common.h"
 #include "lib/str.h"
-#include "tempesta_fw.h"
+#include "vet_waf.h"
 #include "http_limits.h"
 #include "filter.h"
 #include "log.h"
@@ -344,7 +344,7 @@ static TfwCfgSpec tfw_filter_specs[] = {
 	},
 	{
 		.name = "filter_db",
-		.deflt = "/opt/tempesta/db/filter.tdb",
+		.deflt = "/opt/vet_waf/db/filter.tdb",
 		.handler = tfw_cfg_set_str,
 		.dest = &filter_cfg.db_path,
 		.spec_ext = &(TfwCfgSpecStr) {

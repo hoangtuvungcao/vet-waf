@@ -1,12 +1,12 @@
 /**
- *		Tempesta TLS
+ *		Vet-WAF TLS
  *
  * Multi-precision integer library.
  *
  * Based on mbed TLS, https://tls.mbed.org.
  *
  * Copyright (C) 2006-2015, ARM Limited, All Rights Reserved
- * Copyright (C) 2015-2020 Tempesta Technologies, Inc.
+ * Copyright (C) 2015-2020 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -239,7 +239,7 @@ ttls_mpi_eq_1(const TlsMpi *X)
 
 #if DBG_TLS
 /**
- * There are a lot of MPI operations used around, so Tempesta TLS becomes
+ * There are a lot of MPI operations used around, so Vet-WAF TLS becomes
  * unusable if all MPIs are dumped, so following pattern should be used:
  *
  *	__mpi_do_dump = true;

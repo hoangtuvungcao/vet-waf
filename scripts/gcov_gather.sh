@@ -1,9 +1,9 @@
 #!/bin/bash
 #
-# Gcov gather script for Tempesta FW data.
+# Gcov gather script for Vet-WAF data.
 # Mainly borrowed from linux/Documentation/dev-tools/gcov.rst
 #
-# Copyright (C) 2019 Tempesta Technologies, Inc.
+# Copyright (C) 2019 Vet-WAF
 #
 # This program is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by

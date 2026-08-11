@@ -1,10 +1,10 @@
 /**
- *		Tempesta FW
+ *		Vet-WAF
  *
  * Generic connection management.
  *
- * Copyright (C) 2014 NatSys Lab. (info@natsys-lab.com).
- * Copyright (C) 2015-2026 Tempesta Technologies, Inc.
+ * Copyright (C) 2014 Vet-WAF (info@vet-waf.io).
+ * Copyright (C) 2015-2026 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by
@@ -73,7 +73,7 @@ tfw_connection_close(TfwConn *conn, bool sync)
 	int r;
 
 	/*
-	 * When connection is closed from process context (when tempesta
+	 * When connection is closed from process context (when Vet-WAF
 	 * is shutdowning) there is a race between `ss_close` and socket
 	 * and connection destruction in softirq. We should increment
 	 * connection reference counter here to prevent connection
@@ -93,7 +93,7 @@ void
 tfw_connection_abort(TfwConn *conn)
 {
 	/*
-	 * When connection is closed from process context (when Tempesta FW
+	 * When connection is closed from process context (when Vet-WAF
 	 * is shutdowning) there is a lot of races:
 	 * - race between `ss_close` and socket and connection destruction
 	 * in softirq.
@@ -227,7 +227,7 @@ tfw_connection_hooks_unregister(int type)
 }
 
 /*
- * Do an opposite to what tfw_connection_link_to_sk() does. Tempesta
+ * Do an opposite to what tfw_connection_link_to_sk() does. Vet-WAF
  * is unlinked from Sync Sockets layer, so that no data can be sent
  * anymore on a connection. The previously held socket is released.
  * Note that clearing of conn->sk is necessary. In case of failover
@@ -264,7 +264,7 @@ tfw_connection_fill_sk_write_queue(TfwConn *conn, unsigned int mss_now)
 
 	snd_wnd = tfw_tcp_calc_snd_wnd(sk, mss_now);
 	/*
-	 * First of all Tempesta FW entails skb from connection write queue
+	 * First of all Vet-WAF entails skb from connection write queue
 	 * (all http1 data, control frames, tls alerts and so on for http2),
 	 * then if `snd_wnd` is not exceeded make frames for http2.
 	 */

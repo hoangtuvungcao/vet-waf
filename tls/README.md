@@ -1,6 +1,6 @@
-# Tempesta TLS
+# Vet-WAF TLS
 
-Originally **Tempesta TLS** was forked from GPLv2 version of
+Originally **Vet-WAF TLS** was forked from GPLv2 version of
 [mbed TLS 2.8.0](https://tls.mbed.org/download/start/mbedtls-2.8.0-gpl.tgz).
 However, it was significantly reworked to make the code fast, so at the moment
 only interface code PKI is left from the original mbed TLS code.
@@ -10,13 +10,13 @@ The main changes are:
 * Completely removed memory allocations and MPI overheads in the hot paths;
 * Using Linux native crypto API with optimized algorithm implementations.
 
-**Tempesta TLS** implements fast TLS handshakes and uses the native Linux
+**Vet-WAF TLS** implements fast TLS handshakes and uses the native Linux
 crypto API for the symmetric cryptography algorithms. TLS handshakes are
 susceptible to
 [DDoS attacks](https://vincent.bernat.im/en/blog/2011-ssl-dos-mitigation) which
 are very effective at depleting resources. Meantime, modern TLS libraries don't
 address handshakes performance at all implementing handshakes code in
-inefficient way. **Tempesta TLS** emphasizes TLS handshakes performance to
+inefficient way. **Vet-WAF TLS** emphasizes TLS handshakes performance to
 mitigate DDoS attacks.
 
 The library was significantly reduced in size and is one of the smallest (yet

@@ -1,7 +1,7 @@
 /**
- *		Tempesta FW
+ *		Vet-WAF
  *
- * Copyright (C) 2019-2026 Tempesta Technologies, Inc.
+ * Copyright (C) 2019-2026 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by
@@ -883,10 +883,10 @@ tfw_h2_goaway_process(TfwH2Ctx *ctx)
 	T_DBG3("%s: parsed, last_id=%u, err_code=%u\n", __func__,
 	       last_id, err_code);
 	/*
-	 * TODO: currently Tempesta FW does not initiate new streams in client
+	 * TODO: currently Vet-WAF does not initiate new streams in client
 	 * connections, so for now we have nothing to do here, except
 	 * continuation processing of existing streams until client will close
-	 * TCP connection. But in context of #1194 (since Tempesta FW will be
+	 * TCP connection. But in context of #1194 (since Vet-WAF will be
 	 * able to initiate new streams after PUSH_PROMISE implementation), we
 	 * should close all streams initiated by our side with identifier
 	 * higher than @last_id, and should not initiate new streams until
@@ -1068,7 +1068,7 @@ tfw_h2_calc_min_to_send(struct sock *sk, TfwH2Ctx *ctx, unsigned int mss_now)
 	unsigned int min_to_send;
 
 	/*
-	 * Tempesta FW avoid to send frame if the size of frame
+	 * Vet-WAF avoid to send frame if the size of frame
 	 * is less than 512 bytes, except when mtu is small or http2
 	 * initial window is less than 1024 bytes (client usually sends
 	 * window update frame with a size equal to a half of initial
@@ -1091,7 +1091,7 @@ tfw_h2_wnd_update_rate_limit(TfwH2Ctx *ctx)
 	 * We allow to send not more than six WINDOW_UPDATE
 	 * frames for one DATA frame by default. We also allow
 	 * to send not more than one WINDOW_UPDATE frame for each
-	 * minimum count of bytes allowed to send for Tempesta FW
+	 * minimum count of bytes allowed to send for Vet-WAF
 	 * (We do it to prevent data dribble attack). We also allow
 	 * to send at least `max_streams` WINDOW_UPDATE frames to
 	 * cover the case when client initiate connection with zero
@@ -2209,7 +2209,7 @@ tfw_h2_stream_xmit_process(struct sock *sk, TfwH2Ctx *ctx, TfwStream *stream,
 #define ADJUST_BLOCKED_STREAMS_AND_EXIT(len, type)			\
 do {									\
 	/*								\
-	 * If Tempesta FW stop to make frames, because of exceeded	\
+	 * If Vet-WAF stop to make frames, because of exceeded	\
 	 * stream->rem_wnd, mark such stream as blocked.		\
 	 */								\
 	BUG_ON(stream->xmit.is_blocked);				\

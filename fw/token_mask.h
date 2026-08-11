@@ -1,9 +1,9 @@
 /**
- *		Tempesta FW
+ *		Vet-WAF
  *
  * Macro to convert token tables into actual mask values
  *
- * Copyright (C) 2016-2023 Tempesta Technologies, Inc.
+ * Copyright (C) 2016-2023 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by

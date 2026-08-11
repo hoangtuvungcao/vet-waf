@@ -1,8 +1,8 @@
 /**
- *		Tempesta FW
+ *		Vet-WAF
  *
- * Copyright (C) 2014 NatSys Lab. (info@natsys-lab.com).
- * Copyright (C) 2015-2026 Tempesta Technologies, Inc.
+ * Copyright (C) 2014 Vet-WAF (info@vet-waf.io).
+ * Copyright (C) 2015-2026 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by
@@ -147,7 +147,7 @@ TEST(http1_parser, parses_req_method)
 	TEST_REQ_UNKNOWN(U);
 
 
-	/* RFC methods, not supported by TempestaFW. */
+	/* RFC methods, not supported by Vet-WAF. */
 	TEST_REQ_UNKNOWN(ACL);
 	TEST_REQ_UNKNOWN(BASELINE-CONTROL);
 	TEST_REQ_UNKNOWN(BIND);
@@ -210,7 +210,7 @@ TEST(http1_parser, parses_req_uri)
 			EXPECT_TFWSTR_EQ(&req->uri_path, req_uri_path);	\
 		} else {						\
 			/*						\
-			 * If request URI is empty Tempesta FW set	\
+			 * If request URI is empty Vet-WAF set	\
 			 * default req->uri_path "/".			\
 			 */						\
 			EXPECT_TFWSTR_EQ(&req->uri_path, "/");		\
@@ -245,11 +245,11 @@ TEST(http1_parser, parses_req_uri)
 
 	TEST_OPTIONS_WITHOUT_PATH("example.com");
 	TEST_OPTIONS_WITHOUT_PATH("example.com:8080");
-	TEST_OPTIONS_WITHOUT_PATH("tempesta-tech.com");
+	TEST_OPTIONS_WITHOUT_PATH("vet-waf.io");
 
-	FOR_REQ("OPTIONS http://tempesta-tech.com/home?name=value HTTP/1.1\r\n\r\n") {
+	FOR_REQ("OPTIONS https://vet-waf.io/home?name=value HTTP/1.1\r\n\r\n") {
 		EXPECT_EQ(req->method, TFW_HTTP_METH_OPTIONS);
-		EXPECT_TFWSTR_EQ(&req->host, "tempesta-tech.com");
+		EXPECT_TFWSTR_EQ(&req->host, "vet-waf.io");
 		EXPECT_FALSE(tfw_str_eq_cstr(&req->uri_path, "*", 1, 0));
 	}
 
@@ -261,16 +261,16 @@ TEST(http1_parser, parses_req_uri)
 
 	EXPECT_BLOCK_REQ("GET wss://userame@natsys-lab.com HTTP/1.1\r\n\r\n");
 
-	EXPECT_BLOCK_REQ("GET http://user@tempesta-tech.com/ HTTP/1.1\r\n"
+	EXPECT_BLOCK_REQ("GET http://user@vet-waf.io/ HTTP/1.1\r\n"
 			 "Host: bad.com\r\n\r\n");
 
 	EXPECT_BLOCK_REQ("GET http://user@-x/ HTTP/1.1\r\n"
 			 "Host: bad.com\r\n\r\n");
 
-	FOR_REQ("GET http://tempesta-tech.com/ HTTP/1.1\r\n"
+	FOR_REQ("GET https://vet-waf.io/ HTTP/1.1\r\n"
 		"Host: bad.com\r\n\r\n")
 	{
-		EXPECT_TFWSTR_EQ(&req->host, "tempesta-tech.com");
+		EXPECT_TFWSTR_EQ(&req->host, "vet-waf.io");
 	}
 
 	EXPECT_BLOCK_REQ("GET http:///path HTTP/1.1\r\nHost: localhost\r\n\r\n");
@@ -296,10 +296,10 @@ TEST(http1_parser, parses_req_uri)
 	EXPECT_BLOCK_REQ("GET http://user@: HTTP/1.1\r\n"
 			 "Host: localhost\r\n\r\n");
 
-	EXPECT_BLOCK_REQ("GET http://tempesta-tech.com: HTTP/1.1\r\n"
+	EXPECT_BLOCK_REQ("GET https://vet-waf.io: HTTP/1.1\r\n"
 			 "Host: localhost\r\n\r\n");
 
-	EXPECT_BLOCK_REQ("GET http://tempesta-tech.com:/ HTTP/1.1\r\n"
+	EXPECT_BLOCK_REQ("GET https://vet-waf.io:/ HTTP/1.1\r\n"
 			 "Host: localhost\r\n\r\n");
 
 	EXPECT_BLOCK_REQ("GET http://user@/path HTTP/1.1\r\n"
@@ -308,7 +308,7 @@ TEST(http1_parser, parses_req_uri)
 	EXPECT_BLOCK_REQ("GET http://:443 HTTP/1.1\r\n"
 			 "Host: localhost\r\n\r\n");
 
-	EXPECT_BLOCK_REQ("GET http://tempesta-tech.com: HTTP/1.1\r\n"
+	EXPECT_BLOCK_REQ("GET https://vet-waf.io: HTTP/1.1\r\n"
 			 "Host: localhost\r\n\r\n");
 
 	EXPECT_BLOCK_REQ("GET http://example.com?foo=1 HTTP/1.1\r\n\r\n");
@@ -1816,7 +1816,7 @@ TEST(http1_parser, host)
 
 	FOR_REQ_SIMPLE("Host:  ");
 
-	FOR_REQ_SIMPLE("Host:    tempesta-tech.com   ")
+	FOR_REQ_SIMPLE("Host:    vet-waf.io   ")
 	{
 		TfwStr *host = &req->h_tbl->tbl[TFW_HTTP_HDR_HOST];
 		TfwStr h_expected = {
@@ -1824,7 +1824,7 @@ TEST(http1_parser, host)
 				{ .data = "Host:" , .len = 5 },
 				{ .data = "    " , .len = 4,
 				  .flags = TFW_STR_OWS },
-				{ .data = "tempesta-tech.com" , .len = 17,
+				{ .data = "vet-waf.io" , .len = 17,
 				  .flags = TFW_STR_VALUE },
 			},
 			.len = 26,
@@ -1835,7 +1835,7 @@ TEST(http1_parser, host)
 		EXPECT_EQ(req->host_port, 0);
 	}
 
-	FOR_REQ_SIMPLE("Host:    tempesta-tech.com:443   ")
+	FOR_REQ_SIMPLE("Host:    vet-waf.io:443   ")
 	{
 		TfwStr *host = &req->h_tbl->tbl[TFW_HTTP_HDR_HOST];
 		TfwStr h_expected = {
@@ -1843,7 +1843,7 @@ TEST(http1_parser, host)
 				{ .data = "Host:" , .len = 5 },
 				{ .data = "    " , .len = 4,
 				  .flags = TFW_STR_OWS },
-				{ .data = "tempesta-tech.com" , .len = 17,
+				{ .data = "vet-waf.io" , .len = 17,
 				  .flags = TFW_STR_VALUE },
 				{ .data = ":" , .len = 1 },
 				{ .data = "443" , .len = 3,
@@ -1899,12 +1899,12 @@ TEST(http1_parser, host)
 	}
 
 	/* Invalid port */
-	EXPECT_BLOCK_REQ_SIMPLE("Host: tempesta-tech.com:0");
-	EXPECT_BLOCK_REQ_SIMPLE("Host: tempesta-tech.com:");
-	EXPECT_BLOCK_REQ_SIMPLE("Host: tempesta-tech.com:65536");
-	EXPECT_BLOCK_DIGITS("Host: tempesta-tech.com:", "",
+	EXPECT_BLOCK_REQ_SIMPLE("Host: vet-waf.io:0");
+	EXPECT_BLOCK_REQ_SIMPLE("Host: vet-waf.io:");
+	EXPECT_BLOCK_REQ_SIMPLE("Host: vet-waf.io:65536");
+	EXPECT_BLOCK_DIGITS("Host: vet-waf.io:", "",
 			    EXPECT_BLOCK_REQ_SIMPLE);
-	EXPECT_BLOCK_SHORT( "Host: tempesta-tech.com:", "",
+	EXPECT_BLOCK_SHORT( "Host: vet-waf.io:", "",
 			    EXPECT_BLOCK_REQ_SIMPLE);
 	EXPECT_BLOCK_DIGITS("Host: [fd42:5ca1:e3a7::1000]:", "",
 			    EXPECT_BLOCK_REQ_SIMPLE);
@@ -1912,13 +1912,13 @@ TEST(http1_parser, host)
 			    EXPECT_BLOCK_REQ_SIMPLE);
 
 	/* Port syntax is broken. */
-	EXPECT_BLOCK_REQ_SIMPLE("Host: tempesta-tech.com:443:1");
+	EXPECT_BLOCK_REQ_SIMPLE("Host: vet-waf.io:443:1");
 	EXPECT_BLOCK_REQ_SIMPLE("Host: [fd42:5ca1:e3a7::1000]:443:1");
-	EXPECT_BLOCK_REQ_SIMPLE("Host: tempesta-tech.com::443");
+	EXPECT_BLOCK_REQ_SIMPLE("Host: vet-waf.io::443");
 	EXPECT_BLOCK_REQ_SIMPLE("Host: [fd42:5ca1:e3a7::1000]::443");
-	EXPECT_BLOCK_REQ_SIMPLE("Host: tempesta-tech.com 443");
+	EXPECT_BLOCK_REQ_SIMPLE("Host: vet-waf.io 443");
 	EXPECT_BLOCK_REQ_SIMPLE("Host: [fd42:5ca1:e3a7::1000] 443");
-	EXPECT_BLOCK_REQ_SIMPLE("Host: tempesta-tech.com:443-1");
+	EXPECT_BLOCK_REQ_SIMPLE("Host: vet-waf.io:443-1");
 	EXPECT_BLOCK_REQ_SIMPLE("Host: [fd42:5ca1:e3a7::1000]-1");
 
 	/* Invalid brackets around IPv6. */
@@ -3032,7 +3032,7 @@ TEST(http1_parser, if_none_match)
 
 TEST(http1_parser, referer)
 {
-	FOR_REQ_SIMPLE("Referer:    http://tempesta-tech.com:8080"
+	FOR_REQ_SIMPLE("Referer:    https://vet-waf.io:8080"
 		       "/cgi-bin/show.pl?entry=tempesta      ");
 	FOR_REQ_SIMPLE("Referer:  /cgi-bin/show.pl?entry=tempesta");
 	FOR_REQ_SIMPLE("Referer: http://[2001:0db8:11a3:09d7:1f34:8a2e:07a0:765d]"
@@ -3867,7 +3867,7 @@ TEST_MPART(http1_parser, date, 2)
 	 * Incorrect day
 	 */
 	/*
-	 * According to RFC "00" is a valid day, but Tempesta rejects it
+	 * According to RFC "00" is a valid day, but Vet-WAF rejects it
 	 * because of ambiguity of its interpretation.
 	 */
 	FOR_EACH_DATE_FORMAT_INVALID("00", "Jan", "2000", "00", "00:00:00");
@@ -4177,27 +4177,27 @@ TEST_MPART(http1_parser, forwarded, 0)
 {
 	/* Invalid port. */
 	EXPECT_BLOCK_REQ_SIMPLE("Forwarded: "
-		       "host=tempesta-tech.com:0");
+		       "host=vet-waf.io:0");
 	EXPECT_BLOCK_REQ_SIMPLE("Forwarded: "
-				"host=tempesta-tech.com:65536");
+				"host=vet-waf.io:65536");
 	EXPECT_BLOCK_REQ_SIMPLE("Forwarded: "
-				"host=tempesta-tech.com:");
+				"host=vet-waf.io:");
 	EXPECT_BLOCK_REQ_SIMPLE("Forwarded: "
-				"host=tempesta-tech.com:443;");
+				"host=vet-waf.io:443;");
 	EXPECT_BLOCK_REQ_SIMPLE("Forwarded: "
-				"host=tempesta-tech.com:443\"");
+				"host=vet-waf.io:443\"");
 	EXPECT_BLOCK_REQ_SIMPLE("Forwarded: "
-				"host=tempesta-tech.com:443 ;");
+				"host=vet-waf.io:443 ;");
 
 	/* Space after semicolon */
 	EXPECT_BLOCK_REQ_SIMPLE("Forwarded:"
-		       "host=tempesta-tech.com:443; proto=http");
+		       "host=vet-waf.io:443; proto=http");
 	/* Space before semicolon */
 	EXPECT_BLOCK_REQ_SIMPLE("Forwarded:"
-		       "host=tempesta-tech.com:443 ;proto=http");
+		       "host=vet-waf.io:443 ;proto=http");
 	/* Spaces around semicolon */
 	EXPECT_BLOCK_REQ_SIMPLE("Forwarded:"
-		       "host=tempesta-tech.com:443 ; proto=http");
+		       "host=vet-waf.io:443 ; proto=http");
 
 	/* Invalid non quoted IPv6. */
 	EXPECT_BLOCK_REQ_SIMPLE("Forwarded: "
@@ -4208,12 +4208,12 @@ TEST_MPART(http1_parser, forwarded, 0)
 
 	/* Quoted host with port. */
 	FOR_REQ_SIMPLE("Forwarded:     "
-		       "host=\"tempesta-tech.com:443\"");
+		       "host=\"vet-waf.io:443\"");
 	/* Quoted IPv6 host with port. */
 	FOR_REQ_SIMPLE("Forwarded:     "
 		       "host=\"[11:22:33:44]:443\"");
 	FOR_REQ_SIMPLE("Forwarded:     "
-		       "host=tempesta-tech.com:443    ");
+		       "host=vet-waf.io:443    ");
 
 }
 
@@ -4221,7 +4221,7 @@ TEST_MPART(http1_parser, forwarded, 1)
 {
 	/* Common cases. */
 	FOR_REQ_SIMPLE("Forwarded:     "
-		       "host=tempesta-tech.com:443")
+		       "host=vet-waf.io:443")
 	{
 		TfwStr *forwarded = &req->h_tbl->tbl[TFW_HTTP_HDR_FORWARDED];
 		TfwStr h_expected = {
@@ -4231,7 +4231,7 @@ TEST_MPART(http1_parser, forwarded, 1)
 				  .flags = TFW_STR_OWS },
 				{ .data = "host=", .len = 5,
 				  .flags = TFW_STR_NAME },
-				{ .data = "tempesta-tech.com", .len = 17,
+				{ .data = "vet-waf.io", .len = 17,
 				  .flags = TFW_STR_VALUE },
 				{ .data = ":", .len = 1 },
 				{ .data = "443", .len = 3,
@@ -4245,7 +4245,7 @@ TEST_MPART(http1_parser, forwarded, 1)
 	}
 
 	FOR_REQ_SIMPLE("Forwarded:     "
-		       "host=tempesta-tech.com")
+		       "host=vet-waf.io")
 	{
 		TfwStr *forwarded = &req->h_tbl->tbl[TFW_HTTP_HDR_FORWARDED];
 		TfwStr h_expected = {
@@ -4255,7 +4255,7 @@ TEST_MPART(http1_parser, forwarded, 1)
 				  .flags = TFW_STR_OWS },
 				{ .data = "host=", .len = 5,
 				  .flags = TFW_STR_NAME },
-				{ .data = "tempesta-tech.com", .len = 17,
+				{ .data = "vet-waf.io", .len = 17,
 				  .flags = TFW_STR_VALUE },
 			},
 			.len = 37,
@@ -4266,7 +4266,7 @@ TEST_MPART(http1_parser, forwarded, 1)
 	}
 
 	FOR_REQ_SIMPLE("Forwarded:     "
-		       "host=tempesta-tech.com:443;"
+		       "host=vet-waf.io:443;"
 		       "for=8.8.8.8")
 	{
 		TfwStr *forwarded = &req->h_tbl->tbl[TFW_HTTP_HDR_FORWARDED];
@@ -4277,7 +4277,7 @@ TEST_MPART(http1_parser, forwarded, 1)
 				  .flags = TFW_STR_OWS },
 				{ .data = "host=", .len = 5,
 				  .flags = TFW_STR_NAME },
-				{ .data = "tempesta-tech.com", .len = 17,
+				{ .data = "vet-waf.io", .len = 17,
 				  .flags = TFW_STR_VALUE },
 				{ .data = ":", .len = 1 },
 				{ .data = "443", .len = 3,
@@ -4296,7 +4296,7 @@ TEST_MPART(http1_parser, forwarded, 1)
 	}
 
 	FOR_REQ_SIMPLE("Forwarded:     "
-		       "host=tempesta-tech.com:443;"
+		       "host=vet-waf.io:443;"
 		       "for=8.8.8.8;"
 		       "by=8.8.4.4")
 	{
@@ -4308,7 +4308,7 @@ TEST_MPART(http1_parser, forwarded, 1)
 				  .flags = TFW_STR_OWS },
 				{ .data = "host=", .len = 5,
 				  .flags = TFW_STR_NAME },
-				{ .data = "tempesta-tech.com", .len = 17,
+				{ .data = "vet-waf.io", .len = 17,
 				  .flags = TFW_STR_VALUE },
 				{ .data = ":", .len = 1},
 				{ .data = "443", .len = 3,
@@ -4335,7 +4335,7 @@ TEST_MPART(http1_parser, forwarded, 1)
 TEST_MPART(http1_parser, forwarded, 2)
 {
 	FOR_REQ_SIMPLE("Forwarded:     "
-		       "host=tempesta-tech.com:443;"
+		       "host=vet-waf.io:443;"
 		       "for=8.8.8.8;"
 		       "by=8.8.4.4;"
 		       "proto=https")
@@ -4348,7 +4348,7 @@ TEST_MPART(http1_parser, forwarded, 2)
 				  .flags = TFW_STR_OWS },
 				{ .data = "host=", .len = 5,
 				  .flags = TFW_STR_NAME },
-				{ .data = "tempesta-tech.com", .len = 17,
+				{ .data = "vet-waf.io", .len = 17,
 				  .flags = TFW_STR_VALUE },
 				{ .data = ":", .len = 1 },
 				{ .data = "443", .len = 3,
@@ -4377,7 +4377,7 @@ TEST_MPART(http1_parser, forwarded, 2)
 	}
 
 	FOR_REQ_SIMPLE("Forwarded:     "
-		       "host=tempesta-tech.com:443;"
+		       "host=vet-waf.io:443;"
 		       "for=8.8.8.8,"
 		       "for=1.2.3.4:8080;"
 		       "by=8.8.4.4;"
@@ -4391,7 +4391,7 @@ TEST_MPART(http1_parser, forwarded, 2)
 				  .flags = TFW_STR_OWS },
 				{ .data = "host=", .len = 5,
 				  .flags = TFW_STR_NAME },
-				{ .data = "tempesta-tech.com", .len = 17,
+				{ .data = "vet-waf.io", .len = 17,
 				  .flags = TFW_STR_VALUE },
 				{ .data = ":", .len = 1 },
 				{ .data = "443", .len = 3,
@@ -4426,7 +4426,7 @@ TEST_MPART(http1_parser, forwarded, 2)
 
 	/* quoted version */
 	FOR_REQ_SIMPLE("Forwarded:     "
-		       "host=tempesta-tech.com:443;"
+		       "host=vet-waf.io:443;"
 		       "for=\"8.8.8.8\";"
 		       "by=8.8.4.4")
 	{
@@ -4438,7 +4438,7 @@ TEST_MPART(http1_parser, forwarded, 2)
 				  .flags = TFW_STR_OWS },
 				{ .data = "host=", .len = 5,
 				  .flags = TFW_STR_NAME },
-				{ .data = "tempesta-tech.com", .len = 17,
+				{ .data = "vet-waf.io", .len = 17,
 				  .flags = TFW_STR_VALUE },
 				{ .data = ":", .len = 1},
 				{ .data = "443", .len = 3,
@@ -4464,7 +4464,7 @@ TEST_MPART(http1_parser, forwarded, 2)
 
 	/* quoted version */
 	FOR_REQ_SIMPLE("Forwarded:     "
-		       "host=\"tempesta-tech.com:443\";"
+		       "host=\"vet-waf.io:443\";"
 		       "for=8.8.8.8;"
 		       "by=8.8.4.4")
 	{
@@ -4477,7 +4477,7 @@ TEST_MPART(http1_parser, forwarded, 2)
 				{ .data = "host=", .len = 5,
 				  .flags = TFW_STR_NAME },
 				{ .data = "\"", .len = 1 },
-				{ .data = "tempesta-tech.com", .len = 17,
+				{ .data = "vet-waf.io", .len = 17,
 				  .flags = TFW_STR_VALUE },
 				{ .data = ":", .len = 1},
 				{ .data = "443", .len = 3,
@@ -4680,7 +4680,7 @@ do {									\
 			 "Cookie: session=42; theme=dark\r\n"
 			 "Dummy0: 0\r\n"
 			 "Keep-Alive: timeout=600, max=65526\r\n"
-			 "Referer:    http://tempesta-tech.com:8080\r\n"
+			 "Referer:    https://vet-waf.io:8080\r\n"
 				"/cgi-bin/show.pl?entry=tempesta      \r\n"
 			 "If-Modified-Since: Sat, 29 Oct 1994 19:43:31 GMT\r\n"
 			 "X-Forwarded-For: 203.0.113.195,70.41.3.18,150.172.238.178\r\n"
@@ -4874,7 +4874,7 @@ TEST(http1_parser, tfh)
 		"Connection: Keep-Alive\r\n"
 		"X-Forwarded-For: 127.0.0.1\r\n"
 		"Cookie: session=42; theme=dark\r\n"
-		"Referer: http://tempesta-tech.com:8080\r\n"
+		"Referer: https://vet-waf.io:8080\r\n"
 		"\r\n")
 	{
 		EXPECT_EQ((unsigned)req->tfh.has_referer, 1);
@@ -4893,7 +4893,7 @@ TEST(http1_parser, tfh)
 		"bbbbbbbb=b; bbbbbbbbb=b; bbbbbbbbbb=b; bbbbbbbbbbb=b; "
 		"c=c; c=cc; ccc=c; cccc=c; ccccc=c; cccccc=c; ccccccc=c; "
 		"d=d; d=dd; d=ddd\r\n"
-		"Referer: http://tempesta-tech.com:8080\r\n"
+		"Referer: https://vet-waf.io:8080\r\n"
 		"\r\n")
 	{
 		EXPECT_EQ((unsigned)req->tfh.has_referer, 1);
