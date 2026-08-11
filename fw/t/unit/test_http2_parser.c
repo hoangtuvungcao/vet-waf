@@ -1351,19 +1351,19 @@ TEST_MPART(http2_parser, host, 0)
 {
 	EXPECT_BLOCK_REQ_H2_HOST("");
 	EXPECT_BLOCK_REQ_H2_HOST(" ");
-	EXPECT_BLOCK_REQ_H2_HOST(" vet-waf.io");
+	EXPECT_BLOCK_REQ_H2_HOST(" example.com");
 
-	FOR_REQ_H2_HOST("vet-waf.io")
+	FOR_REQ_H2_HOST("example.com")
 	{
 		TfwStr *host = &req->h_tbl->tbl[TFW_HTTP_HDR_H2_AUTHORITY];
 
 		TfwStr h_expected = {
 			.chunks = (TfwStr []) {
 				{ .data = ":authority" , .len = 10 },
-				{ .data = "vet-waf.io" , .len = 17,
+				{ .data = "example.com" , .len = 11,
 				  .flags = TFW_STR_VALUE|TFW_STR_HDR_VALUE },
 			},
-			.len = 27,
+			.len = 21,
 			.nchunks = 2,
 			.flags = TFW_STR_COMPLETE
 		};
@@ -1372,21 +1372,21 @@ TEST_MPART(http2_parser, host, 0)
 		EXPECT_EQ(req->host_port, 0);
 	}
 
-	FOR_REQ_H2_HOST("vet-waf.io:443")
+	FOR_REQ_H2_HOST("example.com:443")
 	{
 		TfwStr *host = &req->h_tbl->tbl[TFW_HTTP_HDR_H2_AUTHORITY];
 
 		TfwStr h_expected = {
 			.chunks = (TfwStr []) {
 				{ .data = ":authority" , .len = 10 },
-				{ .data = "vet-waf.io" , .len = 17,
+				{ .data = "example.com" , .len = 11,
 				  .flags = TFW_STR_VALUE|TFW_STR_HDR_VALUE },
 				{ .data = ":" , .len = 1,
 				  .flags = TFW_STR_HDR_VALUE },
 				{ .data = "443" , .len = 3,
 				  .flags = TFW_STR_VALUE|TFW_STR_HDR_VALUE },
 			},
-			.len = 31,
+			.len = 25,
 			.nchunks = 4,
 			.flags = TFW_STR_COMPLETE
 		};
@@ -1441,11 +1441,11 @@ TEST_MPART(http2_parser, host, 0)
 TEST_MPART(http2_parser, host, 1)
 {
 	/* Invalid port */
-	EXPECT_BLOCK_REQ_H2_HOST("vet-waf.io:0");
-	EXPECT_BLOCK_REQ_H2_HOST("vet-waf.io:65536");
-	EXPECT_BLOCK_DIGITS("vet-waf.io:", "",
+	EXPECT_BLOCK_REQ_H2_HOST("example.com:0");
+	EXPECT_BLOCK_REQ_H2_HOST("example.com:65536");
+	EXPECT_BLOCK_DIGITS("example.com:", "",
 			    EXPECT_BLOCK_REQ_H2_HOST);
-	EXPECT_BLOCK_SHORT( "vet-waf.io:", "",
+	EXPECT_BLOCK_SHORT( "example.com:", "",
 			    EXPECT_BLOCK_REQ_H2_HOST);
 	EXPECT_BLOCK_DIGITS("[fd42:5ca1:e3a7::1000]:", "",
 			    EXPECT_BLOCK_REQ_H2_HOST);
@@ -1456,13 +1456,13 @@ TEST_MPART(http2_parser, host, 1)
 TEST_MPART(http2_parser, host, 2)
 {
 	/* Port syntax is broken. */
-	EXPECT_BLOCK_REQ_H2_HOST("vet-waf.io:443:1");
+	EXPECT_BLOCK_REQ_H2_HOST("example.com:443:1");
 	EXPECT_BLOCK_REQ_H2_HOST("[fd42:5ca1:e3a7::1000]:443:1");
-	EXPECT_BLOCK_REQ_H2_HOST("vet-waf.io::443");
+	EXPECT_BLOCK_REQ_H2_HOST("example.com::443");
 	EXPECT_BLOCK_REQ_H2_HOST("[fd42:5ca1:e3a7::1000]::443");
-	EXPECT_BLOCK_REQ_H2_HOST("vet-waf.io 443");
+	EXPECT_BLOCK_REQ_H2_HOST("example.com 443");
 	EXPECT_BLOCK_REQ_H2_HOST("[fd42:5ca1:e3a7::1000] 443");
-	EXPECT_BLOCK_REQ_H2_HOST("vet-waf.io:443-1");
+	EXPECT_BLOCK_REQ_H2_HOST("example.com:443-1");
 	EXPECT_BLOCK_REQ_H2_HOST("[fd42:5ca1:e3a7::1000]-1");
 }
 
@@ -1729,7 +1729,7 @@ TEST(http2_parser, referer)
 	)
 
 
-	FOR_REQ_H2_IF_REFERER("https://vet-waf.io:8080"
+	FOR_REQ_H2_IF_REFERER("https://example.com:8080"
 		       "/cgi-bin/show.pl?entry=tempesta      ");
 	FOR_REQ_H2_IF_REFERER("/cgi-bin/show.pl?entry=tempesta");
 	FOR_REQ_H2_IF_REFERER("http://[2001:0db8:11a3:09d7:1f34:8a2e:07a0:765d]"
@@ -2730,7 +2730,7 @@ TEST(http2_parser, perf)
 	    HEADER(WO_IND(NAME("Dummy0"), VALUE("0")));
 	    HEADER(WO_IND(
 		NAME("referer"),
-		VALUE("https://vet-waf.io:8080\r\n"
+		VALUE("https://example.com:8080\r\n"
 		      "/cgi-bin/show.pl?entry=tempesta")));
 	    HEADER(WO_IND(
 		NAME("if-modified-since"),
@@ -2872,19 +2872,19 @@ end:
 TEST_MPART(http2_parser, forwarded, 0)
 {
 	/* Invalid port. */
-	EXPECT_BLOCK_REQ_H2_FORWARDED("host=vet-waf.io:0");
-	EXPECT_BLOCK_REQ_H2_FORWARDED("host=vet-waf.io:65536");
-	EXPECT_BLOCK_REQ_H2_FORWARDED("host=vet-waf.io:");
-	EXPECT_BLOCK_REQ_H2_FORWARDED("host=vet-waf.io:443;");
-	EXPECT_BLOCK_REQ_H2_FORWARDED("host=vet-waf.io:443\"");
-	EXPECT_BLOCK_REQ_H2_FORWARDED("host=vet-waf.io:443 ;");
+	EXPECT_BLOCK_REQ_H2_FORWARDED("host=example.com:0");
+	EXPECT_BLOCK_REQ_H2_FORWARDED("host=example.com:65536");
+	EXPECT_BLOCK_REQ_H2_FORWARDED("host=example.com:");
+	EXPECT_BLOCK_REQ_H2_FORWARDED("host=example.com:443;");
+	EXPECT_BLOCK_REQ_H2_FORWARDED("host=example.com:443\"");
+	EXPECT_BLOCK_REQ_H2_FORWARDED("host=example.com:443 ;");
 
 	/* Space after semicolon */
-	EXPECT_BLOCK_REQ_H2_FORWARDED("host=vet-waf.io:443; proto=http");
+	EXPECT_BLOCK_REQ_H2_FORWARDED("host=example.com:443; proto=http");
 	/* Space before semicolon */
-	EXPECT_BLOCK_REQ_H2_FORWARDED("host=vet-waf.io:443 ;proto=http");
+	EXPECT_BLOCK_REQ_H2_FORWARDED("host=example.com:443 ;proto=http");
 	/* Spaces around semicolon */
-	EXPECT_BLOCK_REQ_H2_FORWARDED("host=vet-waf.io:443"
+	EXPECT_BLOCK_REQ_H2_FORWARDED("host=example.com:443"
 				      " ; proto=http");
 
 	/* Invalid non quoted IPv6. */
@@ -2893,7 +2893,7 @@ TEST_MPART(http2_parser, forwarded, 0)
 	EXPECT_BLOCK_REQ_H2_FORWARDED("host=[111:p22:t3]");
 
 	/* Quoted host with port. */
-	FOR_REQ_H2_FORWARDED("host=\"vet-waf.io:443\"");
+	FOR_REQ_H2_FORWARDED("host=\"example.com:443\"");
 	/* Quoted IPv6 host with port. */
 	FOR_REQ_H2_FORWARDED("host=\"[11:22:33:44]:443\"");
 }
@@ -2901,7 +2901,7 @@ TEST_MPART(http2_parser, forwarded, 0)
 TEST_MPART(http2_parser, forwarded, 1)
 {
 	/* Common cases. */
-	FOR_REQ_H2_FORWARDED("host=vet-waf.io:443")
+	FOR_REQ_H2_FORWARDED("host=example.com:443")
 	{
 		TfwStr *forwarded = &req->h_tbl->tbl[TFW_HTTP_HDR_FORWARDED];
 		TfwStr h_expected = {
@@ -2909,21 +2909,21 @@ TEST_MPART(http2_parser, forwarded, 1)
 				{ .data = "forwarded", .len = 9 },
 				{ .data = "host=", .len = 5,
 				  .flags = TFW_STR_NAME|TFW_STR_HDR_VALUE},
-				{ .data = "vet-waf.io:443", .len = 17,
+				{ .data = "example.com:443", .len = 11,
 				  .flags = TFW_STR_VALUE|TFW_STR_HDR_VALUE},
 				{ .data = ":", .len = 1,
 				  .flags = TFW_STR_HDR_VALUE},
 				{ .data = "443", .len = 3,
 				  .flags = TFW_STR_VALUE|TFW_STR_HDR_VALUE},
 			},
-			.len = 35,
+			.len = 29,
 			.nchunks = 5
 		};
 
 		test_string_split(&h_expected, forwarded);
 	}
 
-	FOR_REQ_H2_FORWARDED("host=vet-waf.io")
+	FOR_REQ_H2_FORWARDED("host=example.com")
 	{
 		TfwStr *forwarded = &req->h_tbl->tbl[TFW_HTTP_HDR_FORWARDED];
 		TfwStr h_expected = {
@@ -2931,17 +2931,17 @@ TEST_MPART(http2_parser, forwarded, 1)
 				{ .data = "forwarded", .len = 9 },
 				{ .data = "host=", .len = 5,
 				  .flags = TFW_STR_NAME|TFW_STR_HDR_VALUE},
-				{ .data = "vet-waf.io", .len = 17,
+				{ .data = "example.com", .len = 11,
 				  .flags = TFW_STR_VALUE|TFW_STR_HDR_VALUE},
 			},
-			.len = 31,
+			.len = 25,
 			.nchunks = 3
 		};
 
 		test_string_split(&h_expected, forwarded);
 	}
 
-	FOR_REQ_H2_FORWARDED("host=vet-waf.io:443;"
+	FOR_REQ_H2_FORWARDED("host=example.com:443;"
 			     "for=8.8.8.8")
 	{
 		TfwStr *forwarded = &req->h_tbl->tbl[TFW_HTTP_HDR_FORWARDED];
@@ -2950,7 +2950,7 @@ TEST_MPART(http2_parser, forwarded, 1)
 				{ .data = "forwarded", .len = 9 },
 				{ .data = "host=", .len = 5,
 				  .flags = TFW_STR_NAME|TFW_STR_HDR_VALUE },
-				{ .data = "vet-waf.io", .len = 17,
+				{ .data = "example.com", .len = 11,
 				  .flags = TFW_STR_VALUE|TFW_STR_HDR_VALUE },
 				{ .data = ":", .len = 1,
 				  .flags = TFW_STR_HDR_VALUE},
@@ -2963,14 +2963,14 @@ TEST_MPART(http2_parser, forwarded, 1)
 				{ .data = "8.8.8.8", .len = 7,
 				  .flags = TFW_STR_VALUE|TFW_STR_HDR_VALUE },
 			},
-			.len = 47,
+			.len = 41,
 			.nchunks = 8
 		};
 
 		test_string_split(&h_expected, forwarded);
 	}
 
-	FOR_REQ_H2_FORWARDED("host=vet-waf.io:443;"
+	FOR_REQ_H2_FORWARDED("host=example.com:443;"
 			     "for=8.8.8.8;"
 			     "by=8.8.4.4")
 	{
@@ -2980,7 +2980,7 @@ TEST_MPART(http2_parser, forwarded, 1)
 				{ .data = "forwarded", .len = 9 },
 				{ .data = "host=", .len = 5,
 				  .flags = TFW_STR_NAME|TFW_STR_HDR_VALUE },
-				{ .data = "vet-waf.io", .len = 17,
+				{ .data = "example.com", .len = 11,
 				  .flags = TFW_STR_VALUE|TFW_STR_HDR_VALUE },
 				{ .data = ":", .len = 1,
 				  .flags = TFW_STR_HDR_VALUE},
@@ -2999,7 +2999,7 @@ TEST_MPART(http2_parser, forwarded, 1)
 				{ .data = "8.8.4.4", .len = 7,
 				  .flags = TFW_STR_VALUE|TFW_STR_HDR_VALUE },
 			},
-			.len = 58,
+			.len = 52,
 			.nchunks = 11
 		};
 
@@ -3009,7 +3009,7 @@ TEST_MPART(http2_parser, forwarded, 1)
 
 TEST_MPART(http2_parser, forwarded, 2)
 {
-	FOR_REQ_H2_FORWARDED("host=vet-waf.io:443;"
+	FOR_REQ_H2_FORWARDED("host=example.com:443;"
 			     "for=8.8.8.8;"
 			     "by=8.8.4.4;"
 			     "proto=https")
@@ -3020,7 +3020,7 @@ TEST_MPART(http2_parser, forwarded, 2)
 				{ .data = "forwarded", .len = 9 },
 				{ .data = "host=", .len = 5,
 				  .flags = TFW_STR_NAME|TFW_STR_HDR_VALUE },
-				{ .data = "vet-waf.io", .len = 17,
+				{ .data = "example.com", .len = 11,
 				  .flags = TFW_STR_VALUE|TFW_STR_HDR_VALUE },
 				{ .data = ":", .len = 1,
 				  .flags = TFW_STR_HDR_VALUE},
@@ -3045,14 +3045,14 @@ TEST_MPART(http2_parser, forwarded, 2)
 				{ .data = "https", .len = 5,
 				  .flags = TFW_STR_VALUE|TFW_STR_HDR_VALUE },
 			},
-			.len = 70,
+			.len = 64,
 			.nchunks = 14
 		};
 
 		test_string_split(&h_expected, forwarded);
 	}
 
-	FOR_REQ_H2_FORWARDED("host=vet-waf.io:443;"
+	FOR_REQ_H2_FORWARDED("host=example.com:443;"
 			     "for=8.8.8.8,"
 		             "for=1.2.3.4:8080;"
 		             "by=8.8.4.4;"
@@ -3064,7 +3064,7 @@ TEST_MPART(http2_parser, forwarded, 2)
 				{ .data = "forwarded:", .len = 9 },
 				{ .data = "host=", .len = 5,
 				  .flags = TFW_STR_NAME|TFW_STR_HDR_VALUE },
-				{ .data = "vet-waf.io", .len = 17,
+				{ .data = "example.com", .len = 11,
 				  .flags = TFW_STR_VALUE|TFW_STR_HDR_VALUE },
 				{ .data = ":", .len = 1,
 				  .flags = TFW_STR_HDR_VALUE},
@@ -3095,7 +3095,7 @@ TEST_MPART(http2_parser, forwarded, 2)
 				{ .data = "https", .len = 5,
 				  .flags = TFW_STR_VALUE|TFW_STR_HDR_VALUE },
 			},
-			.len = 87,
+			.len = 81,
 			.nchunks = 17
 		};
 
@@ -3103,7 +3103,7 @@ TEST_MPART(http2_parser, forwarded, 2)
 	}
 
 	/* quoted version */
-	FOR_REQ_H2_FORWARDED("host=vet-waf.io:443;"
+	FOR_REQ_H2_FORWARDED("host=example.com:443;"
 			     "for=\"8.8.8.8\";"
 			     "by=8.8.4.4")
 	{
@@ -3113,7 +3113,7 @@ TEST_MPART(http2_parser, forwarded, 2)
 				{ .data = "forwarded", .len = 9 },
 				{ .data = "host=", .len = 5,
 				  .flags = TFW_STR_NAME|TFW_STR_HDR_VALUE },
-				{ .data = "vet-waf.io", .len = 17,
+				{ .data = "example.com", .len = 11,
 				  .flags = TFW_STR_VALUE|TFW_STR_HDR_VALUE },
 				{ .data = ":", .len = 1,
 				  .flags = TFW_STR_HDR_VALUE},
@@ -3134,7 +3134,7 @@ TEST_MPART(http2_parser, forwarded, 2)
 				{ .data = "8.8.4.4", .len = 7,
 				  .flags = TFW_STR_VALUE|TFW_STR_HDR_VALUE },
 			},
-			.len = 60,
+			.len = 54,
 			.nchunks = 12
 		};
 
@@ -3142,7 +3142,7 @@ TEST_MPART(http2_parser, forwarded, 2)
 	}
 
 	/* quoted version */
-	FOR_REQ_H2_FORWARDED("host=\"vet-waf.io:443\";"
+	FOR_REQ_H2_FORWARDED("host=\"example.com:443\";"
 			     "for=8.8.8.8;"
 			     "by=8.8.4.4")
 	{
@@ -3154,7 +3154,7 @@ TEST_MPART(http2_parser, forwarded, 2)
 				  .flags = TFW_STR_NAME|TFW_STR_HDR_VALUE },
 				{ .data = "\"", .len = 1,
 				  .flags = TFW_STR_HDR_VALUE },
-				{ .data = "vet-waf.io", .len = 17,
+				{ .data = "example.com", .len = 11,
 				  .flags = TFW_STR_VALUE|TFW_STR_HDR_VALUE },
 				{ .data = ":", .len = 1,
 				  .flags = TFW_STR_HDR_VALUE},
@@ -3173,7 +3173,7 @@ TEST_MPART(http2_parser, forwarded, 2)
 				{ .data = "8.8.4.4", .len = 7,
 				  .flags = TFW_STR_VALUE|TFW_STR_HDR_VALUE },
 			},
-			.len = 60,
+			.len = 54,
 			.nchunks = 12
 		};
 
@@ -3393,7 +3393,7 @@ TEST(http2_parser, tfh)
 		HEADER(WO_IND(NAME(":method"), VALUE("GET")));
 		HEADER(WO_IND(NAME(":scheme"), VALUE("https")));
 		HEADER(WO_IND(NAME(":path"), VALUE("/filename")));
-		HEADER(WO_IND(NAME("referer"), VALUE("https://vet-waf.io:8080")));
+		HEADER(WO_IND(NAME("referer"), VALUE("https://example.com:8080")));
 	    HEADERS_FRAME_END();
 	)
 	{

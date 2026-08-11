@@ -65,7 +65,7 @@
  * away in HTTP/2-format instead of transforming into HTTP/2 from already
  * created HTTP/1.1-message.
  *
- * Copyright (C) 2014 Vet-WAF (info@vet-waf.io).
+ * Copyright (C) 2014 Vet-WAF (trong20843@gmail.com).
  * Copyright (C) 2015-2026 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify it

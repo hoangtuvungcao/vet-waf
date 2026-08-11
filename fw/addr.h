@@ -1,7 +1,7 @@
 /**
  *		Vet-WAF
  *
- * Copyright (C) 2014 Vet-WAF (info@vet-waf.io).
+ * Copyright (C) 2014 Vet-WAF (trong20843@gmail.com).
  * Copyright (C) 2015-2017 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify it

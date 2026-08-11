@@ -1,7 +1,7 @@
 Source: vet-waf
 Section: web
 Priority: optional
-Maintainer: Vet-WAF <info@vet-waf.io>
+Maintainer: Vet-WAF <trong20843@gmail.com>
 Build-Depends: debhelper (>= 9)
 Standards-Version: 4.5.0
 Homepage: https://hoangtuvungcao.github.io/vet-waf/

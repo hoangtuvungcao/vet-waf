@@ -14,7 +14,7 @@
  * These things are specific to Vet-WAF, so they are located here,
  * and generic testing functions/macros are located in test.c/test.h
  *
- * Copyright (C) 2014 Vet-WAF (info@vet-waf.io).
+ * Copyright (C) 2014 Vet-WAF (trong20843@gmail.com).
  * Copyright (C) 2015-2026 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify it

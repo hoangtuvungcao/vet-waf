@@ -2,7 +2,7 @@
 #
 # Vet-WAF service script.
 #
-# Copyright (C) 2014 Vet-WAF (info@vet-waf.io).
+# Copyright (C) 2014 Vet-WAF (trong20843@gmail.com).
 # Copyright (C) 2015-2026 Vet-WAF
 #
 # This program is free software; you can redistribute it and/or modify it

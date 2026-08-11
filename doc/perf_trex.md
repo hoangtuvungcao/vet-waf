@@ -83,7 +83,7 @@ http_chain {
 ```
 
 If the profile sends a `Host:` header for a specific site (e.g.
-`vet-waf.io`), either:
+`example.com`), either:
 
 - configure a matching vhost / rules for that host, or
 - change the request `Host` to match this config.
@@ -171,7 +171,7 @@ sudo tcpdump -i enp152s0f0np0 -nn -s 0 -U -w http1_raw.pcap \
 # terminal 2 — generate one request through Vet-WAF
 curl --retry 0 --max-time 5 "http://192.168.2.1/" -o /dev/null
 # or against a public front, if that is your DUT path:
-# curl --retry 0 --max-time 5 "https://vet-waf.io/" -o /dev/null
+# curl --retry 0 --max-time 5 "https://example.com/" -o /dev/null
 
 # terminal 1 — keep a single TCP stream, write classic pcap
 tshark -r http1_raw.pcap -Y "tcp.stream eq 0" -F pcap -w http1_one.pcap
@@ -247,7 +247,7 @@ class Prof1:
         prog_c.connect()
         prog_c.send(
             b"GET /?hello=world HTTP/1.1\r\n"
-            b"Host: vet-waf.io\r\n"
+            b"Host: example.com\r\n"
             b"User-Agent: Mozilla/5.0 (TRex-ASTF; Vet-WAF-load)\r\n"
             b"Accept: text/html,application/json;q=0.9,*/*;q=0.8\r\n"
             b"Accept-Language: en-US,en;q=0.5\r\n"
@@ -320,7 +320,7 @@ class Prof1:
         prog_c.connect()
         prog_c.send(b"GET /?hello=world HTTP/1.1\r\n")
         prog_c.delay(delay)
-        prog_c.send(b"Host: vet-waf.io\r\n")
+        prog_c.send(b"Host: example.com\r\n")
         prog_c.delay(delay)
         prog_c.send(b"User-Agent: Mozilla/5.0 (TRex-ASTF; Vet-WAF-load)\r\n")
         prog_c.delay(delay)

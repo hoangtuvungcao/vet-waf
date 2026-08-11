@@ -1,11 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Vet-WAF — Kernel-level HTTPS Load Balancer, WAF &amp; ADC</title>
-<meta name="description" content="Vet-WAF is an open-source, kernel-level hybrid of a web accelerator and a multi-layer firewall: an HTTPS load balancer, DDoS mitigation system, and web application firewall built into the Linux TCP/IP stack.">
+<meta name="description" data-i18n="meta.description" content="Vet-WAF is an open-source, kernel-level hybrid of a web accelerator and a multi-layer firewall: an HTTPS load balancer, DDoS mitigation system, and web application firewall built into the Linux TCP/IP stack.">
 <meta name="theme-color" content="#0b1020">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; script-src 'self'; base-uri 'self'; form-action 'none'; frame-ancestors 'none'; upgrade-insecure-requests">
 <link rel="canonical" href="https://hoangtuvungcao.github.io/vet-waf/">
 
 <!-- Icons / PWA -->
@@ -40,11 +42,18 @@
       <img src="assets/mark.svg" alt="" width="34" height="34" class="brand__mark">
       <span class="brand__name">Vet<span class="brand__accent">-WAF</span></span>
     </a>
-    <nav class="nav__links" aria-label="Primary">
-      <a href="#features">Features</a>
-      <a href="#performance">Performance</a>
-      <a href="#architecture">Architecture</a>
-      <a href="#quickstart">Quick start</a>
+    <nav class="nav__links" id="navLinks" aria-label="Primary">
+      <a href="#features" data-i18n="nav.features">Features</a>
+      <a href="#security" data-i18n="nav.security">Security</a>
+      <a href="#performance" data-i18n="nav.performance">Performance</a>
+      <a href="#deploy" data-i18n="nav.deploy">Deploy</a>
+      <a href="#quickstart" data-i18n="nav.quickstart">Quick start</a>
+      <a href="#support" data-i18n="nav.support">Support</a>
+      <div class="lang" role="group" aria-label="Language">
+        <button class="lang__btn" data-lang-set="en" aria-pressed="true">EN</button>
+        <span class="lang__sep" aria-hidden="true">·</span>
+        <button class="lang__btn" data-lang-set="vi" aria-pressed="false">VI</button>
+      </div>
       <a class="btn btn--ghost btn--sm" href="https://github.com/hoangtuvungcao/vet-waf" target="_blank" rel="noopener">
         <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
         GitHub
@@ -61,27 +70,28 @@
 <!-- HERO -->
 <section class="hero">
   <div class="hero__glow" aria-hidden="true"></div>
+  <div class="hero__grid" aria-hidden="true"></div>
   <div class="container hero__inner">
-    <div class="badge">Open-source · GPLv2 · Linux kernel module</div>
+    <div class="badge" data-i18n="hero.badge">Open-source · GPLv2 · Linux kernel module</div>
     <h1 class="hero__title">
-      The kernel-level<br>
-      <span class="grad-text">web firewall &amp; accelerator</span>
+      <span data-i18n="hero.title1">The kernel-level</span><br>
+      <span class="grad-text" data-i18n="hero.title2">web firewall &amp; accelerator</span>
     </h1>
-    <p class="hero__lead">
+    <p class="hero__lead" data-i18n-html="hero.lead">
       <strong>Vet-WAF</strong> is an all-in-one, high-performance solution for web content delivery
       and advanced protection against DDoS and web attacks — a drop-in replacement for your whole
       frontend: HTTPS load balancer, web accelerator, DDoS mitigation, and WAF, built directly into
       the Linux TCP/IP stack.
     </p>
     <div class="hero__cta">
-      <a class="btn btn--primary" href="#quickstart">Get started</a>
-      <a class="btn btn--ghost" href="https://github.com/hoangtuvungcao/vet-waf" target="_blank" rel="noopener">View on GitHub</a>
+      <a class="btn btn--primary" href="#quickstart" data-i18n="hero.cta1">Get started</a>
+      <a class="btn btn--ghost" href="https://github.com/hoangtuvungcao/vet-waf" target="_blank" rel="noopener" data-i18n="hero.cta2">View on GitHub</a>
     </div>
     <div class="hero__stats">
-      <div class="stat"><div class="stat__num">1.8M</div><div class="stat__label">HTTP req/s</div></div>
-      <div class="stat"><div class="stat__num">×3</div><div class="stat__label">faster than Nginx/HAProxy</div></div>
-      <div class="stat"><div class="stat__num">×4</div><div class="stat__label">lower TLS latency</div></div>
-      <div class="stat"><div class="stat__num">L3–L7</div><div class="stat__label">multi-layer defense</div></div>
+      <div class="stat"><div class="stat__num">1.8M</div><div class="stat__label" data-i18n="hero.stat1">HTTP req/s</div></div>
+      <div class="stat"><div class="stat__num">×3</div><div class="stat__label" data-i18n="hero.stat2">faster than Nginx/HAProxy</div></div>
+      <div class="stat"><div class="stat__num">×4</div><div class="stat__label" data-i18n="hero.stat3">lower TLS latency</div></div>
+      <div class="stat"><div class="stat__num">L3–L7</div><div class="stat__label" data-i18n="hero.stat4">multi-layer defense</div></div>
     </div>
   </div>
 </section>
@@ -90,50 +100,91 @@
 <section class="section" id="features">
   <div class="container">
     <div class="section__head">
-      <h2 class="section__title">One engine, the whole frontend</h2>
-      <p class="section__sub">Vet-WAF fuses a web accelerator and a multi-layer firewall into a single kernel-space core — no context switches, no user-space copy overhead.</p>
+      <h2 class="section__title" data-i18n="features.title">One engine, the whole frontend</h2>
+      <p class="section__sub" data-i18n="features.sub">Vet-WAF fuses a web accelerator and a multi-layer firewall into a single kernel-space core — no context switches, no user-space copy overhead.</p>
     </div>
     <div class="grid grid--3">
-      <article class="card">
-        <div class="card__icon">🛡️</div>
-        <h3>Web Application Firewall</h3>
-        <p>Inspect and filter HTTP/HTTPS at wire speed. Block injections, bad bots, and abusive clients with rule-based and rate-limiting policies (Frang).</p>
+      <article class="card tilt">
+        <div class="card__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="url(#g1)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><defs><linearGradient id="g1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#a78bfa"/><stop offset="1" stop-color="#38bdf8"/></linearGradient></defs><path d="M12 3l7 3v5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/><path d="M9.5 12l1.8 1.8L15 10"/></svg>
+        </div>
+        <h3 data-i18n="feat.waf.h">Web Application Firewall</h3>
+        <p data-i18n="feat.waf.p">Inspect and filter HTTP/HTTPS at wire speed. Block injections, bad bots, and abusive clients with rule-based and rate-limiting policies (Frang).</p>
       </article>
-      <article class="card">
-        <div class="card__icon">⚡</div>
-        <h3>HTTPS Load Balancer</h3>
-        <p>Terminate TLS and balance traffic across upstreams with hash, ratio, and predictive schedulers — all inside the kernel data path.</p>
+      <article class="card tilt">
+        <div class="card__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="url(#g2)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><defs><linearGradient id="g2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#a78bfa"/><stop offset="1" stop-color="#38bdf8"/></linearGradient></defs><path d="M13 2L4.5 13.5H11l-1 8.5L19.5 10H13z"/></svg>
+        </div>
+        <h3 data-i18n="feat.lb.h">HTTPS Load Balancer</h3>
+        <p data-i18n="feat.lb.p">Terminate TLS and balance traffic across upstreams with hash, ratio, and predictive schedulers — all inside the kernel data path.</p>
       </article>
-      <article class="card">
-        <div class="card__icon">🚀</div>
-        <h3>Web Accelerator</h3>
-        <p>A built-in, RAM-resident HTTP cache serves hot content in microseconds and shields origins from load spikes.</p>
+      <article class="card tilt">
+        <div class="card__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="url(#g3)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><defs><linearGradient id="g3" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#a78bfa"/><stop offset="1" stop-color="#38bdf8"/></linearGradient></defs><path d="M12 2c3 3 4.5 6 4.5 9a4.5 4.5 0 01-9 0c0-3 1.5-6 4.5-9z"/><path d="M12 22v-4"/><path d="M8 20c1-1.5 2.5-2 4-2s3 .5 4 2"/></svg>
+        </div>
+        <h3 data-i18n="feat.acc.h">Web Accelerator</h3>
+        <p data-i18n="feat.acc.p">A built-in, RAM-resident HTTP cache serves hot content in microseconds and shields origins from load spikes.</p>
       </article>
-      <article class="card">
-        <div class="card__icon">🌊</div>
-        <h3>DDoS Mitigation</h3>
-        <p>Absorb volumetric and application-layer floods early in the stack, with seamless integration into Linux iptables / nftables.</p>
+      <article class="card tilt">
+        <div class="card__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="url(#g4)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><defs><linearGradient id="g4" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#a78bfa"/><stop offset="1" stop-color="#38bdf8"/></linearGradient></defs><path d="M3 7c2 1.6 4 1.6 6 0s4-1.6 6 0 4 1.6 6 0"/><path d="M3 12c2 1.6 4 1.6 6 0s4-1.6 6 0 4 1.6 6 0"/><path d="M3 17c2 1.6 4 1.6 6 0s4-1.6 6 0 4 1.6 6 0"/></svg>
+        </div>
+        <h3 data-i18n="feat.ddos.h">DDoS Mitigation</h3>
+        <p data-i18n="feat.ddos.p">Absorb volumetric and application-layer floods early in the stack, with seamless integration into Linux iptables / nftables.</p>
       </article>
-      <article class="card">
-        <div class="card__icon">🔐</div>
-        <h3>Kernel-native TLS</h3>
-        <p>Vet-WAF TLS runs the handshake in-kernel — 40–80% faster than Nginx/OpenSSL, with optional constant-time crypto.</p>
+      <article class="card tilt">
+        <div class="card__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="url(#g5)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><defs><linearGradient id="g5" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#a78bfa"/><stop offset="1" stop-color="#38bdf8"/></linearGradient></defs><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/><circle cx="12" cy="15.5" r="1.3"/></svg>
+        </div>
+        <h3 data-i18n="feat.tls.h">Kernel-native TLS</h3>
+        <p data-i18n="feat.tls.p">Vet-WAF TLS runs the handshake in-kernel — 40–80% faster than Nginx/OpenSSL, with optional constant-time crypto.</p>
       </article>
-      <article class="card">
-        <div class="card__icon">📊</div>
-        <h3>Observability</h3>
-        <p>Structured access logging to ClickHouse, live perfstat via procfs, and APM-grade latency percentiles out of the box.</p>
+      <article class="card tilt">
+        <div class="card__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="url(#g6)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><defs><linearGradient id="g6" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#a78bfa"/><stop offset="1" stop-color="#38bdf8"/></linearGradient></defs><path d="M4 20V10M9 20V4M14 20v-7M19 20v-4"/></svg>
+        </div>
+        <h3 data-i18n="feat.obs.h">Observability</h3>
+        <p data-i18n="feat.obs.p">Structured access logging to ClickHouse, live perfstat via procfs, and APM-grade latency percentiles out of the box.</p>
       </article>
     </div>
   </div>
 </section>
 
-<!-- PERFORMANCE -->
-<section class="section section--alt" id="performance">
+<!-- SECURITY & ANTI-DDOS -->
+<section class="section section--alt" id="security">
   <div class="container">
     <div class="section__head">
-      <h2 class="section__title">Built for the fast path</h2>
-      <p class="section__sub">Because Vet-WAF lives inside the Linux TCP/IP stack, it avoids the socket-API and kernel-bypass overhead that caps traditional proxies.</p>
+      <h2 class="section__title" data-i18n="sec.title">Defense in depth, from L3 to L7</h2>
+      <p class="section__sub" data-i18n="sec.sub">Vet-WAF blocks attacks at the earliest possible point in the stack. The Frang module enforces rate and structural limits per client before a request ever reaches your origin.</p>
+    </div>
+    <div class="grid grid--2">
+      <article class="card card--sec">
+        <h3 data-i18n="sec.rate.h">Rate &amp; connection limits</h3>
+        <p data-i18n="sec.rate.p">Per-client caps on request rate/burst, TCP connection rate/burst, and concurrent connections stop floods and slow-loris attacks cold.</p>
+      </article>
+      <article class="card card--sec">
+        <h3 data-i18n="sec.struct.h">Structural request validation</h3>
+        <p data-i18n="sec.struct.p">Bound header count, header length, body length and URI length; restrict HTTP methods and allowed character sets to shrink the attack surface.</p>
+      </article>
+      <article class="card card--sec">
+        <h3 data-i18n="sec.js.h">JavaScript challenge</h3>
+        <p data-i18n="sec.js.p">A sticky-cookie JS challenge separates real browsers from bots without a third-party captcha — fully self-hosted in the kernel.</p>
+      </article>
+      <article class="card card--sec">
+        <h3 data-i18n="sec.drop.h">Early drop &amp; blocklists</h3>
+        <p data-i18n="sec.drop.p">Malicious clients are dropped (not just refused), and IP/JA5 fingerprint rules integrate with iptables/nftables for volumetric defense.</p>
+      </article>
+    </div>
+    <p class="arch__note" data-i18n="sec.note">Anti-DDoS tip: the shipped config is secure-by-default. Tune the Frang limits to your real traffic — start strict, then relax only what your legitimate clients need.</p>
+  </div>
+</section>
+
+<!-- PERFORMANCE -->
+<section class="section" id="performance">
+  <div class="container">
+    <div class="section__head">
+      <h2 class="section__title" data-i18n="perf.title">Built for the fast path</h2>
+      <p class="section__sub" data-i18n="perf.sub">Because Vet-WAF lives inside the Linux TCP/IP stack, it avoids the socket-API and kernel-bypass overhead that caps traditional proxies.</p>
     </div>
     <div class="perf">
       <div class="perf__bars">
@@ -142,35 +193,39 @@
         <div class="bar"><span class="bar__name">HAProxy</span><div class="bar__track"><div class="bar__fill bar__fill--muted" style="--w:31%"><b>~0.55M rps</b></div></div></div>
       </div>
       <ul class="perf__points">
-        <li><b>Zero-copy data path.</b> Requests are parsed and routed without leaving kernel space.</li>
-        <li><b>Small kernel footprint.</b> The patch is only a few thousand lines against the Linux tree.</li>
-        <li><b>SIMD everywhere.</b> AVX2-accelerated HTTP parsing, hashing, and string ops.</li>
-        <li><b>Predictable latency.</b> No GC, no user/kernel round-trips on the hot path.</li>
+        <li data-i18n-html="perf.p1"><b>Zero-copy data path.</b> Requests are parsed and routed without leaving kernel space.</li>
+        <li data-i18n-html="perf.p2"><b>Small kernel footprint.</b> The patch is only a few thousand lines against the Linux tree.</li>
+        <li data-i18n-html="perf.p3"><b>SIMD everywhere.</b> AVX2-accelerated HTTP parsing, hashing, and string ops.</li>
+        <li data-i18n-html="perf.p4"><b>Predictable latency.</b> No GC, no user/kernel round-trips on the hot path.</li>
       </ul>
     </div>
   </div>
 </section>
 
 <!-- ARCHITECTURE -->
-<section class="section" id="architecture">
+<section class="section section--alt" id="architecture">
   <div class="container">
     <div class="section__head">
-      <h2 class="section__title">How it works</h2>
-      <p class="section__sub">Vet-WAF is a set of loosely-coupled Linux kernel modules that sit between the NIC and your origin servers.</p>
+      <h2 class="section__title" data-i18n="arch.title">How it works</h2>
+      <p class="section__sub" data-i18n="arch.sub">Vet-WAF is a set of loosely-coupled Linux kernel modules that sit between the NIC and your origin servers.</p>
     </div>
     <div class="arch">
       <div class="arch__row">
-        <div class="node node--client">Clients<br><small>HTTP/1.1 · HTTP/2 · TLS</small></div>
-        <div class="arrow">→</div>
+        <div class="node node--client"><b data-i18n="arch.clients">Clients</b><small>HTTP/1.1 · HTTP/2 · TLS</small></div>
+        <div class="arrow" aria-hidden="true">
+          <svg viewBox="0 0 40 24" width="40" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h30M26 5l8 7-8 7"/></svg>
+        </div>
         <div class="node node--core">
           <img src="assets/mark.svg" alt="" width="40" height="40">
           <div>
             <b>Vet-WAF core</b><br>
-            <small>WAF · LB · Cache · TLS · DDoS — in kernel</small>
+            <small data-i18n="arch.core">WAF · LB · Cache · TLS · DDoS — in kernel</small>
           </div>
         </div>
-        <div class="arrow">→</div>
-        <div class="node node--origin">Upstreams<br><small>your app / origin servers</small></div>
+        <div class="arrow" aria-hidden="true">
+          <svg viewBox="0 0 40 24" width="40" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h30M26 5l8 7-8 7"/></svg>
+        </div>
+        <div class="node node--origin"><b data-i18n="arch.upstreams">Upstreams</b><small data-i18n="arch.origin">your app / origin servers</small></div>
       </div>
       <div class="arch__mods">
         <span class="mod">tempesta_fw</span>
@@ -179,23 +234,23 @@
         <span class="mod">tempesta_lib</span>
         <span class="mod">tempesta_regex</span>
       </div>
-      <p class="arch__note">Module names keep the upstream kernel-ABI identifiers for binary compatibility with the patched Linux image.</p>
+      <p class="arch__note" data-i18n="arch.note">Module names keep the upstream kernel-ABI identifiers for binary compatibility with the patched Linux image.</p>
     </div>
   </div>
 </section>
 
 <!-- QUICK START -->
-<section class="section section--alt" id="quickstart">
+<section class="section" id="quickstart">
   <div class="container">
     <div class="section__head">
-      <h2 class="section__title">Quick start</h2>
-      <p class="section__sub">Build from source against a Vet-WAF-patched Linux 6.12.12 kernel, then start the service.</p>
+      <h2 class="section__title" data-i18n="qs.title">Quick start</h2>
+      <p class="section__sub" data-i18n="qs.sub">Build from source against a Vet-WAF-patched Linux 6.12.12 kernel, then start the service.</p>
     </div>
     <div class="code">
       <div class="code__bar">
         <span class="dot"></span><span class="dot"></span><span class="dot"></span>
         <span class="code__title">bash</span>
-        <button class="code__copy" data-copy>Copy</button>
+        <button class="code__copy" data-copy data-i18n="code.copy">Copy</button>
       </div>
 <pre><code># 1. Clone
 git clone https://github.com/hoangtuvungcao/vet-waf.git
@@ -212,18 +267,130 @@ cat /proc/vet_waf/perfstat
 sudo sysctl net.vet_waf.state
 </code></pre>
     </div>
-    <p class="quickstart__hint">A minimal config lives in <code>etc/vet_waf.conf</code>. The systemd unit is <code>vet-waf.service</code>.</p>
+    <p class="quickstart__hint" data-i18n-html="qs.hint">A minimal config lives in <code>etc/vet_waf.conf</code>. The systemd unit is <code>vet-waf.service</code>. Vet-WAF needs the patched kernel from <code>linux-6.12.12.patch</code> — see the deploy guide below.</p>
+  </div>
+</section>
+
+<!-- DEPLOY GUIDE -->
+<section class="section section--alt" id="deploy">
+  <div class="container">
+    <div class="section__head">
+      <h2 class="section__title" data-i18n="dep.title">Deploy guide: reverse-proxy in front of a backend</h2>
+      <p class="section__sub" data-i18n="dep.sub">Put Vet-WAF on your edge server and proxy protected traffic to your origin. Follow the steps in order — the kernel step is mandatory.</p>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step__n">1</div>
+        <div>
+          <h3 data-i18n="dep.s1.h">Install the patched kernel</h3>
+          <p data-i18n-html="dep.s1.p">Vet-WAF is a kernel module and requires the patched <b>Linux 6.12.12</b>. Build it with <code>make bindeb-pkg LOCALVERSION=-tfw</code>, or use <code>make modules_install &amp;&amp; make install</code>. <b>Reboot into the new kernel</b> before continuing.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step__n">2</div>
+        <div>
+          <h3 data-i18n="dep.s2.h">Point Vet-WAF at your backend</h3>
+          <p data-i18n-html="dep.s2.p">In <code>/etc/vet_waf/vet_waf.conf</code>, set <code>server &lt;backend-ip&gt;:80;</code> inside the <code>srv_group</code>. The shipped config uses <code>https://example.com/</code> as a placeholder — replace it with your origin.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step__n">3</div>
+        <div>
+          <h3 data-i18n="dep.s3.h">Free the ports &amp; start the service</h3>
+          <p data-i18n-html="dep.s3.p">Stop any existing proxy holding <code>:80/:443</code>, then <code>systemctl enable --now vet-waf</code>. Verify with <code>curl -I http://your-edge-ip/</code> and <code>cat /proc/vet_waf/perfstat</code>.</p>
+        </div>
+      </div>
+    </div>
+    <div class="note-box">
+      <h4 data-i18n="dep.pitfalls.h">Pitfalls we hit (so you don't have to)</h4>
+      <ul>
+        <li data-i18n-html="dep.pit1"><b>Stock kernels won't load the module.</b> A default Ubuntu 5.15 kernel is missing the Vet-WAF patch — you must build and boot 6.12.12-tfw first.</li>
+        <li data-i18n-html="dep.pit2"><b><code>bindeb-pkg</code> needs <code>debhelper</code>.</b> If packaging fails with <code>Unmet build dependencies: debhelper-compat</code>, install <code>debhelper</code> or fall back to <code>make modules_install &amp;&amp; make install</code>.</li>
+        <li data-i18n-html="dep.pit3"><b>Port already in use.</b> Another WAF/proxy on <code>:80</code> blocks startup — stop and disable it before enabling <code>vet-waf</code>.</li>
+        <li data-i18n-html="dep.pit4"><b>Disable module signing.</b> Turn off <code>MODULE_SIG</code>, <code>SYSTEM_TRUSTED_KEYS</code> and <code>DEBUG_INFO_BTF</code> in the kernel config, or the out-of-tree build fails.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- CONFIG -->
+<section class="section" id="config">
+  <div class="container">
+    <div class="section__head">
+      <h2 class="section__title" data-i18n="cfg.title">Simple, secure-by-default config</h2>
+      <p class="section__sub" data-i18n="cfg.sub">A newcomer-friendly starting point: one listener, one backend, hardened Frang limits. Everything else is optional.</p>
+    </div>
+    <div class="code">
+      <div class="code__bar">
+        <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        <span class="code__title">vet_waf.conf</span>
+        <button class="code__copy" data-copy data-i18n="code.copy">Copy</button>
+      </div>
+<pre><code># --- Listener -------------------------------------------------
+listen 80;
+
+# --- Anti-DDoS / WAF limits (per client) ---------------------
+frang_limits {
+    request_rate         100;   # requests/sec
+    request_burst         30;
+    tcp_connection_rate   50;
+    concurrent_tcp_connections 100;
+    http_methods          get head post;
+    http_header_cnt       50;
+    http_hdr_len        4096;
+    http_body_len    16777216;   # 16 MB
+    http_strict_host_checking true;
+}
+block_action attack   drop;   # drop attackers silently
+block_action error    reply;  # reply on client errors
+
+# --- Backend (replace with your origin) ----------------------
+srv_group primary { server https://example.com; }
+
+vhost default { proxy_pass primary; }
+http_chain    { -> default; }
+</code></pre>
+    </div>
+    <p class="quickstart__hint" data-i18n-html="cfg.hint">Full reference lives in the <a href="https://github.com/hoangtuvungcao/vet-waf/wiki" target="_blank" rel="noopener">project wiki</a>. Start strict and relax only what your real clients need.</p>
+  </div>
+</section>
+
+<!-- SUPPORT -->
+<section class="section section--alt" id="support">
+  <div class="container">
+    <div class="section__head">
+      <h2 class="section__title" data-i18n="sup.title">Support &amp; contact</h2>
+      <p class="section__sub" data-i18n="sup.sub">Vet-WAF is free and open-source. If it helps you, a donation keeps development going.</p>
+    </div>
+    <div class="grid grid--2">
+      <article class="card card--sup">
+        <div class="card__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="url(#g7)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><defs><linearGradient id="g7" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#a78bfa"/><stop offset="1" stop-color="#38bdf8"/></linearGradient></defs><path d="M4 6h16v12H4z"/><path d="M4 7l8 6 8-6"/></svg>
+        </div>
+        <h3 data-i18n="sup.contact.h">Contact</h3>
+        <p data-i18n="sup.contact.p">Questions, bugs, or security reports:</p>
+        <p><a class="link" href="mailto:trong20843@gmail.com">trong20843@gmail.com</a></p>
+      </article>
+      <article class="card card--sup">
+        <div class="card__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="url(#g8)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><defs><linearGradient id="g8" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#a78bfa"/><stop offset="1" stop-color="#38bdf8"/></linearGradient></defs><path d="M12 21s-7-4.35-9.5-8.5C1 9 3 5.5 6.5 5.5c2 0 3.2 1 3.5 2 .3-1 1.5-2 3.5-2C17 5.5 19 9 21.5 12.5 19 16.65 12 21 12 21z"/></svg>
+        </div>
+        <h3 data-i18n="sup.donate.h">Donate</h3>
+        <p data-i18n="sup.donate.p">Support Vet-WAF via PayPal:</p>
+        <p><a class="link" href="https://www.paypal.com/paypalme/chosandaccap" target="_blank" rel="noopener">chosandaccap@gmail.com</a></p>
+      </article>
+    </div>
   </div>
 </section>
 
 <!-- CTA -->
 <section class="cta">
   <div class="container cta__inner">
-    <h2>Ready to put the firewall in the kernel?</h2>
-    <p>Star the project, read the source, and build your own high-performance secure frontend.</p>
+    <h2 data-i18n="cta.title">Ready to put the firewall in the kernel?</h2>
+    <p data-i18n="cta.sub">Star the project, read the source, and build your own high-performance secure frontend.</p>
     <div class="hero__cta">
-      <a class="btn btn--primary" href="https://github.com/hoangtuvungcao/vet-waf" target="_blank" rel="noopener">Star on GitHub</a>
-      <a class="btn btn--ghost" href="#quickstart">Read the quick start</a>
+      <a class="btn btn--primary" href="https://github.com/hoangtuvungcao/vet-waf" target="_blank" rel="noopener" data-i18n="cta.btn1">Star on GitHub</a>
+      <a class="btn btn--ghost" href="#quickstart" data-i18n="cta.btn2">Read the quick start</a>
     </div>
   </div>
 </section>
@@ -238,14 +405,16 @@ sudo sysctl net.vet_waf.state
       <span class="brand__name">Vet<span class="brand__accent">-WAF</span></span>
     </div>
     <nav class="footer__links" aria-label="Footer">
-      <a href="#features">Features</a>
-      <a href="#performance">Performance</a>
-      <a href="#architecture">Architecture</a>
-      <a href="#quickstart">Quick start</a>
+      <a href="#features" data-i18n="nav.features">Features</a>
+      <a href="#security" data-i18n="nav.security">Security</a>
+      <a href="#performance" data-i18n="nav.performance">Performance</a>
+      <a href="#deploy" data-i18n="nav.deploy">Deploy</a>
+      <a href="#support" data-i18n="nav.support">Support</a>
       <a href="https://github.com/hoangtuvungcao/vet-waf" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://github.com/hoangtuvungcao/vet-waf/wiki" target="_blank" rel="noopener" data-i18n="nav.wiki">Wiki</a>
     </nav>
-    <p class="footer__legal">
-      Engine licensed under <b>GPLv2</b> (derived from Tempesta FW). Website &amp; brand assets © 2026 Vet-WAF, MIT.
+    <p class="footer__legal" data-i18n-html="footer.legal">
+      Vet-WAF is free software licensed under <b>GPLv2</b> — engine, tooling, and this website — derived from Tempesta FW. © 2026 Vet-WAF.
     </p>
   </div>
 </footer>

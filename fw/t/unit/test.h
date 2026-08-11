@@ -8,7 +8,7 @@
  * Later on we may decide to move them into user-space. These macros try to
  * imitate the GoogleTest API. That should facilitate the future migration.
  *
- * Copyright (C) 2014 Vet-WAF (info@vet-waf.io).
+ * Copyright (C) 2014 Vet-WAF (trong20843@gmail.com).
  * Copyright (C) 2015-2026 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify it

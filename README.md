@@ -71,9 +71,8 @@ for guidance on making new contributions to the repository.
 
 ## License
 
-The Vet-WAF engine is licensed under **GPLv2** — see [LICENSE](LICENSE). It is
-derived from [Tempesta FW](https://github.com/tempesta-tech/tempesta), which is
-also GPLv2; the copyleft terms carry over to this fork.
-
-The website and brand assets under `docs/` are additionally available under the
-MIT license — see [MIT.md](MIT.md).
+Vet-WAF is licensed in full under the **GNU General Public License, version 2**
+— see [LICENSE](LICENSE). This covers the kernel engine, the configuration, the
+tooling, **and** the documentation website under `docs/`. Vet-WAF is derived from
+[Tempesta FW](https://github.com/tempesta-tech/tempesta) (GPLv2); the copyleft
+terms carry over to this fork, so every part of the project stays GPLv2.

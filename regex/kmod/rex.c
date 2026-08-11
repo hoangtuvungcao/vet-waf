@@ -584,6 +584,6 @@ module_init(rex_init);
 module_exit(rex_exit);
 
 /* Module information */
-MODULE_AUTHOR("Sergey Nizovtsev, sn@vet-waf.io");
+MODULE_AUTHOR("Sergey Nizovtsev, trong20843@gmail.com");
 MODULE_DESCRIPTION("Hyperscan regex engine");
 MODULE_LICENSE("Dual BSD/GPL");

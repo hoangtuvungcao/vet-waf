@@ -18,7 +18,7 @@
  * TfwSrver hash which is chosen, and thus any request always goes to its home
  * server unless it is offline.
  *
- * Copyright (C) 2014 Vet-WAF (info@vet-waf.io).
+ * Copyright (C) 2014 Vet-WAF (trong20843@gmail.com).
  * Copyright (C) 2015-2025 Vet-WAF
  *
  * This program is free software; you can redistribute it and/or modify it

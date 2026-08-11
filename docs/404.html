@@ -1,35 +1,75 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>404 — Page not found · Vet-WAF</title>
 <meta name="theme-color" content="#0b1020">
-<link rel="icon" href="assets/favicon.ico" sizes="any">
-<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
-<link rel="stylesheet" href="styles.css">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; base-uri 'self'; form-action 'none'; frame-ancestors 'none'">
+<link rel="icon" href="/vet-waf/assets/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="/vet-waf/assets/favicon.svg">
+<link rel="stylesheet" href="/vet-waf/styles.css">
 <style>
   .nf{min-height:100vh;display:grid;place-items:center;text-align:center;padding:40px 24px}
   .nf__code{font-size:clamp(72px,18vw,160px);font-weight:800;letter-spacing:-4px;line-height:1;
     background:var(--grad-text);-webkit-background-clip:text;background-clip:text;color:transparent}
   .nf h1{font-size:clamp(22px,4vw,32px);font-weight:800;margin:8px 0 12px}
-  .nf p{color:var(--muted);max-width:420px;margin:0 auto 28px}
+  .nf p{color:var(--muted);max-width:440px;margin:0 auto 28px}
   .nf__brand{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:26px;
     font-weight:800;font-size:20px}
+  .nf__lang{display:inline-flex;align-items:center;gap:6px;margin-top:30px;padding:4px 10px;
+    border:1px solid var(--border);border-radius:100px;background:rgba(255,255,255,.03)}
+  .nf__lang button{background:none;border:0;color:var(--muted-2);font-weight:700;font-size:13px;
+    cursor:pointer;padding:2px 8px;border-radius:100px;font-family:inherit}
+  .nf__lang button[aria-pressed="true"]{color:#fff;background:var(--grad-text)}
+  .nf__legal{color:var(--muted-2);font-size:12.5px;margin-top:20px}
 </style>
 </head>
 <body>
   <div class="nf">
     <div>
       <div class="nf__brand">
-        <img src="assets/mark.svg" alt="" width="34" height="34">
+        <img src="/vet-waf/assets/mark.svg" alt="" width="34" height="34">
         <span>Vet<span class="brand__accent">-WAF</span></span>
       </div>
       <div class="nf__code">404</div>
-      <h1>This page slipped past the firewall</h1>
-      <p>The page you’re looking for doesn’t exist or has moved.</p>
-      <a class="btn btn--primary" href="./">Back to home</a>
+      <h1 data-i18n="h">This page slipped past the firewall</h1>
+      <p data-i18n="p">The page you're looking for doesn't exist or has moved.</p>
+      <a class="btn btn--primary" href="/vet-waf/" data-i18n="back">Back to home</a>
+      <div class="nf__lang" role="group" aria-label="Language">
+        <button data-set="en" aria-pressed="true">EN</button>
+        <span aria-hidden="true" style="color:var(--muted-2);font-size:12px">·</span>
+        <button data-set="vi" aria-pressed="false">VI</button>
+      </div>
+      <p class="nf__legal" data-i18n="legal">Vet-WAF — free software under GPLv2.</p>
     </div>
   </div>
+<script>
+(function(){
+  var T={
+    en:{h:"This page slipped past the firewall",
+        p:"The page you're looking for doesn't exist or has moved.",
+        back:"Back to home",legal:"Vet-WAF — free software under GPLv2."},
+    vi:{h:"Trang này đã lọt qua tường lửa",
+        p:"Trang bạn tìm không tồn tại hoặc đã được di chuyển.",
+        back:"Về trang chủ",legal:"Vet-WAF — phần mềm tự do theo giấy phép GPLv2."}
+  };
+  function set(l){
+    if(!T[l])l="en";var d=T[l];
+    document.documentElement.setAttribute("lang",l);
+    document.documentElement.setAttribute("data-lang",l);
+    document.querySelectorAll("[data-i18n]").forEach(function(el){
+      var k=el.getAttribute("data-i18n");if(k in d)el.textContent=d[k];});
+    document.querySelectorAll("[data-set]").forEach(function(b){
+      b.setAttribute("aria-pressed",b.getAttribute("data-set")===l?"true":"false");});
+    try{localStorage.setItem("vetwaf-lang",l);}catch(e){}
+  }
+  var s="en";try{s=localStorage.getItem("vetwaf-lang")||"en";}catch(e){}
+  set(s);
+  document.querySelectorAll("[data-set]").forEach(function(b){
+    b.addEventListener("click",function(){set(b.getAttribute("data-set"));});});
+})();
+</script>
 </body>
 </html>
