@@ -57,6 +57,10 @@ KERN_WANT=6.12.12
 
 fail_n=0
 
+# Set to 1 by cutover() when it disables a legacy unit that was enabled at
+# boot, so rollback() can restore that state and not just the running state.
+LEGACY_WAS_ENABLED=0
+
 log()  { echo -e "\033[0;32m[cutover]\033[0m $*"; }
 warn() { echo -e "\033[0;33m[cutover]\033[0m $*" >&2; }
 err()  { echo -e "\033[0;31m[cutover]\033[0m $*" >&2; fail_n=$((fail_n + 1)); }
@@ -235,6 +239,15 @@ start_legacy()
 	systemctl start "$LEGACY_SVC" 2>/dev/null \
 		&& log "  $LEGACY_SVC restarted" \
 		|| warn "  could not restart $LEGACY_SVC — port $TEST_PORT may be unserved"
+
+	# cutover() disables the unit before Vet-WAF is proven, so a rollback that
+	# only starts it leaves the box serving now but dead after the next reboot
+	# — a failure that looks like a success until it is much too late.
+	if [ "$LEGACY_WAS_ENABLED" = 1 ]; then
+		systemctl enable "$LEGACY_SVC" 2>/dev/null \
+			&& log "  $LEGACY_SVC re-enabled for boot" \
+			|| warn "  could not re-enable $LEGACY_SVC — it will NOT survive a reboot"
+	fi
 }
 
 stop_vetwaf()
@@ -259,6 +272,12 @@ cutover()
 {
 	need_root
 	preflight || die "refusing to cut over — fix the failures above"
+
+	# The unit's enablement state is read before anything is changed; a
+	# rollback must restore it exactly.
+	if systemctl is-enabled --quiet "$LEGACY_SVC" 2>/dev/null; then
+		LEGACY_WAS_ENABLED=1
+	fi
 
 	log "stopping legacy proxy: $LEGACY_SVC"
 	if legacy_active; then
@@ -334,6 +353,10 @@ case "${1:---check}" in
 		;;
 	--rollback)
 		need_root
+		# Invoked by hand, with no cutover in this process to have recorded
+		# the previous state. Someone asking for a rollback wants the legacy
+		# proxy back for good, not just until the next reboot.
+		LEGACY_WAS_ENABLED=1
 		rollback
 		;;
 	--status)
